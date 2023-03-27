@@ -14,8 +14,8 @@ public struct CloudKitRecordZoneIDArchive: Codable {
 
   public var zoneIDs: [CKRecordZone.ID] {
     do {
-      let decodedRecords = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
-      return decodedRecords as? [CKRecordZone.ID] ?? []
+      let decodedRecords = try NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: CKRecordZone.ID.self, from: data)
+      return decodedRecords ?? []
     } catch {
       return []
     }

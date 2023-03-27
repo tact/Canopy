@@ -6,8 +6,8 @@ public struct CloudKitLookupInfoArchive: Codable {
 
   public var lookupInfos: [CKUserIdentity.LookupInfo] {
     do {
-      let decodedRecords = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
-      return decodedRecords as? [CKUserIdentity.LookupInfo] ?? []
+      let decodedRecords = try NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: CKUserIdentity.LookupInfo.self, from: data)
+      return decodedRecords ?? []
     } catch {
       return []
     }
