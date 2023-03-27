@@ -7,8 +7,8 @@ public struct CloudKitCursorArchive: Codable {
 
   public var cursor: CKQueryOperation.Cursor? {
     do {
-      let decodedRecord = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
-      return decodedRecord as? CKQueryOperation.Cursor
+      let decodedRecord = try NSKeyedUnarchiver.unarchivedObject(ofClass: CKQueryOperation.Cursor.self, from: data)
+      return decodedRecord
     } catch {
       return nil
     }
