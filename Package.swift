@@ -25,9 +25,12 @@ let package = Package(
     .target(
       name: "Canopy",
       dependencies: ["Semaphore", "CanopyTypes"],
-      path: "Targets/Canopy/Sources",
+      path: "Targets/Canopy/Sources"
       // https://danielsaidi.com/blog/2022/05/18/how-to-suppress-linking-warning
-      linkerSettings: [.unsafeFlags(["-Xlinker", "-no_application_extension"])]
+      // Canopy by default gives a warning about unsafe code for application extensions. Not sure why it says that.
+      // See the above blog post for more info.
+      // The following line is OK to have in local development, but in live setting, cannot be used.
+      // linkerSettings: [.unsafeFlags(["-Xlinker", "-no_application_extension"])]
     ),
     .target(
       name: "CanopyTestTools",
