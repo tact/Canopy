@@ -15,7 +15,7 @@ let package = Package(
   dependencies: [
     // Dependencies declare other packages that this package depends on.
     .package(
-      url: "git@github.com:groue/Semaphore",
+      url: "https://github.com/groue/Semaphore",
       from: "0.0.6"
     )
   ],
