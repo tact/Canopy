@@ -1,3 +1,6 @@
+doc-native-preview:
+  SPI_BUILDER=1 swift package --disable-sandbox preview-documentation --target Canopy
+
 doc-preview:
   SPI_BUILDER=1 swift package \
     generate-documentation \
