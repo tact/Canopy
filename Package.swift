@@ -1,7 +1,27 @@
 // swift-tools-version: 5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+import Foundation
 import PackageDescription
+
+var dependencies: [PackageDescription.Package.Dependency] = [
+  .package(
+    url: "https://github.com/groue/Semaphore",
+    from: "0.0.8"
+  )
+]
+
+// The SPI_BUILDER environment variable enables documentation building
+// in Swift Package Index, should we ever host the docs there.
+// See <https://github.com/SwiftPackageIndex/SwiftPackageIndex-Server/issues/2122>
+// for more information.
+//
+// SPI_BUILDER also enables the `just doc-preview` command.
+//
+// This approach was lifted from GRDB Package.swift.
+if ProcessInfo.processInfo.environment["SPI_BUILDER"] == "1" {
+  dependencies.append(.package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"))
+}
 
 let package = Package(
   name: "Canopy",
@@ -12,13 +32,7 @@ let package = Package(
     .library(name: "Canopy", targets: ["Canopy", "CanopyTypes"]),
     .library(name: "CanopyTestTools", targets: ["CanopyTestTools"]),
   ],
-  dependencies: [
-    // Dependencies declare other packages that this package depends on.
-    .package(
-      url: "https://github.com/groue/Semaphore",
-      from: "0.0.6"
-    )
-  ],
+  dependencies: dependencies,
   targets: [
     // Targets are the basic building blocks of a package. A target can define a module or a test suite.
     // Targets can depend on other targets in this package, and on products in packages this package depends on.
@@ -30,6 +44,8 @@ let package = Package(
       // Canopy by default gives a warning about unsafe code for application extensions. Not sure why it says that.
       // See the above blog post for more info.
       // The following line is OK to have in local development, but in live setting, cannot be used.
+      // This could also be obsolete, latest Canopy does not give warnings with extensions any more.
+      // Keeping this info here just for a while longer.
       // linkerSettings: [.unsafeFlags(["-Xlinker", "-no_application_extension"])]
     ),
     .target(
