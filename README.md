@@ -36,6 +36,19 @@ let record = await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecor
   ).foundRecords.first
 ```
 
+### Using throwing return type
+
+Canopy provides all its API as `async Result`. Many people prefer to instead use throwing API. It’s easy to convert Canopy API calls to throwing style at the call site with the [`get()`](https://developer.apple.com/documentation/swift/result/get()) API. For the above example, follow this approach:
+
+```swift
+do {
+  let result = await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecords(…).get()
+  // use result
+} catch {
+  // handle thrown error
+}
+```
+
 ### Dependency injection for testability
 
 Canopy is designed for enabling your code to be testable. You do your part by using [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) pattern in most of your code and features. Most of your code should not instatiate Canopy directly, but should receive it from outside. For example:
@@ -65,23 +78,29 @@ TODO FIXME: write this
 
 Above was the quick info .. move the rest to doc site
 
-## Motivation
+## Understanding Canopy
 
-[CloudKit](https://developer.apple.com/icloud/cloudkit/) is a set of Apple API-s that let you store your app data in iCloud. It was introduced at [WWDC 14.](https://www.wwdcnotes.com/notes/wwdc14/208/) While it has gained new features along the way, the fundamentals have remained exactly as they were introduced. It is a stable first-party Apple API and service.
+The Canopy package has three parts.
 
-Out of the box, CloudKit provides you a set of API-s and two runtime environments, “development” and “production”, both running in iCloud. There’s no support for local testing.
+### Libraries
 
-Canopy is built on top of CloudKit API-s and aims to make it easier to develop solid CloudKit apps. Here are some of the Canopy design goals.
+Libraries provide the main Canopy functionality and value. `Canopy` is the main library, `CanopyTestTools` helps you build tests, and `CanopyTypes` provides some shared types used by both.
 
-### Testable apps
+### Documentation
 
-### Consistent modern API
+The Canopy documentation site at <https://canopy-docs.justtact.com> has documentation for the libraries, as well as information about the library motivation and some ideas and best practices about using CloudKit. The documentation is generated from DOCC in this same repository, and can also be used inline in Xcode.
 
-### Documentation and best practices
+Some highlights from documentation:
+
+FIXME
 
 ### Example app
 
-### Limited scope
+The `Things` example app showcases using Canopy in a real app, and demonstrates some best practices for modern multi-platform, multi-window app development.
+
+TODO: LINK
+
+
 
 ## Authors and credits
 

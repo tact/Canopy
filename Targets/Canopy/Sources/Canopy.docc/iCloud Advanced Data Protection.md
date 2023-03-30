@@ -1,4 +1,4 @@
-# Advanced Data Protection for iCloud
+# iCloud Advanced Data Protection
 
 A discussion of what Advanced Data Protection for iCloud means for your CloudKit app.
 
@@ -20,9 +20,9 @@ The security of third-party app data in CloudKit was previously a bit of a myste
 
 With this data protection announcement, Apple has freshly published a number of documents that discuss iCloud security, including that of third-party CloudKit apps, in greater detail:
 
-* [iCloud security overview](https://support.apple.com/et-ee/guide/security/secacde2d0da/1/web/1)
-* [iCloud data security overview](https://support.apple.com/et-ee/HT202303)
-* [Advanced Data Protection for iCloud](https://support.apple.com/et-ee/guide/security/sec973254c5f/web)
+* [iCloud security overview](https://support.apple.com/guide/security/secacde2d0da)
+* [iCloud data security overview](https://support.apple.com/kb/HT202303)
+* [Advanced Data Protection for iCloud](https://support.apple.com/guide/security/sec973254c5f)
 
 The first one pretty clearly outlines that all data in iCloud, including both Apple and third-party apps, now falls under one of two policies.
 
