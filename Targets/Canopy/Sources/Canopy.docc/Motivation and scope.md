@@ -26,6 +26,23 @@ Canopy wraps many Operation-based API-s behind a single consistent pattern: asyn
 
 Many people prefer working with throwing results. You can convert a Canopy result to throwing result easily using the [`get()`](https://developer.apple.com/documentation/swift/result/get()) function of the Swift Result type.
 
+As an example, if you have this Canopy API call:
+
+```swift
+let recordsResult = await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(…)
+```
+
+You can easily convert it to a throwing call like this:
+
+```swift
+do {
+  let result = await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(…).get()
+  // use result
+} catch {
+  // handle thrown error
+}
+```
+
 ## Standard behaviors and features
 
 There’s many details you need to understand and implement about CloudKit to use it well. Server token handling, correctly sequencing zone and database change fetching, query request cursors, splitting too large modification operation batches, modification policy are just a few examples.
@@ -52,6 +69,6 @@ CloudKit started with this approach, and its core design has remained stable. It
 
 Canopy does not currently implement record zone sharing, but it fits within the project goals and vision and can be added.
 
-The other flavor of CloudKit is using [Core Data and CloudKit together.](https://developer.apple.com/documentation/coredata/mirroring_a_core_data_store_with_cloudkit/setting_up_core_data_with_cloudkit) This is much more powerful than vanilla CloudKit, and heavily determines your client-side stack.
+The other flavor of CloudKit is using [Core Data and CloudKit together](https://developer.apple.com/documentation/coredata/mirroring_a_core_data_store_with_cloudkit/setting_up_core_data_with_cloudkit) with [NSPersistentCloudKitContainer.](https://developer.apple.com/documentation/coredata/nspersistentcloudkitcontainer) This is much more powerful than vanilla CloudKit, and heavily determines your client-side stack.
 
-Canopy does not wish to concern itself initially with client-side storage, and thus the Core Data+CloudKit is initially out of scope for Canopy.
+Canopy does not wish to concern itself initially with client-side storage, and thus the NSPersistentCloudKitContainer scenario is initially out of scope for Canopy.
