@@ -84,9 +84,9 @@ The Canopy API to fetch the list of record zones would be ``CKDatabaseAPIType/fe
 
 Another way to fetch zones is that you ask for a list of zones that have changed since a point in time represented by a **database change token**. This is what the CKFDCO API does. There used to be a way to do this also in the CloudKit web dashboard, but it appears to no longer be there. So the CKFDCO API (or its Canopy equivalent) is the only way to fetch a list of zones that have changed since the time represented by the token.
 
-There’s more nuance to working with database changes which I’ll not cover in this post. Fow now, just know that one of the outcomes of this operation is that you get a list of changed zones, and then proceed to retrieve the changes for all of them. You do that with CKFRZCO. Here’s how it is on the web side.
+There’s more nuance to working with database changes which I’ll not cover in this post. Fow now, just know that one of the outcomes of this operation is that you get a list of changed zones, and then proceed to retrieve the changes for all of them. You do that with CKFRZCO. Here’s how it is on the web dashboard.
 
-![Fetching record zone changes](ckmethods05zoneswithtoken)
+![Fetching record zone changes](ckmethods05zonechanges)
 
 So what this does: a **zone change token** represents one point in time. You give this API call a token, and you get a playback of events and records beginning at the time point represented by that token, and ending at “now”. You can also call it without a token, in which case the beginning time point is “ancient history”, “everything” or whatever you want to call it. Ending time point is always “now”.
 
