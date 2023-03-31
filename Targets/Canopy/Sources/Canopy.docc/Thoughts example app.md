@@ -6,8 +6,10 @@ Thoughts is an example app that showcases how to build and test your code with C
 
 todo
 
-![Thoughts macOS](thoughts-macOS)
+![Thoughts macOS](thoughts-macos)
 
-![Thoughts iOS - one thought](thoughts-iOS-thought)
+![Thoughts iOS - list of thoughts](thoughts-ios-list)
 
-![Thoughts iOS - settings](thoughts-iOS-settings)
+![Thoughts iOS - one thought](thoughts-ios-onethought)
+
+![Thoughts iOS - settings](thoughts-ios-settings)
