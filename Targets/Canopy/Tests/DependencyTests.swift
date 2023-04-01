@@ -6,7 +6,7 @@ import XCTest
 
 final class DependencyTests: XCTestCase {
   struct Fetcher {
-    @Dependency(\.cloudKit) var canopy
+    @Dependency(\.cloudKit) private var canopy
     func fetchRecord(recordID: CKRecord.ID) async -> CKRecord? {
       return try! await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(
         with: [recordID],

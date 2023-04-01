@@ -68,13 +68,22 @@ actor MyService {
 
 In live use of your app, you initiate and inject the live Canopy object that talks to CloudKit. When independently testing your features, you instead inject a mock Canopy object that doesn’t talk to any cloud services, but instead plays back mock responses.
 
-// FIXME: link to testing
+Read more: [Testable CloudKit apps with Canopy](https://canopy-docs.justtact.com/documentation/canopy/testable-cloudkit-apps-with-canopy)
 
 ### Dependency injection with swift-dependency
 
-TODO FIXME: write this
+Canopy implements `cloudKit` dependency key for [swift-dependencies](https://github.com/pointfreeco/swift-dependencies). If you use `swift-dependencies`, you use Canopy like this:
 
-Above was the quick info .. move the rest to doc site
+```swift
+struct MyFeature {
+  @Dependency(\.cloudKit) private var canopy
+  func myFeature() async {
+    let recordsResult = await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(…)
+  }
+}
+```
+
+See swift-dependencies documentation for more info about how to use dependencies, and inject desired values for the Canopy dependency for your previews and tests.
 
 ## Understanding Canopy
 
