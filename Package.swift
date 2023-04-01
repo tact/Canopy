@@ -17,6 +17,10 @@ let package = Package(
     .package(
       url: "https://github.com/groue/Semaphore",
       from: "0.0.6"
+    ),
+    .package(
+      url: "https://github.com/pointfreeco/swift-dependencies",
+      from: "0.2.0"
     )
   ],
   targets: [
@@ -24,7 +28,11 @@ let package = Package(
     // Targets can depend on other targets in this package, and on products in packages this package depends on.
     .target(
       name: "Canopy",
-      dependencies: ["Semaphore", "CanopyTypes"],
+      dependencies: [
+        "Semaphore",
+        "CanopyTypes",
+        .product(name: "Dependencies", package: "swift-dependencies")
+      ],
       path: "Targets/Canopy/Sources"
       // https://danielsaidi.com/blog/2022/05/18/how-to-suppress-linking-warning
       // Canopy by default gives a warning about unsafe code for application extensions. Not sure why it says that.
