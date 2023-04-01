@@ -1,7 +1,7 @@
 import CloudKit
 import CanopyTypes
 
-extension MockCKContainer {
+extension ReplayingMockCKContainer {
   public struct PerShareParticipantResult: Codable {
     let lookupInfoArchive: CloudKitLookupInfoArchive
     let codableResult: CodableResult<CloudKitShareParticipantArchive, CKRecordError>

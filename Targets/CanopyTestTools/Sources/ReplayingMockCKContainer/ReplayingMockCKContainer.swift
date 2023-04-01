@@ -2,7 +2,7 @@ import CanopyTypes
 import CloudKit
 import Foundation
 
-public actor MockCKContainer {
+public actor ReplayingMockCKContainer {
   public enum OperationResult: Codable {
     case userRecordID(UserRecordIDResult)
     case accountStatus(AccountStatusResult)
@@ -91,7 +91,7 @@ public actor MockCKContainer {
   }
 }
 
-extension MockCKContainer: CKContainerType {
+extension ReplayingMockCKContainer: CKContainerType {
   nonisolated public func accountStatus(completionHandler: @escaping (CKAccountStatus, Error?) -> Void) {
     Task {
       await privateAccountStatus(completionHandler: completionHandler)

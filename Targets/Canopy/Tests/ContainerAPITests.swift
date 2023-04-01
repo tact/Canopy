@@ -8,7 +8,7 @@ import XCTest
 final class ContainerAPITests: XCTestCase {
   func test_userRecordID_success() async {
     let recordID = CKRecord.ID(recordName: "SomeUserID")
-    let container = MockCKContainer(
+    let container = ReplayingMockCKContainer(
       operationResults: [
         .userRecordID(
           .init(
@@ -25,7 +25,7 @@ final class ContainerAPITests: XCTestCase {
   
   func test_userRecordID_failure() async {
     let ckError = CKError(CKError.Code.networkUnavailable)
-    let container = MockCKContainer(
+    let container = ReplayingMockCKContainer(
       operationResults: [
         .userRecordID(.init(userRecordID: nil, error: ckError))
       ]
@@ -39,7 +39,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accountStatus_success() async {
-    let container = MockCKContainer(
+    let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil))
       ]
@@ -50,7 +50,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accountStatus_success_multiple_requests() async {
-    let container = MockCKContainer(
+    let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil))
       ]
@@ -69,7 +69,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accountStatus_failure() async {
-    let container = MockCKContainer(
+    let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(
           .init(
@@ -88,7 +88,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accountStatus_stream() async {
-    let container = MockCKContainer(
+    let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil)),
         .accountStatus(.init(status: .noAccount, error: nil)),
@@ -108,7 +108,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accountStatus_twoStreams() async {
-    let container = MockCKContainer(
+    let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil)),
         .accountStatus(.init(status: .noAccount, error: nil)),
@@ -141,7 +141,7 @@ final class ContainerAPITests: XCTestCase {
     let lookupInfo1 = CKUserIdentity.LookupInfo(emailAddress: "email@example.com")
     let lookupInfo2 = CKUserIdentity.LookupInfo(emailAddress: "email2@example.com")
 
-    let mockContainer = MockCKContainer(
+    let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .fetchShareParticipants(
           .init(
@@ -170,7 +170,7 @@ final class ContainerAPITests: XCTestCase {
     let lookupInfo1 = CKUserIdentity.LookupInfo(emailAddress: "email@example.com")
     let lookupInfo2 = CKUserIdentity.LookupInfo(emailAddress: "email2@example.com")
 
-    let mockContainer = MockCKContainer(
+    let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .fetchShareParticipants(
           .init(
@@ -202,7 +202,7 @@ final class ContainerAPITests: XCTestCase {
     let lookupInfo1 = CKUserIdentity.LookupInfo(emailAddress: "email@example.com")
     let lookupInfo2 = CKUserIdentity.LookupInfo(emailAddress: "email2@example.com")
 
-    let mockContainer = MockCKContainer(
+    let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .fetchShareParticipants(
           .init(
@@ -231,7 +231,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accept_shares_success() async {
-    let mockContainer = MockCKContainer(
+    let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .acceptShares(
           .init(
@@ -253,7 +253,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accept_shares_record_failure() async {
-    let mockContainer = MockCKContainer(
+    let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .acceptShares(
           .init(
@@ -278,7 +278,7 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accept_shares_result_failure() async {
-    let mockContainer = MockCKContainer(
+    let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .acceptShares(
           .init(

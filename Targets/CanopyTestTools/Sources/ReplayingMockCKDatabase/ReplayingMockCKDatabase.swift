@@ -3,7 +3,7 @@ import CloudKit
 import Foundation
 
 /// Mock of CKDatabase, suitable for running CKModifyOperation tests.
-public actor MockDatabase {
+public actor ReplayingMockCKDatabase {
    
   /// How many `add` calls were made to this database.
   public private(set) var operationsRun = 0
@@ -73,8 +73,8 @@ public actor MockDatabase {
   }
 }
 
-extension MockDatabase: CKDatabaseType {
-  nonisolated public var debugDescription: String { "MockDatabase" }
+extension ReplayingMockCKDatabase: CKDatabaseType {
+  nonisolated public var debugDescription: String { "ReplayingMockCKDatabase" }
   
   nonisolated public var databaseScope: CKDatabase.Scope { scope }
   

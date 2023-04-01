@@ -74,7 +74,7 @@ final class SerialFetchChangesTests: XCTestCase {
 
     let privateZoneID1 = CKRecordZone.ID(zoneName: "SomePrivateZone1", ownerName: CKCurrentUserDefaultName)
 
-    let testDB = MockDatabase(
+    let testDB = ReplayingMockCKDatabase(
       operationResults: [
         .fetchDatabaseChanges(
           .init(
@@ -119,7 +119,7 @@ final class SerialFetchChangesTests: XCTestCase {
     
     let privateZoneID1 = CKRecordZone.ID(zoneName: "SomePrivateZone1", ownerName: CKCurrentUserDefaultName)
     
-    let testDB = MockDatabase(
+    let testDB = ReplayingMockCKDatabase(
       operationResults: [
         .fetchZoneChanges(
           .init(
