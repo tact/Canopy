@@ -1,7 +1,7 @@
 import CanopyTypes
 import CloudKit
 
-extension MockCKContainer {
+extension ReplayingMockCKContainer {
   public struct UserRecordIDResult: Codable {
     let userRecordIDArchive: CloudKitRecordIDArchive?
     let recordError: CKRecordError?

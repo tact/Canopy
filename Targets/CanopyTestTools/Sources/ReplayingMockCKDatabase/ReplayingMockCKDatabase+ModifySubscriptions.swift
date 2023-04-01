@@ -1,7 +1,7 @@
 import CloudKit
 import CanopyTypes
 
-extension MockDatabase {
+extension ReplayingMockCKDatabase {
   
   public struct SavedSubscriptionResult: Codable {
     let subscriptionID: CKSubscription.ID

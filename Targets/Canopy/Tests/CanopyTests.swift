@@ -6,10 +6,10 @@ import XCTest
 final class CanopyTests: XCTestCase {
   func test_init_with_default_settings() async {
     let _ = Canopy(
-      container: MockCKContainer(),
-      publicCloudDatabase: MockDatabase(),
-      privateCloudDatabase: MockDatabase(),
-      sharedCloudDatabase: MockDatabase(),
+      container: ReplayingMockCKContainer(),
+      publicCloudDatabase: ReplayingMockCKDatabase(),
+      privateCloudDatabase: ReplayingMockCKDatabase(),
+      sharedCloudDatabase: ReplayingMockCKDatabase(),
       tokenStore: TestTokenStore()
     )
   }
@@ -29,9 +29,9 @@ final class CanopyTests: XCTestCase {
     var modifiableSettings = ModifiableSettings()
     
     let canopy = Canopy(
-      container: MockCKContainer(),
-      publicCloudDatabase: MockDatabase(),
-      privateCloudDatabase: MockDatabase(
+      container: ReplayingMockCKContainer(),
+      publicCloudDatabase: ReplayingMockCKDatabase(),
+      privateCloudDatabase: ReplayingMockCKDatabase(
         operationResults: [
           .modify(
             .init(
@@ -51,7 +51,7 @@ final class CanopyTests: XCTestCase {
           )
         ]
       ),
-      sharedCloudDatabase: MockDatabase(),
+      sharedCloudDatabase: ReplayingMockCKDatabase(),
       settings: { modifiableSettings },
       tokenStore: TestTokenStore()
     )
@@ -75,10 +75,10 @@ final class CanopyTests: XCTestCase {
   
   func test_returns_same_api_instances() async {
     let canopy = Canopy(
-      container: MockCKContainer(),
-      publicCloudDatabase: MockDatabase(),
-      privateCloudDatabase: MockDatabase(),
-      sharedCloudDatabase: MockDatabase()
+      container: ReplayingMockCKContainer(),
+      publicCloudDatabase: ReplayingMockCKDatabase(),
+      privateCloudDatabase: ReplayingMockCKDatabase(),
+      sharedCloudDatabase: ReplayingMockCKDatabase()
     )
     
     let privateApi1 = await canopy.databaseAPI(usingDatabaseScope: .private) as! CKDatabaseAPI

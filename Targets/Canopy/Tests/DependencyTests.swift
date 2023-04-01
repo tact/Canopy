@@ -23,7 +23,7 @@ final class DependencyTests: XCTestCase {
       let testRecord = CKRecord(recordType: "TestRecord", recordID: testRecordID)
       testRecord["testKey"] = "testValue"
       $0.cloudKit = MockCanopy(
-        mockPrivateDatabase: MockDatabase(
+        mockPrivateDatabase: ReplayingMockCKDatabase(
           operationResults: [
             .fetch(
               .init(

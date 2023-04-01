@@ -14,7 +14,7 @@ final class ModifyRecordsTests: XCTestCase {
     }
   }
   
-  private var modify_zoneBusy_result: MockDatabase.OperationResult {
+  private var modify_zoneBusy_result: ReplayingMockCKDatabase.OperationResult {
     .modify(
       .init(
         savedRecordResults: [],
@@ -34,7 +34,7 @@ final class ModifyRecordsTests: XCTestCase {
   func test_success() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -66,7 +66,7 @@ final class ModifyRecordsTests: XCTestCase {
   func test_success_with_delay() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -98,7 +98,7 @@ final class ModifyRecordsTests: XCTestCase {
   func test_simulated_fail() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -131,7 +131,7 @@ final class ModifyRecordsTests: XCTestCase {
   func test_simulated_fail_with_delay() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -165,7 +165,7 @@ final class ModifyRecordsTests: XCTestCase {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let recordIDToDelete = CKRecord.ID(recordName: "TestRecordNameToDelete")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -205,7 +205,7 @@ final class ModifyRecordsTests: XCTestCase {
   func test_explicit_autobatch_true() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
     let recordIDToDelete = CKRecord.ID(recordName: "idToDelete")
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -217,10 +217,10 @@ final class ModifyRecordsTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults: recordsToSave[0...9].map {
-              MockDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
             },
             deletedRecordIDResults: [
-              MockDatabase.DeletedRecordIDResult(
+              ReplayingMockCKDatabase.DeletedRecordIDResult(
                 recordID: recordIDToDelete,
                 result: .success(())
               )
@@ -257,7 +257,7 @@ final class ModifyRecordsTests: XCTestCase {
   func test_explicit_autobatch_false() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
     let recordIDToDelete = CKRecord.ID(recordName: "idToDelete")
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -291,7 +291,7 @@ final class ModifyRecordsTests: XCTestCase {
   
   func test_explicit_autoretry_true() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         modify_zoneBusy_result,
         .modify(
@@ -322,7 +322,7 @@ final class ModifyRecordsTests: XCTestCase {
   
   func test_explicit_autoretry_false() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         modify_zoneBusy_result,
         .modify(

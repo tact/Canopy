@@ -11,7 +11,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
     let changedRecordZoneID2 = CKRecordZone.ID(zoneName: "changedZone2", ownerName: CKCurrentUserDefaultName)
     let deletedRecordZoneID = CKRecordZone.ID(zoneName: "deletedZone", ownerName: CKCurrentUserDefaultName)
     let purgedRecordZoneID = CKRecordZone.ID(zoneName: "purgedZone", ownerName: CKCurrentUserDefaultName)
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
           changedRecordZoneIDs: [changedRecordZoneID1, changedRecordZoneID2],
@@ -34,7 +34,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
   }
   
   func test_token_expired_error() async {
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
           changedRecordZoneIDs: [],
@@ -55,7 +55,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
   }
   
   func test_other_error() async {
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
           changedRecordZoneIDs: [],
@@ -77,7 +77,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
   
   func test_success_with_delay() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
           changedRecordZoneIDs: [changedRecordZoneID1],
@@ -101,7 +101,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
   
   func test_simulated_fail() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
           changedRecordZoneIDs: [changedRecordZoneID1],
@@ -129,7 +129,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
   
   func test_simulated_fail_with_delay() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
           changedRecordZoneIDs: [changedRecordZoneID1],

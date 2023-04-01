@@ -2,7 +2,7 @@ import CloudKit
 import CanopyTypes
 
 // Types and functionality for CKModifyRecordsOperation results.
-extension MockDatabase {
+extension ReplayingMockCKDatabase {
   /// Result for one saved record. perRecordSaveBlock is called with this.
   public struct SavedRecordResult: Codable {
     

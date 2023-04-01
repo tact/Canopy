@@ -12,7 +12,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     }
   }
   
-  private var modify_zoneBusy_result: MockDatabase.OperationResult {
+  private var modify_zoneBusy_result: ReplayingMockCKDatabase.OperationResult {
     .modify(
       .init(
         savedRecordResults: [],
@@ -30,7 +30,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   }
   
   func test_fails_correctly_on_empty_input() async {
-    let db = MockDatabase(operationResults: [])
+    let db = ReplayingMockCKDatabase(operationResults: [])
     do {
       let _ = try await ModifyRecords.with(
         recordsToSave: [],
@@ -46,19 +46,19 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_simple_modify() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
             savedRecordResults:
               recordsToSave.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
               },
             deletedRecordIDResults: [],
-            modifyResult: MockDatabase.ModifyResult(result: .success(()))
+            modifyResult: ReplayingMockCKDatabase.ModifyResult(result: .success(()))
           )
         )
       ]
@@ -81,13 +81,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_simple_delete() async {
     let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map { $0.recordID }
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
             savedRecordResults: [],
             deletedRecordIDResults: recordIDsToDelete.map {
-              MockDatabase.DeletedRecordIDResult(
+              ReplayingMockCKDatabase.DeletedRecordIDResult(
                 recordID: $0,
                 result: .success(())
               )
@@ -118,13 +118,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     let recordsToSave2 = records(startIndex: 4, endIndex: 6)
     let recordsToSave3 = records(startIndex: 7, endIndex: 9)
     let recordsToSave4 = records(startIndex: 10, endIndex: 11)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
             savedRecordResults:
               recordsToSave1.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -137,7 +137,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
           .init(
             savedRecordResults:
               recordsToSave2.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -150,7 +150,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
           .init(
             savedRecordResults:
               recordsToSave3.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -163,7 +163,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
           .init(
             savedRecordResults:
               recordsToSave4.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -195,13 +195,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     let recordsToSave2 = records(startIndex: 4, endIndex: 6)
     let recordsToSave3 = records(startIndex: 7, endIndex: 9)
     let recordsToSave4 = records(startIndex: 10, endIndex: 11)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
             savedRecordResults:
               recordsToSave1.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -214,7 +214,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
           .init(
             savedRecordResults:
               recordsToSave2.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -227,7 +227,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
           .init(
             savedRecordResults:
               recordsToSave3.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -240,7 +240,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
           .init(
             savedRecordResults:
               recordsToSave4.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -279,13 +279,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_modify_recorderror() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
             savedRecordResults:
               recordsToSave.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .failure(CKError(CKError.Code.internalError))
                 )
@@ -314,13 +314,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_delete_recorderror() async {
     let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map { $0.recordID }
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
             savedRecordResults: [],
             deletedRecordIDResults: recordIDsToDelete.map {
-              MockDatabase.DeletedRecordIDResult(
+              ReplayingMockCKDatabase.DeletedRecordIDResult(
                 recordID: $0,
                 result: .failure(CKError(CKError.Code.internalError))
               )
@@ -348,13 +348,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_modify_resulterror() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
             savedRecordResults:
               recordsToSave.map {
-                MockDatabase.SavedRecordResult(
+                ReplayingMockCKDatabase.SavedRecordResult(
                   recordID: $0.recordID,
                   result: .success($0)
                 )
@@ -384,7 +384,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   func test_limit_exceeded() async {
     let recordsToSave = records(startIndex: 1, endIndex: 9)
     let recordIDToDelete = CKRecord.ID(recordName: "idToDelete")
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -396,10 +396,10 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults: recordsToSave[0...3].map {
-              MockDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
             },
             deletedRecordIDResults: [
-              MockDatabase.DeletedRecordIDResult(
+              ReplayingMockCKDatabase.DeletedRecordIDResult(
                 recordID: recordIDToDelete,
                 result: .success(())
               )
@@ -410,7 +410,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults: recordsToSave[4...7].map {
-              MockDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
             },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
@@ -419,7 +419,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults: [recordsToSave[8]].map {
-              MockDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.SavedRecordResult(recordID: $0.recordID, result: .success($0))
             },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
@@ -450,7 +450,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   func test_limit_exceeded_without_autobatch() async {
     let recordsToSave = records(startIndex: 1, endIndex: 9)
     let recordIDToDelete = CKRecord.ID(recordName: "idToDelete")
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -481,7 +481,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_autoretry_one_pass() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
           .init(
@@ -513,7 +513,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_autoretry_one_retry() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         modify_zoneBusy_result,
         .modify(
@@ -538,7 +538,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_autoretry_two_retries() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         modify_zoneBusy_result,
         modify_zoneBusy_result,
@@ -564,7 +564,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   
   func test_autoretry_three_retries_failure() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         modify_zoneBusy_result,
         modify_zoneBusy_result,

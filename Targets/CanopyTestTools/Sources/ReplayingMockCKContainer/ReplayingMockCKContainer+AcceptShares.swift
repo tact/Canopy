@@ -1,7 +1,7 @@
 import CanopyTypes
 import CloudKit
 
-extension MockCKContainer {
+extension ReplayingMockCKContainer {
   
   public struct PerShareResult: Codable {
     let shareMetadataArchive: CloudKitShareMetadataArchive
