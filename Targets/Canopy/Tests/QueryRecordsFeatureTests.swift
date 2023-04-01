@@ -14,13 +14,13 @@ final class QueryRecordsFeatureTests: XCTestCase {
   
   func test_simple_query() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
             queryRecordResults:
               records(startIndex: 1, endIndex: 10).map {
-                MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+                ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
               },
             queryResult: .init(result: .success(nil))
           )
@@ -42,12 +42,12 @@ final class QueryRecordsFeatureTests: XCTestCase {
   func test_simple_nested_query() async {
     
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
             queryRecordResults: records(startIndex: 1, endIndex: 10).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .success(CKQueryOperation.Cursor.mock))
           )
@@ -55,7 +55,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         .query(
           .init(
             queryRecordResults: records(startIndex: 11, endIndex: 20).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             }, queryResult: .init(result: .success(nil))
           )
         )
@@ -78,12 +78,12 @@ final class QueryRecordsFeatureTests: XCTestCase {
   func test_depth3_query() async {
     
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
             queryRecordResults: records(startIndex: 1, endIndex: 3).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .success(CKQueryOperation.Cursor.mock))
           )
@@ -91,7 +91,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         .query(
           .init(
             queryRecordResults: records(startIndex: 4, endIndex: 6).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .success(CKQueryOperation.Cursor.mock))
           )
@@ -99,7 +99,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         .query(
           .init(
             queryRecordResults: records(startIndex: 7, endIndex: 9).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .success(nil))
           )
@@ -123,12 +123,12 @@ final class QueryRecordsFeatureTests: XCTestCase {
   func test_task_cancellation_query() async {
     
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
             queryRecordResults: records(startIndex: 1, endIndex: 10).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .success(CKQueryOperation.Cursor.mock))
           )
@@ -136,7 +136,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         .query(
           .init(
             queryRecordResults: records(startIndex: 11, endIndex: 20).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .success(nil))
           )
@@ -166,13 +166,13 @@ final class QueryRecordsFeatureTests: XCTestCase {
   
   func test_record_error() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
             queryRecordResults:
               records(startIndex: 1, endIndex: 10).map {
-                MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .failure(CKError(CKError.Code.requestRateLimited)))
+                ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .failure(CKError(CKError.Code.requestRateLimited)))
               },
             queryResult: .init(result: .success(nil))
           )
@@ -192,12 +192,12 @@ final class QueryRecordsFeatureTests: XCTestCase {
   
   func test_nested_request_error() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
             queryRecordResults: records(startIndex: 1, endIndex: 3).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .success(CKQueryOperation.Cursor.mock))
           )
@@ -205,7 +205,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         .query(
           .init(
             queryRecordResults: records(startIndex: 4, endIndex: 6).map {
-              MockDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
             },
             queryResult: .init(result: .failure(CKError(CKError.Code.networkFailure)))
           )

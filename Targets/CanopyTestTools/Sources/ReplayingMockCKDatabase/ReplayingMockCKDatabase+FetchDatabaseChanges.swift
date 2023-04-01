@@ -1,7 +1,7 @@
 import CloudKit
 import CanopyTypes
 
-extension MockDatabase {
+extension ReplayingMockCKDatabase {
   struct FetchDatabaseChangesSuccess: Codable {
     let serverChangeTokenArchive: CloudKitServerChangeTokenArchive
     let moreComing: Bool

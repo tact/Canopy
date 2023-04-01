@@ -1,8 +1,7 @@
 import CloudKit
 import CanopyTypes
 
-extension MockDatabase {
-  
+extension ReplayingMockCKDatabase {
   public struct RecordWasChangedInZoneResult: Codable {
     let recordIDArchive: CloudKitRecordIDArchive
     let codableResult: CodableResult<CloudKitRecordArchive, CKRequestError>

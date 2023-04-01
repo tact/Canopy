@@ -2,8 +2,8 @@ import CloudKit
 import CanopyTypes
 
 // Types and functionality for CKQueryOperation results.
-extension MockDatabase {
-  /// Result for one record. recordMatchedBlock is called with this. Also used by MockDatabase+Fetch.
+extension ReplayingMockCKDatabase {
+  /// Result for one record. recordMatchedBlock is called with this. Also used by ReplayingMockCKDatabase+Fetch.
   public struct QueryRecordResult: Codable {
     
     let recordIDArchive: CloudKitRecordIDArchive

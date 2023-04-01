@@ -14,7 +14,7 @@ final class DatabaseAPITests: XCTestCase {
   }
   
   func test_init_with_default_settings() async {
-    let databaseAPI = CKDatabaseAPI(MockDatabase(), tokenStore: TestTokenStore())
+    let databaseAPI = CKDatabaseAPI(ReplayingMockCKDatabase(), tokenStore: TestTokenStore())
     let fetchDatabaseChangesBehavior = await databaseAPI.settingsProvider().fetchDatabaseChangesBehavior
     XCTAssertEqual(fetchDatabaseChangesBehavior, .regular(nil))
   }
@@ -22,7 +22,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_query_records() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
@@ -48,7 +48,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_delete_records_success() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
@@ -82,7 +82,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_delete_records_query_failure() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
@@ -110,7 +110,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_delete_records_empty_success() async {
     // When there are no records returned by query,
     // the deletion should still report a success, since there is no work to be done.
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .query(
           .init(
@@ -130,7 +130,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_fetch_records_success() async {
     let recordID = CKRecord.ID(recordName: "testRecord")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetch(
         .init(
           fetchRecordResults: [
@@ -147,7 +147,7 @@ final class DatabaseAPITests: XCTestCase {
   
   func test_fetch_records_record_failure() async {
     let recordID = CKRecord.ID(recordName: "testRecord")
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetch(
         .init(
           fetchRecordResults: [
@@ -168,7 +168,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_fetch_records_result_failure() async {
     let recordID = CKRecord.ID(recordName: "testRecord")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetch(
         .init(
           fetchRecordResults: [
@@ -190,7 +190,7 @@ final class DatabaseAPITests: XCTestCase {
     let recordID = CKRecord.ID(recordName: "testRecord")
     let recordID2 = CKRecord.ID(recordName: "testRecord2")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetch(
         .init(
           fetchRecordResults: [
@@ -210,7 +210,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_modify_zones_success() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .modifyZones(
         .init(
           savedZoneResults: [
@@ -232,7 +232,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_modify_zones_save_failure() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .modifyZones(
         .init(
           savedZoneResults: [
@@ -256,7 +256,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_modify_zones_delete_failure() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .modifyZones(
         .init(
           savedZoneResults: [
@@ -280,7 +280,7 @@ final class DatabaseAPITests: XCTestCase {
   func test_modify_zones_operation_failure() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .modifyZones(
         .init(
           savedZoneResults: [
@@ -303,7 +303,7 @@ final class DatabaseAPITests: XCTestCase {
   
   func test_fetch_zones_success() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZones(
         .init(
           fetchZoneResults: [
@@ -320,7 +320,7 @@ final class DatabaseAPITests: XCTestCase {
   
   func test_fetch_zones_one_failure() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZones(
         .init(
           fetchZoneResults: [
@@ -340,7 +340,7 @@ final class DatabaseAPITests: XCTestCase {
   
   func test_fetch_zones_result_failure() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZones(
         .init(
           fetchZoneResults: [
@@ -362,7 +362,7 @@ final class DatabaseAPITests: XCTestCase {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modifySubscriptions(
           .init(
@@ -386,7 +386,7 @@ final class DatabaseAPITests: XCTestCase {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modifySubscriptions(
           .init(
@@ -413,7 +413,7 @@ final class DatabaseAPITests: XCTestCase {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modifySubscriptions(
           .init(
@@ -440,7 +440,7 @@ final class DatabaseAPITests: XCTestCase {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
-    let db = MockDatabase(
+    let db = ReplayingMockCKDatabase(
       operationResults: [
         .modifySubscriptions(
           .init(

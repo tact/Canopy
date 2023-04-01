@@ -13,7 +13,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [
@@ -53,7 +53,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [
@@ -93,7 +93,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let deletedRecordID = CKRecord.ID(recordName: "DeletedRecordID")
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [
@@ -136,7 +136,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let zoneID1 = CKRecordZone.ID(zoneName: "testZone1", ownerName: CKCurrentUserDefaultName)
     let zoneID2 = CKRecordZone.ID(zoneName: "testZone2", ownerName: CKCurrentUserDefaultName)
 
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [],
@@ -176,7 +176,7 @@ final class FetchZoneChangesTests: XCTestCase {
     
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [],
@@ -217,7 +217,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [
@@ -256,7 +256,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [
@@ -302,7 +302,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
-    let db = MockDatabase(operationResults: [
+    let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
           recordWasChangedInZoneResults: [
