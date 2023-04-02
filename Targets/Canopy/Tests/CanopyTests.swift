@@ -59,7 +59,7 @@ final class CanopyTests: XCTestCase {
     let api = await canopy.databaseAPI(usingDatabaseScope: .private)
 
     // First request will succeed.
-    let result1 = try! await api.modifyRecords(saving: [changedRecord], deleting: nil, perRecordProgressBlock: nil, qualityOfService: .default).get()
+    let result1 = try! await api.modifyRecords(saving: [changedRecord]).get()
     XCTAssertTrue(result1.savedRecords.count == 1)
     XCTAssertTrue(result1.savedRecords[0].isEqualToRecord(changedRecord))
     
@@ -67,7 +67,7 @@ final class CanopyTests: XCTestCase {
     modifiableSettings.modifyRecordsBehavior = .simulatedFail(nil)
     
     do {
-      let _ = try await api.modifyRecords(saving: [changedRecord], deleting: nil, perRecordProgressBlock: nil, qualityOfService: .default).get()
+      let _ = try await api.modifyRecords(saving: [changedRecord]).get()
     } catch {
       XCTAssertTrue(error is CKRecordError)
     }

@@ -36,8 +36,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let api = CKDatabaseAPI(db, tokenStore: tokenStore)
     let result = try! await api.fetchZoneChanges(
       recordZoneIDs: [zoneID],
-      fetchMethod: .changeTokenAndAllData,
-      qualityOfService: .default
+      fetchMethod: .changeTokenAndAllData
     ).get()
     XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
     XCTAssertEqual(result.deletedRecords, [])
@@ -75,8 +74,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let api = CKDatabaseAPI(db, tokenStore: tokenStore)
     let result = try! await api.fetchZoneChanges(
       recordZoneIDs: [zoneID],
-      fetchMethod: .changeTokenOnly,
-      qualityOfService: .default
+      fetchMethod: .changeTokenOnly
     ).get()
     XCTAssertEqual(result.changedRecords, [])
     XCTAssertEqual(result.deletedRecords, [])
@@ -118,8 +116,7 @@ final class FetchZoneChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchZoneChanges(
         recordZoneIDs: [zoneID],
-        fetchMethod: .changeTokenAndSpecificKeys(["key1", "key2"]),
-        qualityOfService: .default
+        fetchMethod: .changeTokenAndSpecificKeys(["key1", "key2"])
       ).get()
     } catch {
       XCTAssertEqual(error as! CanopyError, .ckRecordError(.init(from: CKError(CKError.Code.networkUnavailable))))
@@ -156,8 +153,7 @@ final class FetchZoneChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchZoneChanges(
         recordZoneIDs: [zoneID1, zoneID2],
-        fetchMethod: .changeTokenAndAllData,
-        qualityOfService: .default
+        fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
       XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 2)
@@ -195,8 +191,7 @@ final class FetchZoneChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchZoneChanges(
         recordZoneIDs: [zoneID],
-        fetchMethod: .changeTokenAndAllData,
-        qualityOfService: .default
+        fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
       XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 1)
@@ -236,8 +231,7 @@ final class FetchZoneChangesTests: XCTestCase {
     let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings(fetchZoneChangesBehavior: .regular(0.1)) }, tokenStore: tokenStore)
     let result = try! await api.fetchZoneChanges(
       recordZoneIDs: [zoneID],
-      fetchMethod: .changeTokenAndAllData,
-      qualityOfService: .default
+      fetchMethod: .changeTokenAndAllData
     ).get()
     XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
     XCTAssertEqual(result.deletedRecords, [])
@@ -276,8 +270,7 @@ final class FetchZoneChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchZoneChanges(
         recordZoneIDs: [zoneID],
-        fetchMethod: .changeTokenAndAllData,
-        qualityOfService: .default
+        fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
       switch error as! CanopyError {
@@ -322,8 +315,7 @@ final class FetchZoneChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchZoneChanges(
         recordZoneIDs: [zoneID],
-        fetchMethod: .changeTokenAndAllData,
-        qualityOfService: .default
+        fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
       switch error as! CanopyError {

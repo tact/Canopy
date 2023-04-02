@@ -105,8 +105,8 @@ final class SerialFetchChangesTests: XCTestCase {
       )
     )
     
-    async let results1 = api.fetchDatabaseChanges(qualityOfService: .default)
-    async let results2 = api.fetchDatabaseChanges(qualityOfService: .default)
+    async let results1 = api.fetchDatabaseChanges()
+    async let results2 = api.fetchDatabaseChanges()
     
     let _ = await [results1, results2]
   }
@@ -173,13 +173,11 @@ final class SerialFetchChangesTests: XCTestCase {
     
     async let results1 = api.fetchZoneChanges(
       recordZoneIDs: [privateZoneID1],
-      fetchMethod: .changeTokenAndAllData,
-      qualityOfService: .default
+      fetchMethod: .changeTokenAndAllData
     )
     async let results2 = api.fetchZoneChanges(
       recordZoneIDs: [privateZoneID1],
-      fetchMethod: .changeTokenAndAllData,
-      qualityOfService: .default
+      fetchMethod: .changeTokenAndAllData
     )
     
     let _ = await [results1, results2]

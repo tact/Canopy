@@ -40,7 +40,7 @@ final class DatabaseAPITests: XCTestCase {
     
     let api = databaseAPI(db)
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let result = try! await api.queryRecords(with: query, in: nil, qualityOfService: .default).get()
+    let result = try! await api.queryRecords(with: query, in: nil).get()
     
     XCTAssertTrue(result.first!.isEqualToRecord(record))
   }
@@ -75,7 +75,7 @@ final class DatabaseAPITests: XCTestCase {
     
     let api = databaseAPI(db)
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let result = try! await api.deleteRecords(with: query, in: nil, qualityOfService: .default).get()
+    let result = try! await api.deleteRecords(with: query, in: nil).get()
     XCTAssertEqual(result.deletedRecordIDs, [recordID])
   }
   
@@ -101,7 +101,7 @@ final class DatabaseAPITests: XCTestCase {
     let api = databaseAPI(db)
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     do {
-      let _ = try await api.deleteRecords(with: query, in: nil, qualityOfService: .default).get()
+      let _ = try await api.deleteRecords(with: query, in: nil).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
     }
@@ -123,7 +123,7 @@ final class DatabaseAPITests: XCTestCase {
     
     let api = databaseAPI(db)
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
-    let result = try! await api.deleteRecords(with: query, in: nil, qualityOfService: .default).get()
+    let result = try! await api.deleteRecords(with: query, in: nil).get()
     XCTAssertEqual(result.deletedRecordIDs, [])
   }
   
@@ -141,7 +141,7 @@ final class DatabaseAPITests: XCTestCase {
       )
     ])
     let api = databaseAPI(db)
-    let result = try! await api.fetchRecords(with: [recordID], desiredKeys: nil, perRecordIDProgressBlock: nil, qualityOfService: .default).get()
+    let result = try! await api.fetchRecords(with: [recordID]).get()
     XCTAssertTrue(result.foundRecords.first!.isEqualToRecord(record))
   }
   
@@ -159,7 +159,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     do {
-      let _ = try await api.fetchRecords(with: [recordID], desiredKeys: nil, perRecordIDProgressBlock: nil, qualityOfService: .default).get()
+      let _ = try await api.fetchRecords(with: [recordID]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
     }
@@ -180,7 +180,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     do {
-      let _ = try await api.fetchRecords(with: [recordID], desiredKeys: nil, perRecordIDProgressBlock: nil, qualityOfService: .default).get()
+      let _ = try await api.fetchRecords(with: [recordID]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.managedAccountRestricted)))
     }
@@ -202,7 +202,7 @@ final class DatabaseAPITests: XCTestCase {
       )
     ])
     let api = databaseAPI(db)
-    let fetchResult = try! await api.fetchRecords(with: [recordID], desiredKeys: nil, perRecordIDProgressBlock: nil, qualityOfService: .default).get()
+    let fetchResult = try! await api.fetchRecords(with: [recordID]).get()
     XCTAssertTrue(fetchResult.foundRecords.first!.isEqualToRecord(record))
     XCTAssertEqual(fetchResult.notFoundRecordIDs, [recordID2])
   }
@@ -224,7 +224,7 @@ final class DatabaseAPITests: XCTestCase {
       )
     ])
     let api = databaseAPI(db)
-    let result = try! await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete], qualityOfService: .default).get()
+    let result = try! await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     XCTAssertEqual(result.deletedZoneIDs.first!, zoneIDToDelete)
     XCTAssertTrue(result.savedZones.first!.isEqualToZone(zoneToSave))
   }
@@ -247,7 +247,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     do {
-      let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete], qualityOfService: .default).get()
+      let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.networkUnavailable)))
     }
@@ -271,7 +271,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     do {
-      let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete], qualityOfService: .default).get()
+      let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.accountTemporarilyUnavailable)))
     }
@@ -295,7 +295,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     do {
-      let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete], qualityOfService: .default).get()
+      let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.invalidArguments)))
     }
@@ -332,7 +332,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     do {
-      let _ = try await api.fetchZones(with: [mockZone.zoneID], qualityOfService: .default).get()
+      let _ = try await api.fetchZones(with: [mockZone.zoneID]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
     }
@@ -352,7 +352,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     do {
-      let _ = try await api.fetchZones(with: [mockZone.zoneID], qualityOfService: .default).get()
+      let _ = try await api.fetchZones(with: [mockZone.zoneID]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.zoneNotFound)))
     }
@@ -378,7 +378,7 @@ final class DatabaseAPITests: XCTestCase {
       ]
     )
     let api = databaseAPI(db)
-    let result = try! await api.modifySubscriptions(saving: [subscription], deleting: nil, qualityOfService: .default).get()
+    let result = try! await api.modifySubscriptions(saving: [subscription]).get()
     XCTAssertEqual(result, .init(savedSubscriptions: [subscription], deletedSubscriptionIDs: [subscriptionIDToDelete]))
   }
   
@@ -403,7 +403,7 @@ final class DatabaseAPITests: XCTestCase {
     )
     let api = databaseAPI(db)
     do {
-      let _ = try await api.modifySubscriptions(saving: [subscription], deleting: nil, qualityOfService: .default).get()
+      let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
       XCTAssertEqual(error as! CKSubscriptionError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
@@ -430,7 +430,7 @@ final class DatabaseAPITests: XCTestCase {
     )
     let api = databaseAPI(db)
     do {
-      let _ = try await api.modifySubscriptions(saving: [subscription], deleting: nil, qualityOfService: .default).get()
+      let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
       XCTAssertEqual(error as! CKSubscriptionError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
@@ -457,7 +457,7 @@ final class DatabaseAPITests: XCTestCase {
     )
     let api = databaseAPI(db)
     do {
-      let _ = try await api.modifySubscriptions(saving: [subscription], deleting: nil, qualityOfService: .default).get()
+      let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
       XCTAssertEqual(error as! CKSubscriptionError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
