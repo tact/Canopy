@@ -9,10 +9,7 @@ final class DependencyTests: XCTestCase {
     @Dependency(\.cloudKit) private var canopy
     func fetchRecord(recordID: CKRecord.ID) async -> CKRecord? {
       try! await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(
-        with: [recordID],
-        desiredKeys: nil,
-        perRecordIDProgressBlock: nil,
-        qualityOfService: .default
+        with: [recordID]
       ).get().foundRecords.first
     }
   }

@@ -52,12 +52,7 @@ final class ModifyRecordsTests: XCTestCase {
     )
     
     let api = databaseAPI(db)
-    let result = try! await api.modifyRecords(
-      saving: [record],
-      deleting: nil,
-      perRecordProgressBlock: nil,
-      qualityOfService: .default
-    ).get()
+    let result = try! await api.modifyRecords(saving: [record]).get()
     
     XCTAssertTrue(result.savedRecords.first!.isEqualToRecord(record))
     XCTAssertEqual(result.deletedRecordIDs, [])
@@ -84,12 +79,7 @@ final class ModifyRecordsTests: XCTestCase {
     )
     
     let api = databaseAPI(db, settings: CanopySettings(modifyRecordsBehavior: .regular(0.01)))
-    let result = try! await api.modifyRecords(
-      saving: [record],
-      deleting: nil,
-      perRecordProgressBlock: nil,
-      qualityOfService: .default
-    ).get()
+    let result = try! await api.modifyRecords(saving: [record]).get()
     
     XCTAssertTrue(result.savedRecords.first!.isEqualToRecord(record))
     XCTAssertEqual(result.deletedRecordIDs, [])
@@ -117,12 +107,7 @@ final class ModifyRecordsTests: XCTestCase {
     
     let api = databaseAPI(db, settings: CanopySettings(modifyRecordsBehavior: .simulatedFail(nil)))
     do {
-      let _ = try await api.modifyRecords(
-        saving: [record],
-        deleting: nil,
-        perRecordProgressBlock: nil,
-        qualityOfService: .default
-      ).get()
+      let _ = try await api.modifyRecords(saving: [record]).get()
     } catch {
       XCTAssertTrue(error is CKRecordError)
     }
@@ -150,12 +135,7 @@ final class ModifyRecordsTests: XCTestCase {
     
     let api = databaseAPI(db, settings: CanopySettings(modifyRecordsBehavior: .simulatedFail(0.1)))
     do {
-      let _ = try await api.modifyRecords(
-        saving: [record],
-        deleting: nil,
-        perRecordProgressBlock: nil,
-        qualityOfService: .default
-      ).get()
+      let _ = try await api.modifyRecords(saving: [record]).get()
     } catch {
       XCTAssertTrue(error is CKRecordError)
     }
@@ -191,9 +171,7 @@ final class ModifyRecordsTests: XCTestCase {
     do {
       let _ = try await api.modifyRecords(
         saving: [record],
-        deleting: [recordIDToDelete],
-        perRecordProgressBlock: nil,
-        qualityOfService: .default
+        deleting: [recordIDToDelete]
       ).get()
     } catch {
       XCTAssertTrue(error is CKRecordError)
@@ -239,9 +217,7 @@ final class ModifyRecordsTests: XCTestCase {
     
     let result = try! await databaseAPI.modifyRecords(
       saving: recordsToSave,
-      deleting: [recordIDToDelete],
-      perRecordProgressBlock: nil,
-      qualityOfService: .default
+      deleting: [recordIDToDelete]
     ).get()
     
     XCTAssertEqual(result.savedRecords.count, 10)
@@ -278,9 +254,7 @@ final class ModifyRecordsTests: XCTestCase {
     do {
       let _ = try await databaseAPI.modifyRecords(
         saving: recordsToSave,
-        deleting: [recordIDToDelete],
-        perRecordProgressBlock: nil,
-        qualityOfService: .default
+        deleting: [recordIDToDelete]
       ).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.limitExceeded)))
@@ -309,9 +283,7 @@ final class ModifyRecordsTests: XCTestCase {
     
     let result = try! await databaseAPI.modifyRecords(
       saving: recordsToSave,
-      deleting: [],
-      perRecordProgressBlock: nil,
-      qualityOfService: .default
+      deleting: []
     ).get()
     
     XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0]))
@@ -341,9 +313,7 @@ final class ModifyRecordsTests: XCTestCase {
     do {
       let _ = try await databaseAPI.modifyRecords(
         saving: recordsToSave,
-        deleting: [],
-        perRecordProgressBlock: nil,
-        qualityOfService: .default
+        deleting: []
       ).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.zoneBusy, userInfo: [CKErrorRetryAfterKey: 0.2])))
