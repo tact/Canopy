@@ -26,7 +26,7 @@ dependencies: [
 To fetch a record from CloudKit private database which has the record ID `exampleID`, use this Canopy call:
 
 ```swift
-let result = await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecords(with[CKRecord.ID(recordName: "exampleID")])
+let result = await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecords(with: [CKRecord.ID(recordName: "exampleID")])
 switch result {
   case .success(let fetchRecordsResult):
     // handle fetchRecordsResult. Examine its foundRecords and notFoundRecordIDs properties.
