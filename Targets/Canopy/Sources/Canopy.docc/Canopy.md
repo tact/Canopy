@@ -4,6 +4,8 @@ Write better, testable CloudKit apps.
 
 Canopy helps you write better, more testable CloudKit apps. It isolates the CloudKit dependency so you can write fast and reliable tests for your CloudKit-related features, and implements standard CloudKit-related behaviors.
 
+Canopy was built, and continues to be built, as part of [Tact app.](https://justtact.com)
+
 Canopy source and installation instructions, including the source for this site, are [available on GitHub.](https://github.com/Tact/Canopy)
 
 ## Topics
