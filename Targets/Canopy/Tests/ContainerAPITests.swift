@@ -160,7 +160,7 @@ final class ContainerAPITests: XCTestCase {
     )
     
     let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
-    let participants = try? await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2], qualityOfService: .default).get()
+    let participants = try? await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     XCTAssertEqual(participants, [CKShare.Participant.mock, CKShare.Participant.mock])
   }
   
@@ -190,7 +190,7 @@ final class ContainerAPITests: XCTestCase {
     
     let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
-      let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2], qualityOfService: .default).get()
+      let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.badContainer)))
     }
@@ -222,7 +222,7 @@ final class ContainerAPITests: XCTestCase {
     
     let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
-      let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2], qualityOfService: .default).get()
+      let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
@@ -246,7 +246,7 @@ final class ContainerAPITests: XCTestCase {
     )
     
     let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
-    let shares = try! await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock], qualityOfService: .default).get()
+    let shares = try! await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     XCTAssertEqual(shares.count, 2)
   }
   
@@ -269,7 +269,7 @@ final class ContainerAPITests: XCTestCase {
     
     let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
-      let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock], qualityOfService: .default).get()
+      let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.networkUnavailable)))
     }
@@ -294,7 +294,7 @@ final class ContainerAPITests: XCTestCase {
     
     let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
-      let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock], qualityOfService: .default).get()
+      let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     } catch {
       XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.badContainer)))
     }
