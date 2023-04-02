@@ -26,12 +26,13 @@ dependencies: [
 To fetch a record from CloudKit private database which has the record ID `exampleID`, use this Canopy call:
 
 ```swift
-let record = await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecords(
-    with recordIDs: [CKRecord.ID(recordName: "exampleID")],
-    desiredKeys: nil,
-    perRecordIDProgressBlock: nil,
-    qualityOfService: .userInitiated
-  ).foundRecords.first
+let result = await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecords(with[CKRecord.ID(recordName: "exampleID")])
+switch result {
+  case .success(let fetchRecordsResult):
+    // handle fetchRecordsResult. Examine its foundRecords and notFoundRecordIDs properties.
+  case .failure(let ckRecordError):
+    // handle error
+}
 ```
 
 ### Using throwing return type
