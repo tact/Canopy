@@ -6,9 +6,9 @@ private enum CanopyKey: DependencyKey {
   static let previewValue: CanopyType = MockCanopy()
 }
 
-extension DependencyValues {
+public extension DependencyValues {
   /// Canopy packaged as CloudKit dependency via swift-dependencies.
-  public var cloudKit: CanopyType {
+  var cloudKit: CanopyType {
     get { self[CanopyKey.self] }
     set { self[CanopyKey.self] = newValue }
   }

@@ -1,5 +1,5 @@
-import CloudKit
 import CanopyTypes
+import CloudKit
 
 extension ReplayingMockCKDatabase {
   struct FetchDatabaseChangesSuccess: Codable {
@@ -10,27 +10,26 @@ extension ReplayingMockCKDatabase {
   public struct FetchDatabaseChangesResult: Codable {
     let codableResult: CodableResult<FetchDatabaseChangesSuccess, CanopyError>
     
-    public static let success = FetchDatabaseChangesResult.init(result: .success((serverChangeToken: CKServerChangeToken.mock, moreComing: false)))
+    public static let success = FetchDatabaseChangesResult(result: .success((serverChangeToken: CKServerChangeToken.mock, moreComing: false)))
     
     public init(
       result: Result<(serverChangeToken: CKServerChangeToken, moreComing: Bool), Error>
     ) {
       switch result {
-      case .success(let tuple): codableResult = .success(.init(serverChangeTokenArchive: CloudKitServerChangeTokenArchive(token: tuple.serverChangeToken), moreComing: tuple.moreComing))
-      case .failure(let error): codableResult = .failure(CanopyError(from: error))
+      case let .success(tuple): self.codableResult = .success(.init(serverChangeTokenArchive: CloudKitServerChangeTokenArchive(token: tuple.serverChangeToken), moreComing: tuple.moreComing))
+      case let .failure(error): self.codableResult = .failure(CanopyError(from: error))
       }
     }
     
     var result: Result<(serverChangeToken: CKServerChangeToken, moreComing: Bool), Error> {
       switch codableResult {
-      case .failure(let error): return .failure(error.ckError)
-      case .success(let success): return .success((serverChangeToken: success.serverChangeTokenArchive.token, moreComing: success.moreComing))
+      case let .failure(error): return .failure(error.ckError)
+      case let .success(success): return .success((serverChangeToken: success.serverChangeTokenArchive.token, moreComing: success.moreComing))
       }
     }
   }
   
   public struct FetchDatabaseChangesOperationResult: Codable {
-    
     /// A successful result that indicates no changes.
     ///
     /// Useful to use in tests and previews where you don’t need to inject any results, to save some typing.
@@ -64,7 +63,6 @@ extension ReplayingMockCKDatabase {
     operationResult: FetchDatabaseChangesOperationResult,
     sleep: Float?
   ) async {
-
     if let sleep {
       try? await Task.sleep(nanoseconds: UInt64(sleep * Float(NSEC_PER_SEC)))
     }

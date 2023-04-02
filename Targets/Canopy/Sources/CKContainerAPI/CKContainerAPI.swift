@@ -2,7 +2,6 @@ import CanopyTypes
 import CloudKit
 
 actor CKContainerAPI: CKContainerAPIType {
-  
   let container: CKContainerType
   var statusContinuation: AsyncStream<CKAccountStatus>.Continuation?
   
@@ -16,7 +15,6 @@ actor CKContainerAPI: CKContainerAPIType {
   }
   
   var accountStatusStream: Result<AsyncStream<CKAccountStatus>, CKContainerAPIError> {
-    
     // I tried to have several streams, by creating a new one and capturing its continuation
     // into a set of continuations every time a stream is requested.
     // Got nondeterministic test results with multiple streams, so for now, only one stream.
@@ -63,8 +61,8 @@ actor CKContainerAPI: CKContainerAPIType {
   }
   
   private func emitStatus() async {
-    guard let status = try? await self.accountStatus.get() else { return }
-    self.statusContinuation?.yield(status)
+    guard let status = try? await accountStatus.get() else { return }
+    statusContinuation?.yield(status)
   }
   
   nonisolated func fetchShareParticipants(
@@ -77,18 +75,18 @@ actor CKContainerAPI: CKContainerAPIType {
       let fetchParticipantsOperation = CKFetchShareParticipantsOperation(userIdentityLookupInfos: lookupInfos)
       fetchParticipantsOperation.qualityOfService = qualityOfService
       
-      fetchParticipantsOperation.perShareParticipantResultBlock = { lookupInfo, result in
+      fetchParticipantsOperation.perShareParticipantResultBlock = { _, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           recordError = CKRecordError(from: error)
-        case .success(let participant):
+        case let .success(participant):
           participants.append(participant)
         }
       }
       
       fetchParticipantsOperation.fetchShareParticipantsResultBlock = { result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(CKRecordError(from: error)))
         case .success:
           if let recordError {
@@ -112,11 +110,11 @@ actor CKContainerAPI: CKContainerAPIType {
       let acceptSharesOperation = CKAcceptSharesOperation(shareMetadatas: metadatas)
       acceptSharesOperation.qualityOfService = qualityOfService
       
-      acceptSharesOperation.perShareResultBlock = { shareMetadata, result in
+      acceptSharesOperation.perShareResultBlock = { _, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           recordError = CKRecordError(from: error)
-        case .success(let acceptedShare):
+        case let .success(acceptedShare):
           acceptedShares.append(acceptedShare)
         }
       }
@@ -130,7 +128,7 @@ actor CKContainerAPI: CKContainerAPIType {
           } else {
             continuation.resume(returning: .success(acceptedShares))
           }
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(CKRecordError(from: error)))
         }
       }

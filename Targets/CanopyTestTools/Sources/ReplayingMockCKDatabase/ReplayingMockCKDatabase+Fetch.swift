@@ -1,26 +1,26 @@
-import CloudKit
 import CanopyTypes
+import CloudKit
 
-extension ReplayingMockCKDatabase {
-  
-  public struct FetchResult: Codable {
+public extension ReplayingMockCKDatabase {
+  struct FetchResult: Codable {
     let codableResult: CodableResult<CodableVoid, CKRecordError>
     
     public init(result: Result<Void, Error>) {
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKRecordError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKRecordError(from: error))
       }
     }
     
     var result: Result<Void, Error> {
       switch codableResult {
       case .success: return .success(())
-      case .failure(let error): return .failure(error.ckError)
+      case let .failure(error): return .failure(error.ckError)
       }
     }
   }
-  public struct FetchOperationResult: Codable {
+
+  struct FetchOperationResult: Codable {
     public let fetchRecordResults: [QueryRecordResult]
     public let fetchResult: FetchResult
     

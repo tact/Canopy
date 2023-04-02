@@ -15,14 +15,14 @@ public struct CloudKitShareMetadataArchive: Codable {
 
   public init(shareMetadatas: [CKShare.Metadata]) {
     guard !shareMetadatas.isEmpty else {
-      data = Data()
+      self.data = Data()
       return
     }
 
     do {
-      data = try NSKeyedArchiver.archivedData(withRootObject: shareMetadatas, requiringSecureCoding: true)
+      self.data = try NSKeyedArchiver.archivedData(withRootObject: shareMetadatas, requiringSecureCoding: true)
     } catch {
-      data = Data()
+      self.data = Data()
     }
   }
 }

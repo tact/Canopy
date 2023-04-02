@@ -10,6 +10,6 @@ public struct CloudKitSubscriptionArchive: Codable {
   }
 
   public init(subscription: CKSubscription) {
-    data = try! NSKeyedArchiver.archivedData(withRootObject: subscription, requiringSecureCoding: true)
+    self.data = try! NSKeyedArchiver.archivedData(withRootObject: subscription, requiringSecureCoding: true)
   }
 }

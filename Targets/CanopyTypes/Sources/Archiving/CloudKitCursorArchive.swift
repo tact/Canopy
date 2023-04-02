@@ -17,12 +17,12 @@ public struct CloudKitCursorArchive: Codable {
   public init(cursor: CKQueryOperation.Cursor?) {
     if let cursor {
       do {
-        data = try NSKeyedArchiver.archivedData(withRootObject: cursor, requiringSecureCoding: true)
+        self.data = try NSKeyedArchiver.archivedData(withRootObject: cursor, requiringSecureCoding: true)
       } catch {
-        data = Data()
+        self.data = Data()
       }
     } else {
-      data = Data()
+      self.data = Data()
     }
   }
 }

@@ -1,6 +1,6 @@
 @testable import Canopy
-import CanopyTypes
 import CanopyTestTools
+import CanopyTypes
 import CloudKit
 import Foundation
 import XCTest
@@ -27,8 +27,8 @@ final class FetchDatabaseChangesTests: XCTestCase {
     XCTAssertEqual(result, FetchDatabaseChangesResult(
       changedRecordZoneIDs: [changedRecordZoneID1, changedRecordZoneID2],
       deletedRecordZoneIDs: [deletedRecordZoneID],
-      purgedRecordZoneIDs: [purgedRecordZoneID])
-    )
+      purgedRecordZoneIDs: [purgedRecordZoneID]
+    ))
     XCTAssertEqual(testTokenStore.getTokenForDatabaseScopeCalls, 1)
     XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 1)
   }
@@ -93,8 +93,8 @@ final class FetchDatabaseChangesTests: XCTestCase {
     XCTAssertEqual(result, FetchDatabaseChangesResult(
       changedRecordZoneIDs: [changedRecordZoneID1],
       deletedRecordZoneIDs: [],
-      purgedRecordZoneIDs: [])
-    )
+      purgedRecordZoneIDs: []
+    ))
     XCTAssertEqual(testTokenStore.getTokenForDatabaseScopeCalls, 1)
     XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 1)
   }

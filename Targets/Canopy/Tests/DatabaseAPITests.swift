@@ -1,6 +1,6 @@
 @testable import Canopy
-import CanopyTypes
 import CanopyTestTools
+import CanopyTypes
 import CloudKit
 import Foundation
 import XCTest

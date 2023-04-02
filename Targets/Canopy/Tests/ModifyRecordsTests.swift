@@ -9,7 +9,7 @@ final class ModifyRecordsTests: XCTestCase {
   }
   
   private func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
-    stride(from: startIndex, to: endIndex+1, by: 1).map { i in
+    stride(from: startIndex, to: endIndex + 1, by: 1).map { i in
       CKRecord(recordType: "TestRecord", recordID: .init(recordName: "id\(i)"))
     }
   }
@@ -245,7 +245,7 @@ final class ModifyRecordsTests: XCTestCase {
     ).get()
     
     XCTAssertEqual(result.savedRecords.count, 10)
-    for index in 0..<result.savedRecords.count {
+    for index in 0 ..< result.savedRecords.count {
       XCTAssertTrue(result.savedRecords[index].isEqualToRecord(recordsToSave[index]))
     }
     XCTAssertEqual(result.deletedRecordIDs.count, 1)

@@ -1,19 +1,18 @@
-import CloudKit
 import CanopyTypes
+import CloudKit
 
 // Types and functionality for CKQueryOperation results.
-extension ReplayingMockCKDatabase {
+public extension ReplayingMockCKDatabase {
   /// Result for one record. recordMatchedBlock is called with this. Also used by ReplayingMockCKDatabase+Fetch.
-  public struct QueryRecordResult: Codable {
-    
+  struct QueryRecordResult: Codable {
     let recordIDArchive: CloudKitRecordIDArchive
     let codableResult: CodableResult<CloudKitRecordArchive, CKRecordError>
     
     public init(recordID: CKRecord.ID, result: Result<CKRecord, Error>) {
       self.recordIDArchive = CloudKitRecordIDArchive(recordIDs: [recordID])
       switch result {
-      case .success(let record): codableResult = .success(CloudKitRecordArchive(records: [record]))
-      case .failure(let error): codableResult = .failure(CKRecordError(from: error))
+      case let .success(record): self.codableResult = .success(CloudKitRecordArchive(records: [record]))
+      case let .failure(error): self.codableResult = .failure(CKRecordError(from: error))
       }
     }
     
@@ -23,39 +22,39 @@ extension ReplayingMockCKDatabase {
     
     var result: Result<CKRecord, Error> {
       switch codableResult {
-      case .success(let recordArchive): return .success(recordArchive.records.first!)
-      case .failure(let error): return .failure(error.ckError)
+      case let .success(recordArchive): return .success(recordArchive.records.first!)
+      case let .failure(error): return .failure(error.ckError)
       }
     }
   }
 
   /// Record for the whole query. queryResultBlock is called with this.
-  public struct QueryResult: Codable {
+  struct QueryResult: Codable {
     let codableResult: CodableResult<CloudKitCursorArchive?, CKRecordError>
     
     public init(result: Result<CKQueryOperation.Cursor?, Error>) {
       switch result {
-      case .success(let maybeCursor):
-        codableResult = .success(CloudKitCursorArchive(cursor: maybeCursor))
-      case .failure(let error):
-        codableResult = .failure(CKRecordError(from: error))
+      case let .success(maybeCursor):
+        self.codableResult = .success(CloudKitCursorArchive(cursor: maybeCursor))
+      case let .failure(error):
+        self.codableResult = .failure(CKRecordError(from: error))
       }
     }
     
     var result: Result<CKQueryOperation.Cursor?, Error> {
       switch codableResult {
-      case .success(let archive):
+      case let .success(archive):
         if let archive {
           return .success(archive.cursor)
         } else {
           return .success(nil)
         }
-      case .failure(let error): return .failure(error.ckError)
+      case let .failure(error): return .failure(error.ckError)
       }
     }
   }
   
-  public struct QueryOperationResult: Codable {
+  struct QueryOperationResult: Codable {
     public let queryRecordResults: [QueryRecordResult]
     public let queryResult: QueryResult
     

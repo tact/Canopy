@@ -15,20 +15,20 @@ public struct CloudKitLookupInfoArchive: Codable {
 
   public init(lookupInfos: [CKUserIdentity.LookupInfo]) {
     guard !lookupInfos.isEmpty else {
-      data = Data()
+      self.data = Data()
       return
     }
 
     do {
-      data = try NSKeyedArchiver.archivedData(withRootObject: lookupInfos, requiringSecureCoding: true)
+      self.data = try NSKeyedArchiver.archivedData(withRootObject: lookupInfos, requiringSecureCoding: true)
     } catch {
-      data = Data()
+      self.data = Data()
     }
   }
 }
 
-extension CloudKitLookupInfoArchive {
-  public static func + (lhs: CloudKitLookupInfoArchive, rhs: CloudKitLookupInfoArchive) -> CloudKitLookupInfoArchive {
+public extension CloudKitLookupInfoArchive {
+  static func + (lhs: CloudKitLookupInfoArchive, rhs: CloudKitLookupInfoArchive) -> CloudKitLookupInfoArchive {
     CloudKitLookupInfoArchive(lookupInfos: lhs.lookupInfos + rhs.lookupInfos)
   }
 }

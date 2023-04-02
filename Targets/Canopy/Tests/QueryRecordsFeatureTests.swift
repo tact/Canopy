@@ -1,13 +1,13 @@
 @testable import Canopy
-import CanopyTypes
 import CanopyTestTools
+import CanopyTypes
 import CloudKit
 import Foundation
 import XCTest
 
 final class QueryRecordsFeatureTests: XCTestCase {
   func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
-    stride(from: startIndex, to: endIndex+1, by: 1).map { i in
+    stride(from: startIndex, to: endIndex + 1, by: 1).map { i in
       CKRecord(recordType: "TestRecord", recordID: .init(recordName: "id\(i)"))
     }
   }
@@ -19,9 +19,9 @@ final class QueryRecordsFeatureTests: XCTestCase {
         .query(
           .init(
             queryRecordResults:
-              records(startIndex: 1, endIndex: 10).map {
-                ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
-              },
+            records(startIndex: 1, endIndex: 10).map {
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+            },
             queryResult: .init(result: .success(nil))
           )
         )
@@ -36,11 +36,9 @@ final class QueryRecordsFeatureTests: XCTestCase {
     XCTAssertEqual(results.count, 10)
     let operationsRun = await db.operationsRun
     XCTAssertEqual(operationsRun, 1)
-    
   }
   
   func test_simple_nested_query() async {
-    
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -72,11 +70,9 @@ final class QueryRecordsFeatureTests: XCTestCase {
     XCTAssertEqual(operationsRun, 2)
     XCTAssertEqual(records[0].recordID.recordName, "id1")
     XCTAssertEqual(records[19].recordID.recordName, "id20")
-    
   }
   
   func test_depth3_query() async {
-    
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -121,7 +117,6 @@ final class QueryRecordsFeatureTests: XCTestCase {
   }
   
   func test_task_cancellation_query() async {
-    
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -145,7 +140,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
     )
     
     let task = Task {
-      return await QueryRecords.with(
+      await QueryRecords.with(
         query,
         recordZoneID: nil,
         database: db
@@ -171,9 +166,9 @@ final class QueryRecordsFeatureTests: XCTestCase {
         .query(
           .init(
             queryRecordResults:
-              records(startIndex: 1, endIndex: 10).map {
-                ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .failure(CKError(CKError.Code.requestRateLimited)))
-              },
+            records(startIndex: 1, endIndex: 10).map {
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .failure(CKError(CKError.Code.requestRateLimited)))
+            },
             queryResult: .init(result: .success(nil))
           )
         )

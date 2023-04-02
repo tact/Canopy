@@ -23,14 +23,14 @@ public struct CloudKitRecordZoneIDArchive: Codable {
 
   public init(zoneIDs: [CKRecordZone.ID]) {
     guard !zoneIDs.isEmpty else {
-      data = Data()
+      self.data = Data()
       return
     }
 
     do {
-      data = try NSKeyedArchiver.archivedData(withRootObject: zoneIDs, requiringSecureCoding: true)
+      self.data = try NSKeyedArchiver.archivedData(withRootObject: zoneIDs, requiringSecureCoding: true)
     } catch {
-      data = Data()
+      self.data = Data()
     }
   }
 }

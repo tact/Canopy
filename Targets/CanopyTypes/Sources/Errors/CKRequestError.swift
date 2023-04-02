@@ -22,17 +22,17 @@ public struct CKRequestError: CKTransactionError, Codable, Equatable {
   }
 
   public init(from error: Error) {
-    errorDump = String(describing: error)
-    localizedDescription = error.localizedDescription
+    self.errorDump = String(describing: error)
+    self.localizedDescription = error.localizedDescription
 
     if let ckError = error as? CKError {
-      code = ckError.errorCode
-      retryAfterSeconds = ckError.retryAfterSeconds ?? 0
+      self.code = ckError.errorCode
+      self.retryAfterSeconds = ckError.retryAfterSeconds ?? 0
     } else {
       // Probably no need for this, just being complete about it
       let nsError = error as NSError
-      code = nsError.code
-      retryAfterSeconds = (nsError.userInfo[CKErrorRetryAfterKey] as? NSNumber)?.doubleValue ?? 0
+      self.code = nsError.code
+      self.retryAfterSeconds = (nsError.userInfo[CKErrorRetryAfterKey] as? NSNumber)?.doubleValue ?? 0
     }
   }
   
@@ -44,11 +44,11 @@ public struct CKRequestError: CKTransactionError, Codable, Equatable {
           CKErrorRetryAfterKey: retryAfterSeconds
         ]
       )
-    : CKError(ckErrorCode!)
+      : CKError(ckErrorCode!)
   }
   
   public static func == (lhs: CKRequestError, rhs: CKRequestError) -> Bool {
     lhs.code == rhs.code &&
-    lhs.retryAfterSeconds == rhs.retryAfterSeconds
+      lhs.retryAfterSeconds == rhs.retryAfterSeconds
   }
 }

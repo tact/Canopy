@@ -1,6 +1,6 @@
 @testable import Canopy
-import CanopyTypes
 import CanopyTestTools
+import CanopyTypes
 import CloudKit
 import Foundation
 import XCTest
@@ -65,7 +65,6 @@ final class ContainerAPITests: XCTestCase {
     let result3 = try! await containerAPI.accountStatus.get()
     XCTAssertEqual(result2, .available)
     XCTAssertEqual(result3, .available)
-
   }
   
   func test_accountStatus_failure() async {
@@ -137,7 +136,6 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_fetch_share_participants_success() async {
-    
     let lookupInfo1 = CKUserIdentity.LookupInfo(emailAddress: "email@example.com")
     let lookupInfo2 = CKUserIdentity.LookupInfo(emailAddress: "email2@example.com")
 
