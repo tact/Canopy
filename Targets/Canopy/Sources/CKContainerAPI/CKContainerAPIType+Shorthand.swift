@@ -1,6 +1,7 @@
 import CloudKit
 
 public extension CKContainerAPIType {
+  /// Shorthand fetchShareParticipants.
   func fetchShareParticipants(
     with lookupInfos: [CKUserIdentity.LookupInfo],
     qualityOfService: QualityOfService = .default
@@ -11,6 +12,7 @@ public extension CKContainerAPIType {
     )
   }
   
+  /// Shorthand acceptShares.
   func acceptShares(
     with metadatas: [CKShare.Metadata],
     qualityOfService: QualityOfService = .default

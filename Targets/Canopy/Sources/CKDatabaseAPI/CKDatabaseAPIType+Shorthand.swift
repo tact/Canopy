@@ -2,6 +2,7 @@ import CloudKit
 
 /// Shorthand versions of the functions with default parameter values.
 public extension CKDatabaseAPIType {
+  /// FIXME Shorthand fetchRecords.
   func fetchRecords(
     with recordIDs: [CKRecord.ID],
     desiredKeys: [CKRecord.FieldKey]? = nil,
@@ -16,6 +17,7 @@ public extension CKDatabaseAPIType {
     )
   }
   
+  /// FIXME Shorthand queryRecords.
   func queryRecords(
     with query: CKQuery,
     in zoneID: CKRecordZone.ID?,
@@ -28,6 +30,7 @@ public extension CKDatabaseAPIType {
     )
   }
   
+  /// FIXME Shorthand modifyRecords.
   func modifyRecords(
     saving recordsToSave: [CKRecord]? = nil,
     deleting recordIDsToDelete: [CKRecord.ID]? = nil,
@@ -42,6 +45,7 @@ public extension CKDatabaseAPIType {
     )
   }
   
+  /// FIXME Shorthand deleteRecords.
   func deleteRecords(
     with query: CKQuery,
     in zoneID: CKRecordZone.ID?,
@@ -54,6 +58,7 @@ public extension CKDatabaseAPIType {
     )
   }
 
+  /// FIXME Shorthand modifyZones
   func modifyZones(
     saving recordZonesToSave: [CKRecordZone]? = nil,
     deleting recordZoneIDsToDelete: [CKRecordZone.ID]? = nil,
@@ -66,6 +71,7 @@ public extension CKDatabaseAPIType {
     )
   }
 
+  /// FIXME shorthand fetchZones
   func fetchZones(
     with recordZoneIDs: [CKRecordZone.ID],
     qualityOfService: QualityOfService = .default
@@ -76,12 +82,14 @@ public extension CKDatabaseAPIType {
     )
   }
   
+  /// FIXME shorthand fetchAllZones
   func fetchAllZones(
     qualityOfService: QualityOfService = .default
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
     await fetchAllZones(qualityOfService: qualityOfService)
   }
   
+  /// FIXME shorthand modifySubscriptions
   func modifySubscriptions(
     saving subscriptionsToSave: [CKSubscription]? = nil,
     deleting subscriptionIDsToDelete: [CKSubscription.ID]? = nil,
@@ -94,12 +102,14 @@ public extension CKDatabaseAPIType {
     )
   }
   
+  /// FIXME shorthand fetchDatabaseChanges
   func fetchDatabaseChanges(
     qualityOfService: QualityOfService = .default
   ) async -> Result<FetchDatabaseChangesResult, CanopyError> {
     await fetchDatabaseChanges(qualityOfService: qualityOfService)
   }
 
+  /// FIXME shorthand fetchZoneChanges
   func fetchZoneChanges(
     recordZoneIDs: [CKRecordZone.ID],
     fetchMethod: FetchZoneChangesMethod = .changeTokenAndAllData,
