@@ -1,49 +1,46 @@
-import CloudKit
 import CanopyTypes
+import CloudKit
 
-extension ReplayingMockCKDatabase {
-  
-  public struct FetchZoneResult: Codable {
-    
+public extension ReplayingMockCKDatabase {
+  struct FetchZoneResult: Codable {
     public let zoneIDArchive: CloudKitRecordZoneIDArchive
     let codableResult: CodableResult<CloudKitRecordZoneArchive, CKRecordZoneError>
     
     public init(zoneID: CKRecordZone.ID, result: Result<CKRecordZone, Error>) {
       self.zoneIDArchive = CloudKitRecordZoneIDArchive(zoneIDs: [zoneID])
       switch result {
-      case .success(let zone): codableResult = .success(CloudKitRecordZoneArchive(zones: [zone]))
-      case .failure(let error): codableResult = .failure(CKRecordZoneError(from: error))
+      case let .success(zone): self.codableResult = .success(CloudKitRecordZoneArchive(zones: [zone]))
+      case let .failure(error): self.codableResult = .failure(CKRecordZoneError(from: error))
       }
     }
 
     public var result: Result<CKRecordZone, Error> {
       switch codableResult {
-      case .success(let zoneArchive): return .success(zoneArchive.zones.first!)
-      case .failure(let error): return .failure(error.ckError)
+      case let .success(zoneArchive): return .success(zoneArchive.zones.first!)
+      case let .failure(error): return .failure(error.ckError)
       }
     }
   }
   
-  public struct FetchZonesResult: Codable {
-    
+  struct FetchZonesResult: Codable {
     let codableResult: CodableResult<CodableVoid, CKRecordZoneError>
     
     public init(result: Result<Void, Error>) {
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKRecordZoneError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKRecordZoneError(from: error))
       }
     }
 
     var result: Result<Void, Error> {
       switch codableResult {
       case .success: return .success(())
-      case .failure(let zoneError): return .failure(zoneError.ckError)
+      case let .failure(zoneError): return .failure(zoneError.ckError)
       }
     }
   }
   
-  public struct FetchZonesOperationResult: Codable {
+  struct FetchZonesOperationResult: Codable {
     let fetchZoneResults: [FetchZoneResult]
     let fetchZonesResult: FetchZonesResult
     

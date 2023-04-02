@@ -23,14 +23,14 @@ public struct CloudKitShareArchive: Codable {
 
   public init(shares: [CKShare]) {
     guard !shares.isEmpty else {
-      data = Data()
+      self.data = Data()
       return
     }
 
     do {
-      data = try NSKeyedArchiver.archivedData(withRootObject: shares, requiringSecureCoding: true)
+      self.data = try NSKeyedArchiver.archivedData(withRootObject: shares, requiringSecureCoding: true)
     } catch {
-      data = Data()
+      self.data = Data()
     }
   }
 }

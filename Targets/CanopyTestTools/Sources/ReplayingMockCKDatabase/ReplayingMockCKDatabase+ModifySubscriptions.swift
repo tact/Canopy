@@ -1,68 +1,66 @@
-import CloudKit
 import CanopyTypes
+import CloudKit
 
-extension ReplayingMockCKDatabase {
-  
-  public struct SavedSubscriptionResult: Codable {
+public extension ReplayingMockCKDatabase {
+  struct SavedSubscriptionResult: Codable {
     let subscriptionID: CKSubscription.ID
     let codableResult: CodableResult<CloudKitSubscriptionArchive, CKSubscriptionError>
     
     public init(subscriptionID: CKSubscription.ID, result: Result<CKSubscription, Error>) {
       self.subscriptionID = subscriptionID
       switch result {
-      case .success(let subscription): codableResult = .success(CloudKitSubscriptionArchive(subscription: subscription))
-      case .failure(let error): codableResult = .failure(CKSubscriptionError(from: error))
+      case let .success(subscription): self.codableResult = .success(CloudKitSubscriptionArchive(subscription: subscription))
+      case let .failure(error): self.codableResult = .failure(CKSubscriptionError(from: error))
       }
     }
 
     var result: Result<CKSubscription, Error> {
       switch codableResult {
-      case .success(let subscriptionArchive): return .success(subscriptionArchive.subscription)
-      case .failure(let subscriptionError): return .failure(subscriptionError.ckError)
+      case let .success(subscriptionArchive): return .success(subscriptionArchive.subscription)
+      case let .failure(subscriptionError): return .failure(subscriptionError.ckError)
       }
     }
-
   }
   
-  public struct DeletedSubscriptionIDResult: Codable {
+  struct DeletedSubscriptionIDResult: Codable {
     let subscriptionID: CKSubscription.ID
     let codableResult: CodableResult<CodableVoid, CKSubscriptionError>
     
     public init(subscriptionID: CKSubscription.ID, result: Result<Void, Error>) {
       self.subscriptionID = subscriptionID
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKSubscriptionError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKSubscriptionError(from: error))
       }
     }
 
     var result: Result<Void, Error> {
       switch codableResult {
       case .success: return .success(())
-      case .failure(let subscriptionError): return .failure(subscriptionError.ckError)
+      case let .failure(subscriptionError): return .failure(subscriptionError.ckError)
       }
     }
   }
   
-  public struct ModifySubscriptionsResult: Codable {
+  struct ModifySubscriptionsResult: Codable {
     let codableResult: CodableResult<CodableVoid, CKSubscriptionError>
 
     public init(result: Result<Void, Error>) {
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKSubscriptionError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKSubscriptionError(from: error))
       }
     }
     
     var result: Result<Void, Error> {
       switch codableResult {
       case .success: return .success(())
-      case .failure(let subscriptionError): return .failure(subscriptionError.ckError)
+      case let .failure(subscriptionError): return .failure(subscriptionError.ckError)
       }
     }
   }
   
-  public struct ModifySubscriptionsOperationResult: Codable {
+  struct ModifySubscriptionsOperationResult: Codable {
     public let savedSubscriptionResults: [SavedSubscriptionResult]
     public let deletedSubscriptionIDResults: [DeletedSubscriptionIDResult]
     public let modifySubscriptionsResult: ModifySubscriptionsResult

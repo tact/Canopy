@@ -1,28 +1,28 @@
-import CloudKit
 import CanopyTypes
+import CloudKit
 
-extension ReplayingMockCKDatabase {
-  public struct RecordWasChangedInZoneResult: Codable {
+public extension ReplayingMockCKDatabase {
+  struct RecordWasChangedInZoneResult: Codable {
     let recordIDArchive: CloudKitRecordIDArchive
     let codableResult: CodableResult<CloudKitRecordArchive, CKRequestError>
     
     public init(recordID: CKRecord.ID, result: Result<CKRecord, Error>) {
       self.recordIDArchive = CloudKitRecordIDArchive(recordIDs: [recordID])
       switch result {
-      case .success(let record): codableResult = .success(CloudKitRecordArchive(records: [record]))
-      case .failure(let error): codableResult = .failure(CKRequestError(from: error))
+      case let .success(record): self.codableResult = .success(CloudKitRecordArchive(records: [record]))
+      case let .failure(error): self.codableResult = .failure(CKRequestError(from: error))
       }
     }
     
     var result: Result<CKRecord, Error> {
       switch codableResult {
-      case .success(let recordArchive): return .success(recordArchive.records.first!)
-      case .failure(let requestError): return .failure(requestError.ckError)
+      case let .success(recordArchive): return .success(recordArchive.records.first!)
+      case let .failure(requestError): return .failure(requestError.ckError)
       }
     }
   }
   
-  public struct RecordWithIDWasDeletedInZoneResult: Codable {
+  struct RecordWithIDWasDeletedInZoneResult: Codable {
     let recordIDArchive: CloudKitRecordIDArchive
     let recordType: CKRecord.RecordType
     
@@ -32,13 +32,13 @@ extension ReplayingMockCKDatabase {
     }
   }
   
-  struct OneZoneFetchResultSuccess: Codable {
+  internal struct OneZoneFetchResultSuccess: Codable {
     let serverChangeTokenArchive: CloudKitServerChangeTokenArchive
     let clientChangeTokenData: Data?
     let moreComing: Bool
   }
   
-  public struct OneZoneFetchResult: Codable {
+  struct OneZoneFetchResult: Codable {
     let zoneIDArchive: CloudKitRecordZoneIDArchive
     let codableResult: CodableResult<OneZoneFetchResultSuccess, CKRequestError>
 
@@ -58,45 +58,45 @@ extension ReplayingMockCKDatabase {
     public init(zoneID: CKRecordZone.ID, result: Result<(serverChangeToken: CKServerChangeToken, clientChangeTokenData: Data?, moreComing: Bool), Error>) {
       self.zoneIDArchive = CloudKitRecordZoneIDArchive(zoneIDs: [zoneID])
       switch result {
-      case .success(let tuple): codableResult = .success(
-        .init(
-          serverChangeTokenArchive: CloudKitServerChangeTokenArchive(token: tuple.serverChangeToken),
-          clientChangeTokenData: tuple.clientChangeTokenData,
-          moreComing: tuple.moreComing
+      case let .success(tuple): self.codableResult = .success(
+          .init(
+            serverChangeTokenArchive: CloudKitServerChangeTokenArchive(token: tuple.serverChangeToken),
+            clientChangeTokenData: tuple.clientChangeTokenData,
+            moreComing: tuple.moreComing
+          )
         )
-      )
-      case .failure(let error):
-        codableResult = .failure(CKRequestError(from: error))
+      case let .failure(error):
+        self.codableResult = .failure(CKRequestError(from: error))
       }
     }
 
     var result: Result<(serverChangeToken: CKServerChangeToken, clientChangeTokenData: Data?, moreComing: Bool), Error> {
       switch codableResult {
-      case .failure(let error): return .failure(error.ckError)
-      case .success(let success): return .success((serverChangeToken: success.serverChangeTokenArchive.token, clientChangeTokenData: success.clientChangeTokenData, moreComing: success.moreComing))
+      case let .failure(error): return .failure(error.ckError)
+      case let .success(success): return .success((serverChangeToken: success.serverChangeTokenArchive.token, clientChangeTokenData: success.clientChangeTokenData, moreComing: success.moreComing))
       }
     }
   }
   
-  public struct FetchZoneChangesResult: Codable {
+  struct FetchZoneChangesResult: Codable {
     let codableResult: CodableResult<CodableVoid, CKRequestError>
         
     public init(result: Result<Void, Error>) {
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKRequestError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKRequestError(from: error))
       }
     }
     
     var result: Result<Void, Error> {
       switch codableResult {
       case .success: return .success(())
-      case .failure(let error): return .failure(error.ckError)
+      case let .failure(error): return .failure(error.ckError)
       }
     }
   }
   
-  public struct FetchZoneChangesOperationResult: Codable {
+  struct FetchZoneChangesOperationResult: Codable {
     let recordWasChangedInZoneResults: [RecordWasChangedInZoneResult]
     let recordWithIDWasDeletedInZoneResults: [RecordWithIDWasDeletedInZoneResult]
     let oneZoneFetchResults: [OneZoneFetchResult]
@@ -120,7 +120,6 @@ extension ReplayingMockCKDatabase {
     operationResult: FetchZoneChangesOperationResult,
     sleep: Float?
   ) async {
-    
     if let sleep {
       try? await Task.sleep(nanoseconds: UInt64(sleep * Float(NSEC_PER_SEC)))
     }

@@ -5,9 +5,8 @@ import os.log
 import Semaphore
 
 class CKDatabaseAPI: CKDatabaseAPIType {
-  
   private let database: CKDatabaseType
-  internal let settingsProvider: () async ->CanopySettingsType
+  internal let settingsProvider: () async -> CanopySettingsType
   private let tokenStore: TokenStoreType
   private let fetchDatabaseChangesSemaphore = AsyncSemaphore(value: 1)
   private let fetchZoneChangesSemaphore = AsyncSemaphore(value: 1)
@@ -32,12 +31,11 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     let settings = await settingsProvider()
     let modifyRecordsBehavior = settings.modifyRecordsBehavior
     switch modifyRecordsBehavior {
-    case .regular(let delay):
+    case let .regular(delay):
       if let delay {
         try? await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
       }
-      break
-    case .simulatedFail(let delay), .simulatedFailWithPartialErrors(let delay):
+    case let .simulatedFail(delay), let .simulatedFailWithPartialErrors(delay):
       if let delay {
         try? await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
       }
@@ -97,7 +95,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     )
     
     switch recordsResult {
-    case .success(let records):
+    case let .success(records):
       guard !records.isEmpty else {
         return .success(.init(savedRecords: [], deletedRecordIDs: []))
       }
@@ -109,7 +107,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
         perRecordProgressBlock: nil,
         qualityOfService: qualityOfService
       )
-    case .failure(let error):
+    case let .failure(error):
       return .failure(error)
     }
   }
@@ -132,7 +130,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
 
       fetchRecordsOperation.perRecordResultBlock = { recordId, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           if let error = error as? CKError, error.code == .unknownItem {
             // The query otherwise succeeded, but the record was not found based on the ID.
             // Note it as such.
@@ -141,7 +139,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
             // There was another kind of error. This will fail the whole request.
             recordError = .init(from: error)
           }
-        case .success(let record):
+        case let .success(record):
           foundRecords.append(record)
         }
       }
@@ -162,7 +160,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
               )
             )
           }
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(.init(from: error)))
         }
       }
@@ -184,18 +182,18 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       var deletedZoneIDs: [CKRecordZone.ID] = []
       var recordZoneError: CKRecordZoneError?
       
-      zoneOperation.perRecordZoneSaveBlock = { zoneId, result in
+      zoneOperation.perRecordZoneSaveBlock = { _, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           recordZoneError = CKRecordZoneError(from: error)
-        case .success(let zone):
+        case let .success(zone):
           savedZones.append(zone)
         }
       }
       
       zoneOperation.perRecordZoneDeleteBlock = { zoneId, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           recordZoneError = CKRecordZoneError(from: error)
         case .success:
           deletedZoneIDs.append(zoneId)
@@ -204,7 +202,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       
       zoneOperation.modifyRecordZonesResultBlock = { result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(CKRecordZoneError(from: error)))
         case .success:
           if let recordZoneError {
@@ -246,7 +244,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       switch type {
       case .allZones:
         zoneOperation = CKFetchRecordZonesOperation.fetchAllRecordZonesOperation()
-      case .zoneIDs(let zoneIDs):
+      case let .zoneIDs(zoneIDs):
         zoneOperation = CKFetchRecordZonesOperation(recordZoneIDs: zoneIDs)
       }
       zoneOperation.qualityOfService = qualityOfService
@@ -254,11 +252,11 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       var zones: [CKRecordZone] = []
       var recordZoneError: CKRecordZoneError?
       
-      zoneOperation.perRecordZoneResultBlock = { zoneId, result in
+      zoneOperation.perRecordZoneResultBlock = { _, result in
         switch result {
-        case .success(let zone):
+        case let .success(zone):
           zones.append(zone)
-        case .failure(let error):
+        case let .failure(error):
           recordZoneError = CKRecordZoneError(from: error)
         }
       }
@@ -272,7 +270,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
           } else {
             continuation.resume(returning: .success(zones))
           }
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(CKRecordZoneError(from: error)))
         }
       }
@@ -294,18 +292,18 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       var deletedSubscriptionIDs: [CKSubscription.ID] = []
       var subscriptionError: CKSubscriptionError?
             
-      subscriptionOperation.perSubscriptionSaveBlock = { subscriptionId, result in
+      subscriptionOperation.perSubscriptionSaveBlock = { _, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           subscriptionError = CKSubscriptionError(from: error)
-        case .success(let subscription):
+        case let .success(subscription):
           savedSubscriptions.append(subscription)
         }
       }
       
       subscriptionOperation.perSubscriptionDeleteBlock = { subscriptionId, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           subscriptionError = CKSubscriptionError(from: error)
         case .success:
           deletedSubscriptionIDs.append(subscriptionId)
@@ -314,7 +312,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       
       subscriptionOperation.modifySubscriptionsResultBlock = { result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(CKSubscriptionError(from: error)))
         case .success:
           if let subscriptionError {
@@ -344,12 +342,12 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     
     let fetchDatabaseChangesBehavior = await settingsProvider().fetchDatabaseChangesBehavior
     switch fetchDatabaseChangesBehavior {
-    case .regular(let delay):
+    case let .regular(delay):
       if let delay {
         try? await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
         break
       }
-    case .simulatedFail(let delay), .simulatedFailWithPartialErrors(let delay):
+    case let .simulatedFail(delay), let .simulatedFailWithPartialErrors(delay):
       if let delay {
         try? await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
       }
@@ -392,7 +390,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
 
       changesOperation.fetchDatabaseChangesResultBlock = { result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           let requestError = CanopyError(from: error)
           if requestError == .ckChangeTokenExpired {
             // As per documentation if we get this error we should delete our cached token.
@@ -410,7 +408,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
           } else {
             continuation.resume(returning: .failure(requestError))
           }
-        case .success((let token, _)):
+        case let .success((token, _)):
           // We assume moreComing to be false, because we specified fetchAllChanges = true above.
           Task { [changedRecordZoneIDs, deletedRecordZoneIDs, purgedRecordZoneIDs] in
             await tokenStore.storeToken(token, forDatabaseScope: database.databaseScope)
@@ -435,18 +433,17 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     fetchMethod: FetchZoneChangesMethod,
     qualityOfService: QualityOfService
   ) async -> Result<FetchZoneChangesResult, CanopyError> {
-    
     await fetchZoneChangesSemaphore.wait()
     defer { fetchZoneChangesSemaphore.signal() }
     
     let fetchZoneChangesBehavior = await settingsProvider().fetchZoneChangesBehavior
     switch fetchZoneChangesBehavior {
-    case .regular(let delay):
+    case let .regular(delay):
       if let delay {
         try? await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
         break
       }
-    case .simulatedFail(let delay), .simulatedFailWithPartialErrors(let delay):
+    case let .simulatedFail(delay), let .simulatedFailWithPartialErrors(delay):
       if let delay {
         try? await Task.sleep(nanoseconds: UInt64(delay * Double(NSEC_PER_SEC)))
       }
@@ -459,7 +456,6 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       )
     }
 
-    
     let db = database
     let tokenStore = tokenStore
 
@@ -504,11 +500,11 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       changesOperation.qualityOfService = qualityOfService
       changesOperation.fetchAllChanges = true // will send repeated requests until all changes fetched
       
-      changesOperation.recordWasChangedBlock = { recordId, result in
+      changesOperation.recordWasChangedBlock = { _, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           recordError = CKRecordError(from: error)
-        case .success(let record):
+        case let .success(record):
           // Save some memory if we are only fetching tokens, since we won’t use the results in that case
           records.append(record)
         }
@@ -520,7 +516,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
 
       changesOperation.recordZoneFetchResultBlock = { zoneID, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           if zoneError == nil {
             // If a zone error isn’t already captured, capture and run the error handling logic.
             
@@ -530,14 +526,14 @@ class CKDatabaseAPI: CKDatabaseAPIType {
             }
             zoneError = CKRecordZoneError(from: error)
           }
-        case .success((let serverChangeToken, _, _)):
+        case let .success((serverChangeToken, _, _)):
           zoneTokens[zoneID] = serverChangeToken
         }
       }
       
       changesOperation.fetchRecordZoneChangesResultBlock = { result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(CanopyError(from: error)))
         case .success:
           if let recordError {

@@ -1,7 +1,7 @@
 import CloudKit
 
 extension CKDatabaseAPI {
-  internal func randomCKRecordError(
+  func randomCKRecordError(
     codes: Set<CKError.Code>,
     saving recordsToSave: [CKRecord]? = nil,
     deleting recordIDsToDelete: [CKRecord.ID]? = nil,
@@ -39,7 +39,7 @@ extension CKDatabaseAPI {
     return CKRecordError(from: error)
   }
   
-  internal func randomCKRequestError(
+  func randomCKRequestError(
     codes: Set<CKError.Code>
   ) -> CKRequestError {
     let code = codes.randomElement()!

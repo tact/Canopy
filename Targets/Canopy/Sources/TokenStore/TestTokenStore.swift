@@ -1,7 +1,6 @@
 import CloudKit
 
 public class TestTokenStore: TokenStoreType {
-  
   public init() {}
   
   /// How many times "storeToken:forDatabaseScope:" has been called.

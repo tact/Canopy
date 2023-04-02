@@ -18,7 +18,6 @@ import CloudKit
 /// There is currently no facility to distinguish between multiple CKContainers. This is a good enough assumption
 /// for most CloudKit applications.
 public protocol TokenStoreType {
-
   /// Store a token for the given database scope.
   ///
   /// - Parameter token: token to be stored. May be nil if it needs to be removed from storage for whatever reason.

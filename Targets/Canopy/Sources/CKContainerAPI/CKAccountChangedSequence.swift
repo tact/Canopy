@@ -41,7 +41,7 @@ struct CKAccountChangedSequence: AsyncSequence {
         }
         mockElementsToProduce -= 1
         return ()
-      case .live(let notifications):
+      case let .live(notifications):
         let _ = await notifications.first(where: { _ in true })
         return ()
       }

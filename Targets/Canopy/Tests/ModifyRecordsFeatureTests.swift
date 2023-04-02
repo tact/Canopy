@@ -1,13 +1,13 @@
 @testable import Canopy
-import CanopyTypes
 import CanopyTestTools
+import CanopyTypes
 import CloudKit
 import Foundation
 import XCTest
 
 final class ModifyRecordsFeatureTests: XCTestCase {
   private func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
-    stride(from: startIndex, to: endIndex+1, by: 1).map { i in
+    stride(from: startIndex, to: endIndex + 1, by: 1).map { i in
       CKRecord(recordType: "TestRecord", recordID: .init(recordName: "id\(i)"))
     }
   }
@@ -51,12 +51,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: ReplayingMockCKDatabase.ModifyResult(result: .success(()))
           )
@@ -78,9 +78,8 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     XCTAssertEqual(operationsRun, 1)
   }
   
-  
   func test_simple_delete() async {
-    let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map { $0.recordID }
+    let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map(\.recordID)
     let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
@@ -91,7 +90,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
                 recordID: $0,
                 result: .success(())
               )
-            } ,
+            },
             modifyResult: .init(result: .success(()))
           )
         )
@@ -112,7 +111,6 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     XCTAssertEqual(operationsRun, 1)
   }
   
-  
   func test_chunked_modify() async {
     let recordsToSave1 = records(startIndex: 1, endIndex: 3)
     let recordsToSave2 = records(startIndex: 4, endIndex: 6)
@@ -123,12 +121,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave1.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave1.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -136,12 +134,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave2.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave2.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -149,12 +147,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave3.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave3.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -162,12 +160,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave4.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave4.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -200,12 +198,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave1.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave1.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -213,12 +211,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave2.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave2.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -226,12 +224,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave3.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave3.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -239,12 +237,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave4.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave4.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -253,7 +251,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     )
     
     let task = Task {
-      return await ModifyRecords.with(
+      await ModifyRecords.with(
         recordsToSave: recordsToSave1 + recordsToSave2 + recordsToSave3 + recordsToSave4,
         recordIDsToDelete: nil,
         perRecordProgressBlock: nil,
@@ -284,12 +282,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .failure(CKError(CKError.Code.internalError))
-                )
-              },
+            recordsToSave.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .failure(CKError(CKError.Code.internalError))
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .success(()))
           )
@@ -313,7 +311,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
   }
   
   func test_delete_recorderror() async {
-    let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map { $0.recordID }
+    let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map(\.recordID)
     let db = ReplayingMockCKDatabase(
       operationResults: [
         .modify(
@@ -324,7 +322,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
                 recordID: $0,
                 result: .failure(CKError(CKError.Code.internalError))
               )
-            } ,
+            },
             modifyResult: .init(result: .success(()))
           )
         )
@@ -353,12 +351,12 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         .modify(
           .init(
             savedRecordResults:
-              recordsToSave.map {
-                ReplayingMockCKDatabase.SavedRecordResult(
-                  recordID: $0.recordID,
-                  result: .success($0)
-                )
-              },
+            recordsToSave.map {
+              ReplayingMockCKDatabase.SavedRecordResult(
+                recordID: $0.recordID,
+                result: .success($0)
+              )
+            },
             deletedRecordIDResults: [],
             modifyResult: .init(result: .failure(CKError(CKError.Code.networkFailure)))
           )
@@ -438,7 +436,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     ).get()
 
     XCTAssertEqual(result.savedRecords.count, 9)
-    for index in 0..<result.savedRecords.count {
+    for index in 0 ..< result.savedRecords.count {
       XCTAssertTrue(result.savedRecords[index].isEqualToRecord(recordsToSave[index]))
     }
     XCTAssertEqual(result.deletedRecordIDs.count, 1)

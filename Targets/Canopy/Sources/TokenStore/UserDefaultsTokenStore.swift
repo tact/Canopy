@@ -2,7 +2,6 @@ import CloudKit
 import os.log
 
 public struct UserDefaultsTokenStore: TokenStoreType {
-  
   private let logger = Logger(subsystem: "Canopy", category: "UserDefaultsTokenStore")
   
   public init() {}

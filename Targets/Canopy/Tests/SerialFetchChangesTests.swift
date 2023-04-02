@@ -19,21 +19,20 @@ import XCTest
 ///
 /// These tests make sure that this behavior is correct.
 final class SerialFetchChangesTests: XCTestCase {
-  
   /// A token store that balances calls to getting and storing tokens.
   ///
   /// The store makes sure that only one token of a given type is ever in use,
   /// and reports violations.
   actor BalancingTokenStore: TokenStoreType {
-    private let databaseViolationReporter: (CKDatabase.Scope) -> ()
-    private let zoneViolationReporter: (CKRecordZone.ID) -> ()
+    private let databaseViolationReporter: (CKDatabase.Scope) -> Void
+    private let zoneViolationReporter: (CKRecordZone.ID) -> Void
     
     private var inflightDatabaseScopes: Set<CKDatabase.Scope> = []
     private var inflightZoneIDs: Set<CKRecordZone.ID> = []
     
     init(
-      databaseViolationReporter: @escaping (CKDatabase.Scope)->(),
-      zoneViolationReporter: @escaping (CKRecordZone.ID)->()
+      databaseViolationReporter: @escaping (CKDatabase.Scope) -> Void,
+      zoneViolationReporter: @escaping (CKRecordZone.ID) -> Void
     ) {
       self.databaseViolationReporter = databaseViolationReporter
       self.zoneViolationReporter = zoneViolationReporter
@@ -69,7 +68,6 @@ final class SerialFetchChangesTests: XCTestCase {
   }
     
   func test_two_database_fetches_work() async {
-
     // Two simultaneous change fetch requests for the same database should get queued up.
 
     let privateZoneID1 = CKRecordZone.ID(zoneName: "SomePrivateZone1", ownerName: CKCurrentUserDefaultName)
@@ -114,7 +112,6 @@ final class SerialFetchChangesTests: XCTestCase {
   }
   
   func test_two_zone_fetches_work() async {
-    
     // Two simultaneous change fetch requests for the same record zone should get queued up.
     
     let privateZoneID1 = CKRecordZone.ID(zoneName: "SomePrivateZone1", ownerName: CKCurrentUserDefaultName)

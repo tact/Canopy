@@ -9,7 +9,6 @@ import Foundation
 ///
 /// To cancel any follow-up requests, cancel the enclosing task.
 struct QueryRecords {
-
   enum QueryOperationStartingPoint {
     case query(CKQuery)
     case cursor(CKQueryOperation.Cursor)
@@ -33,12 +32,10 @@ struct QueryRecords {
     desiredKeys: [CKRecord.FieldKey]? = nil,
     qualityOfService: QualityOfService = .default
   ) async -> Result<[CKRecord], CKRecordError> {
-    
     var startingPoint = QueryOperationStartingPoint.query(query)
     var records: [CKRecord] = []
     
     while true {
-
       let queryOperationResult = await performOneOperation(
         with: startingPoint,
         recordZoneID: recordZoneID,
@@ -48,11 +45,11 @@ struct QueryRecords {
       )
       
       switch queryOperationResult {
-      case .error(let error):
+      case let .error(error):
         return .failure(error)
-      case .records(let newRecords):
+      case let .records(newRecords):
         return .success(records + newRecords)
-      case .recordsAndCursor(let newRecords, let cursor):
+      case let .recordsAndCursor(newRecords, cursor):
         guard !Task.isCancelled else {
           return .failure(.init(from: CKError(CKError.Code.operationCancelled)))
         }
@@ -69,16 +66,15 @@ struct QueryRecords {
     desiredKeys: [CKRecord.FieldKey]? = nil,
     qualityOfService: QualityOfService = .userInitiated
   ) async -> QueryOperationResult {
-    
     await withCheckedContinuation { continuation in
       var records: [CKRecord] = []
       var recordError: CKRecordError?
     
       let operation: CKQueryOperation
       switch startingPoint {
-      case .cursor(let cursor):
+      case let .cursor(cursor):
         operation = CKQueryOperation(cursor: cursor)
-      case .query(let query):
+      case let .query(query):
         operation = CKQueryOperation(query: query)
       }
       
@@ -86,18 +82,18 @@ struct QueryRecords {
       operation.desiredKeys = desiredKeys
       operation.qualityOfService = qualityOfService
       
-      operation.recordMatchedBlock = { recordId, result in
+      operation.recordMatchedBlock = { _, result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           recordError = .init(from: error)
-        case .success(let record):
+        case let .success(record):
           records.append(record)
         }
       }
       
       operation.queryResultBlock = { result in
         switch result {
-        case .success(let cursor):
+        case let .success(cursor):
           // Be defensive: if there was a record error, fail the whole request with that.
           if let recordError {
             continuation.resume(returning: .error(recordError))
@@ -108,7 +104,7 @@ struct QueryRecords {
           } else {
             continuation.resume(returning: .records(records))
           }
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .error(.init(from: error)))
         }
       }

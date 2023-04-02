@@ -23,20 +23,20 @@ public struct CloudKitRecordArchive: Codable {
 
   public init(records: [CKRecord]) {
     guard !records.isEmpty else {
-      data = Data()
+      self.data = Data()
       return
     }
 
     do {
-      data = try NSKeyedArchiver.archivedData(withRootObject: records, requiringSecureCoding: true)
+      self.data = try NSKeyedArchiver.archivedData(withRootObject: records, requiringSecureCoding: true)
     } catch {
-      data = Data()
+      self.data = Data()
     }
   }
 }
 
-extension CloudKitRecordArchive {
-  public static func + (lhs: CloudKitRecordArchive, rhs: CloudKitRecordArchive) -> CloudKitRecordArchive {
+public extension CloudKitRecordArchive {
+  static func + (lhs: CloudKitRecordArchive, rhs: CloudKitRecordArchive) -> CloudKitRecordArchive {
     CloudKitRecordArchive(records: lhs.records + rhs.records)
   }
 }

@@ -4,7 +4,6 @@ import Foundation
 
 /// Mock of CKDatabase, suitable for running CKModifyOperation tests.
 public actor ReplayingMockCKDatabase {
-   
   /// How many `add` calls were made to this database.
   public private(set) var operationsRun = 0
   
@@ -44,24 +43,25 @@ public actor ReplayingMockCKDatabase {
     operationsRun += 1
     
     switch (operationResult, operation) {
-    case (.modify(let modifyOperationResult), (let modifyOperation as CKModifyRecordsOperation)):
+    case let (.modify(modifyOperationResult), modifyOperation as CKModifyRecordsOperation):
       runModifyOperation(modifyOperation, operationResult: modifyOperationResult)
-    case (.query(let queryOperationResult), (let queryOperation as CKQueryOperation)):
+    case let (.query(queryOperationResult), queryOperation as CKQueryOperation):
       await runQueryOperation(queryOperation, operationResult: queryOperationResult, sleep: sleep)
-    case (.fetch(let fetchOperationResult), (let fetchOperation as CKFetchRecordsOperation)):
+    case let (.fetch(fetchOperationResult), fetchOperation as CKFetchRecordsOperation):
       runFetchOperation(fetchOperation, operationResult: fetchOperationResult)
-    case (.modifyZones(let modifyZonesOperationResult), (let modifyZonesOperation as CKModifyRecordZonesOperation)):
+    case let (.modifyZones(modifyZonesOperationResult), modifyZonesOperation as CKModifyRecordZonesOperation):
       runModifyZonesOperation(modifyZonesOperation, operationResult: modifyZonesOperationResult)
-    case (.fetchZones(let fetchZonesOperationResult), (let fetchZonesOperation as CKFetchRecordZonesOperation)):
+    case let (.fetchZones(fetchZonesOperationResult), fetchZonesOperation as CKFetchRecordZonesOperation):
       runFetchZonesOperation(fetchZonesOperation, operationResult: fetchZonesOperationResult)
-    case (.modifySubscriptions(let modifySubscriptionsOperationResult), (let modifySubscriptionsOperation as CKModifySubscriptionsOperation)):
+    case let (.modifySubscriptions(modifySubscriptionsOperationResult), modifySubscriptionsOperation as CKModifySubscriptionsOperation):
       runModifySubscriptionsOperation(modifySubscriptionsOperation, operationResult: modifySubscriptionsOperationResult)
-    case (.fetchDatabaseChanges(let fetchDatabaseChangesOperationResult), (let fetchDatabaseChangesOperation as CKFetchDatabaseChangesOperation)):
+    case let (.fetchDatabaseChanges(fetchDatabaseChangesOperationResult), fetchDatabaseChangesOperation as CKFetchDatabaseChangesOperation):
       await runFetchDatabaseChangesOperation(
         fetchDatabaseChangesOperation,
         operationResult: fetchDatabaseChangesOperationResult,
-        sleep: sleep)
-    case (.fetchZoneChanges(let fetchZoneChangesOperationResult), (let fetchZoneChangesOperation as CKFetchRecordZoneChangesOperation)):
+        sleep: sleep
+      )
+    case let (.fetchZoneChanges(fetchZoneChangesOperationResult), fetchZoneChangesOperation as CKFetchRecordZoneChangesOperation):
       await runFetchZoneChangesOperation(
         fetchZoneChangesOperation,
         operationResult: fetchZoneChangesOperationResult,
@@ -69,16 +69,16 @@ public actor ReplayingMockCKDatabase {
       )
     default:
       fatalError("Dequeued operation and result do not match. Result: \(operationResult), operation: \(operation)")
-    }    
+    }
   }
 }
 
 extension ReplayingMockCKDatabase: CKDatabaseType {
-  nonisolated public var debugDescription: String { "ReplayingMockCKDatabase" }
+  public nonisolated var debugDescription: String { "ReplayingMockCKDatabase" }
   
-  nonisolated public var databaseScope: CKDatabase.Scope { scope }
+  public nonisolated var databaseScope: CKDatabase.Scope { scope }
   
-  nonisolated public func add(_ operation: CKDatabaseOperation) {
+  public nonisolated func add(_ operation: CKDatabaseOperation) {
     Task {
       await privateAdd(operation)
     }

@@ -75,36 +75,38 @@ public actor ReplayingMockCKContainer {
   func privateAdd(_ operation: CKOperation) async {
     if let fetchShareParticipantsOperation = operation as? CKFetchShareParticipantsOperation,
        let operationResult = fetchShareParticipantsResults.first,
-       case let .fetchShareParticipants(result) = operationResult {
+       case let .fetchShareParticipants(result) = operationResult
+    {
       fetchShareParticipantsResults.removeFirst()
       operationsRun += 1
       runFetchShareParticipantsOperation(fetchShareParticipantsOperation, operationResult: result)
     } else if let acceptSharesOperation = operation as? CKAcceptSharesOperation,
               let operationResult = acceptSharesResults.first,
-              case let .acceptShares(result) = operationResult {
+              case let .acceptShares(result) = operationResult
+    {
       acceptSharesResults.removeFirst()
       operationsRun += 1
       runAcceptSharesOperation(acceptSharesOperation, operationResult: result)
     } else {
       fatalError("No result or incorrect result type available for operation: \(operation)")
-    }    
+    }
   }
 }
 
 extension ReplayingMockCKContainer: CKContainerType {
-  nonisolated public func accountStatus(completionHandler: @escaping (CKAccountStatus, Error?) -> Void) {
+  public nonisolated func accountStatus(completionHandler: @escaping (CKAccountStatus, Error?) -> Void) {
     Task {
       await privateAccountStatus(completionHandler: completionHandler)
     }
   }
   
-  nonisolated public func fetchUserRecordID(completionHandler: @escaping (CKRecord.ID?, Error?) -> Void) {
+  public nonisolated func fetchUserRecordID(completionHandler: @escaping (CKRecord.ID?, Error?) -> Void) {
     Task {
       await privateFetchUserRecordID(completionHandler: completionHandler)
     }
   }
   
-  nonisolated public func add(_ operation: CKOperation) {
+  public nonisolated func add(_ operation: CKOperation) {
     Task {
       await privateAdd(operation)
     }

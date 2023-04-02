@@ -135,15 +135,15 @@ public enum CanopyError: Error, Codable, Equatable {
   /// The main use of this is in testing, to recreate the error from possibly archived CanopyError.
   public var ckError: CKError {
     switch self {
-    case .ckAccountError(let description, let code):
+    case let .ckAccountError(description, code):
       return CKError(CKError.Code(rawValue: code)!, userInfo: ["localizedDescription": description])
-    case .ckRecordError(let ckRecordError):
+    case let .ckRecordError(ckRecordError):
       return ckRecordError.ckError
-    case .ckRequestError(let ckRequestError):
+    case let .ckRequestError(ckRequestError):
       return ckRequestError.ckError
     case .ckChangeTokenExpired:
       return CKError(CKError.Code.changeTokenExpired)
-    case .ckSubscriptionError(let subscriptionError):
+    case let .ckSubscriptionError(subscriptionError):
       return subscriptionError.ckError
     default:
       fatalError("Not implemented")
