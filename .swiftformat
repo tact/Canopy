@@ -1,0 +1,14 @@
+--binarygrouping none
+--commas inline
+--decimalgrouping none
+--hexgrouping none
+--indent 2
+--nospaceoperators ...
+--octalgrouping none
+--patternlet hoist
+--self init-only
+--semicolons never
+--stripunusedargs closure-only
+--trimwhitespace nonblank-lines
+--wrapcollections before-first
+--wrapparameters before-first
