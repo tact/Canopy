@@ -8,12 +8,12 @@ import Foundation
 /// Canopy has reasonable defaults for all of these, and you need to only override the ones that need to use
 /// a different value from the default.
 public actor Canopy: CanopyType {
-  private let containerProvider: ()->CKContainerType
-  private let publicCloudDatabaseProvider: ()->CKDatabaseType
-  private let privateCloudDatabaseProvider: ()->CKDatabaseType
-  private let sharedCloudDatabaseProvider: ()->CKDatabaseType
-  private let settingsProvider: ()->CanopySettingsType
-  private let tokenStoreProvider: ()->TokenStoreType
+  private let containerProvider: () -> CKContainerType
+  private let publicCloudDatabaseProvider: () -> CKDatabaseType
+  private let privateCloudDatabaseProvider: () -> CKDatabaseType
+  private let sharedCloudDatabaseProvider: () -> CKDatabaseType
+  private let settingsProvider: () -> CanopySettingsType
+  private let tokenStoreProvider: () -> TokenStoreType
   
   private var containerAPI: CKContainerAPI?
   private var databaseAPIs: [CKDatabase.Scope: CKDatabaseAPI] = [:]

@@ -1,8 +1,8 @@
 import CanopyTypes
 import CloudKit
 
-extension ReplayingMockCKContainer {
-  public struct AccountStatusResult: Codable {
+public extension ReplayingMockCKContainer {
+  struct AccountStatusResult: Codable {
     let statusValue: Int
     let canopyError: CanopyError?
     

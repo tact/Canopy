@@ -1,67 +1,66 @@
-import CloudKit
 import CanopyTypes
+import CloudKit
 
-extension ReplayingMockCKDatabase {
-  
-  public struct SavedZoneResult: Codable {
+public extension ReplayingMockCKDatabase {
+  struct SavedZoneResult: Codable {
     let zoneIDArchive: CloudKitRecordZoneIDArchive
     let codableResult: CodableResult<CloudKitRecordZoneArchive, CKRecordZoneError>
     
     public init(zoneID: CKRecordZone.ID, result: Result<CKRecordZone, Error>) {
       self.zoneIDArchive = CloudKitRecordZoneIDArchive(zoneIDs: [zoneID])
       switch result {
-      case .success(let zone): codableResult = .success(CloudKitRecordZoneArchive(zones: [zone]))
-      case .failure(let error): codableResult = .failure(CKRecordZoneError(from: error))
+      case let .success(zone): self.codableResult = .success(CloudKitRecordZoneArchive(zones: [zone]))
+      case let .failure(error): self.codableResult = .failure(CKRecordZoneError(from: error))
       }
     }
 
     var result: Result<CKRecordZone, Error> {
       switch codableResult {
-      case .success(let zoneArchive): return .success(zoneArchive.zones.first!)
-      case .failure(let zoneError): return .failure(zoneError.ckError)
+      case let .success(zoneArchive): return .success(zoneArchive.zones.first!)
+      case let .failure(zoneError): return .failure(zoneError.ckError)
       }
     }
   }
   
-  public struct DeletedZoneIDResult: Codable {
+  struct DeletedZoneIDResult: Codable {
     let zoneIDArchive: CloudKitRecordZoneIDArchive
     let codableResult: CodableResult<CodableVoid, CKRecordZoneError>
     
     public init(zoneID: CKRecordZone.ID, result: Result<Void, Error>) {
       self.zoneIDArchive = CloudKitRecordZoneIDArchive(zoneIDs: [zoneID])
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKRecordZoneError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKRecordZoneError(from: error))
       }
     }
 
     var result: Result<Void, Error> {
       switch codableResult {
       case .success: return .success(())
-      case .failure(let zoneError): return .failure(zoneError.ckError)
+      case let .failure(zoneError): return .failure(zoneError.ckError)
       }
     }
   }
   
-  public struct ModifyZonesResult: Codable {
+  struct ModifyZonesResult: Codable {
     let codableResult: CodableResult<CodableVoid, CKRecordZoneError>
     
     public init(result: Result<Void, Error>) {
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKRecordZoneError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKRecordZoneError(from: error))
       }
     }
 
     var result: Result<Void, Error> {
       switch codableResult {
       case .success: return .success(())
-      case .failure(let zoneError): return .failure(zoneError.ckError)
+      case let .failure(zoneError): return .failure(zoneError.ckError)
       }
     }
   }
   
-  public struct ModifyZonesOperationResult: Codable {
+  struct ModifyZonesOperationResult: Codable {
     public let savedZoneResults: [SavedZoneResult]
     public let deletedZoneIDResults: [DeletedZoneIDResult]
     public let modifyZonesResult: ModifyZonesResult

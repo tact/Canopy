@@ -2,7 +2,6 @@ import CanopyTypes
 import CloudKit
 
 struct ModifyRecords {
-  
   /// Default maximum batch size is 400.
   ///
   /// https://developer.apple.com/documentation/cloudkit/ckerror/code/limitexceeded
@@ -36,12 +35,12 @@ struct ModifyRecords {
     }
     
     while true {
-            
       let recordsToSaveChunk = recordsToSaveStrided.first
       let recordIDsToDeleteChunk = recordIDsToDeleteStrided.first
-      if recordsToSaveChunk == nil &&
-          recordIDsToDeleteChunk == nil &&
-          (!savedRecords.isEmpty || !deletedRecordIDs.isEmpty) {
+      if recordsToSaveChunk == nil,
+         recordIDsToDeleteChunk == nil,
+         !savedRecords.isEmpty || !deletedRecordIDs.isEmpty
+      {
         return .success(
           .init(
             savedRecords: savedRecords,
@@ -68,12 +67,11 @@ struct ModifyRecords {
       )
             
       switch result {
-      case .success(let result):
+      case let .success(result):
         savedRecords += result.savedRecords
         deletedRecordIDs += result.deletedRecordIDs
-      case .failure(let error):
-        if error == CKRecordError(from: CKError(CKError.Code.limitExceeded)) && autoBatchToSmallerWhenLimitExceeded {
-          
+      case let .failure(error):
+        if error == CKRecordError(from: CKError(CKError.Code.limitExceeded)), autoBatchToSmallerWhenLimitExceeded {
           // CloudKit reports "limit exceeded". Platform guidance is to retry
           // with a smaller batch size.
           // So we do exactly that - split the batch in half and reset the state.
@@ -127,9 +125,8 @@ struct ModifyRecords {
       switch result {
       case .success:
         done = true
-        break
-      case .failure(let recordError):
-        if recordError.isRetriable && recordError.retryAfterSeconds > 0 {
+      case let .failure(recordError):
+        if recordError.isRetriable, recordError.retryAfterSeconds > 0 {
           retriesRemaining -= 1
           try? await Task.sleep(nanoseconds: UInt64(recordError.retryAfterSeconds * Double(NSEC_PER_SEC)))
         } else {
@@ -173,23 +170,23 @@ struct ModifyRecords {
       // Cause the operation to fail for a given zone, if there is an error with modifying some records.
       modifyOperation.isAtomic = true
       
-      modifyOperation.perRecordSaveBlock = { recordID, result in
+      modifyOperation.perRecordSaveBlock = { _, result in
         switch result {
-        case .success(let record): savedRecords.append(record)
-        case .failure(let error): recordError = CKRecordError(from: error)
+        case let .success(record): savedRecords.append(record)
+        case let .failure(error): recordError = CKRecordError(from: error)
         }
       }
       
       modifyOperation.perRecordDeleteBlock = { recordID, result in
         switch result {
         case .success: deletedRecordIDs.append(recordID)
-        case .failure(let error): recordError = CKRecordError(from: error)
+        case let .failure(error): recordError = CKRecordError(from: error)
         }
       }
       
       modifyOperation.modifyRecordsResultBlock = { result in
         switch result {
-        case .failure(let error):
+        case let .failure(error):
           continuation.resume(returning: .failure(CKRecordError(from: error)))
         case .success:
           if let recordError {

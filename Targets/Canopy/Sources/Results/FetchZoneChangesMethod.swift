@@ -9,7 +9,6 @@ import Foundation
 /// interested only in the tokens, or only some specific fields (but e.g
 /// not asset fields that may contain large files).
 public enum FetchZoneChangesMethod {
-  
   /// Fetch tokens and all available data.
   case changeTokenAndAllData
   

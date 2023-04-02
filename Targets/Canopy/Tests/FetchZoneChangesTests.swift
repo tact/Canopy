@@ -1,14 +1,12 @@
 @testable import Canopy
-import CanopyTypes
 import CanopyTestTools
+import CanopyTypes
 import CloudKit
 import Foundation
 import XCTest
 
 final class FetchZoneChangesTests: XCTestCase {
-  
   func test_success() async {
-    
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -48,7 +46,6 @@ final class FetchZoneChangesTests: XCTestCase {
   }
   
   func test_fetch_tokens_only() async {
-    
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -88,7 +85,6 @@ final class FetchZoneChangesTests: XCTestCase {
   }
   
   func test_record_error() async {
-    
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let deletedRecordID = CKRecord.ID(recordName: "DeletedRecordID")
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -132,7 +128,6 @@ final class FetchZoneChangesTests: XCTestCase {
   }
   
   func test_token_expired() async {
-    
     let zoneID1 = CKRecordZone.ID(zoneName: "testZone1", ownerName: CKCurrentUserDefaultName)
     let zoneID2 = CKRecordZone.ID(zoneName: "testZone2", ownerName: CKCurrentUserDefaultName)
 
@@ -173,7 +168,6 @@ final class FetchZoneChangesTests: XCTestCase {
   }
   
   func test_result_error() async {
-    
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
     let db = ReplayingMockCKDatabase(operationResults: [

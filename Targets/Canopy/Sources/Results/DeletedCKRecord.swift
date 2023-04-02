@@ -15,9 +15,9 @@ public struct DeletedCKRecord: Codable, Equatable {
   }
 
   public init(recordID: CKRecord.ID, recordType: CKRecord.RecordType) {
-    typeString = recordType
-    recordName = recordID.recordName
-    zoneName = recordID.zoneID.zoneName
-    zoneOwnerName = recordID.zoneID.ownerName
+    self.typeString = recordType
+    self.recordName = recordID.recordName
+    self.zoneName = recordID.zoneID.zoneName
+    self.zoneOwnerName = recordID.zoneID.ownerName
   }
 }

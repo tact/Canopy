@@ -10,6 +10,6 @@ public struct CloudKitServerChangeTokenArchive: Codable {
   }
 
   public init(token: CKServerChangeToken) {
-    data = try! NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true)
+    self.data = try! NSKeyedArchiver.archivedData(withRootObject: token, requiringSecureCoding: true)
   }
 }

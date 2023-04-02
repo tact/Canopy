@@ -1,47 +1,46 @@
 import CanopyTypes
 import CloudKit
 
-extension ReplayingMockCKContainer {
-  
-  public struct PerShareResult: Codable {
+public extension ReplayingMockCKContainer {
+  struct PerShareResult: Codable {
     let shareMetadataArchive: CloudKitShareMetadataArchive
     let codableResult: CodableResult<CloudKitShareArchive, CKRecordError>
     
     public init(metadata: CKShare.Metadata, result: Result<CKShare, Error>) {
       self.shareMetadataArchive = CloudKitShareMetadataArchive(shareMetadatas: [metadata])
       switch result {
-      case .failure(let error): codableResult = .failure(CKRecordError(from: error))
-      case .success(let share): codableResult = .success(.init(shares: [share]))
+      case let .failure(error): self.codableResult = .failure(CKRecordError(from: error))
+      case let .success(share): self.codableResult = .success(.init(shares: [share]))
       }
     }
     
     public var result: Result<CKShare, Error> {
       switch codableResult {
-      case .failure(let recordError): return .failure(recordError.ckError)
-      case .success(let shareArchive): return .success(shareArchive.shares.first!)
+      case let .failure(recordError): return .failure(recordError.ckError)
+      case let .success(shareArchive): return .success(shareArchive.shares.first!)
       }
     }
   }
   
-  public struct AcceptSharesResult: Codable {
+  struct AcceptSharesResult: Codable {
     let codableResult: CodableResult<CodableVoid, CKRecordError>
     
     public init(result: Result<Void, Error>) {
       switch result {
-      case .success: codableResult = .success(CodableVoid())
-      case .failure(let error): codableResult = .failure(CKRecordError(from: error))
+      case .success: self.codableResult = .success(CodableVoid())
+      case let .failure(error): self.codableResult = .failure(CKRecordError(from: error))
       }
     }
     
     public var result: Result<Void, Error> {
       switch codableResult {
-      case .failure(let recordError): return .failure(recordError.ckError)
+      case let .failure(recordError): return .failure(recordError.ckError)
       case .success: return .success(())
       }
     }
   }
   
-  public struct AcceptSharesOperationResult: Codable {
+  struct AcceptSharesOperationResult: Codable {
     let perShareResults: [PerShareResult]
     let acceptSharesResult: AcceptSharesResult
     

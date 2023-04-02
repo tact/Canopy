@@ -15,14 +15,14 @@ public struct CloudKitRecordZoneArchive: Codable {
 
   public init(zones: [CKRecordZone]) {
     guard !zones.isEmpty else {
-      data = Data()
+      self.data = Data()
       return
     }
 
     do {
-      data = try NSKeyedArchiver.archivedData(withRootObject: zones, requiringSecureCoding: true)
+      self.data = try NSKeyedArchiver.archivedData(withRootObject: zones, requiringSecureCoding: true)
     } catch {
-      data = Data()
+      self.data = Data()
     }
   }
 }
