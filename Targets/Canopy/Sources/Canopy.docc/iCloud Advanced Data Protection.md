@@ -71,7 +71,7 @@ I was obviously interested in doing this for Tact, so I asked in a December 2022
 
 > Apple does not provide API for [checking whether a given user has ADP enabled] because we don't want to expose users' account choices to other users.
 
-This makes perfect sense. I’m all for not exposing users’ account choices. At the same time, I think that it’s a valid need to provide assurance to users about whether something is end-to-end encrypted, because it may inform their choice about the kind of info that they want to contribute. These two goals (protect users’ account choices, and inform all participants about whether ADP applies to a given CKRecord) are currently in conflict, and it’s clear which one Apple has chosen. I (and I suppose also Apple) can’t imagine a system design that would satisfy both goals. So, that’s just how it is for now.
+This makes perfect sense. Not exposing users’ account choices is a good approach and I support that. At the same time, I think that it’s a valid need to provide assurance to users about whether something is end-to-end encrypted, because it may inform their choice about the kind of info that they want to store with your app. These two goals (protect users’ account choices, and inform all participants about whether ADP applies to a given CKRecord) are currently in conflict, and it’s clear which one Apple has chosen. I (and I suppose also Apple) can’t imagine a system design that would satisfy both goals. So, that’s just how it is for now.
 
 ## Takeaway
 
