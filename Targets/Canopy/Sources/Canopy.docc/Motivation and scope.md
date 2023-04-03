@@ -63,7 +63,7 @@ The Thoughts example app is a complement to Canopy and showcases best practices 
 
 ## Scope
 
-CloudKit comes in two flavors. The first and earlier one is vanilla CloudKit, which is the main interest area for Canopy. It’s conceptually very simple: you put CKRecords in, you get CKRecords back. It doesn’t prescribe anything about your client-side storage.
+CloudKit comes in two flavors. The first and earlier one is vanilla CloudKit, which is the main interest area for Canopy. It’s conceptually very simple: you put `CKRecord`s in, you get `CKRecord`s back. It doesn’t prescribe anything about your client-side storage.
 
 CloudKit started with this approach, and its core design has remained stable. It has received some modifications along the way. For example, initially you could only share record hierarchies with other participants, but later on, entire record zone sharing was added. Canopy does not currently implement record zone sharing, but it fits within the project goals and vision and can be added.
 
