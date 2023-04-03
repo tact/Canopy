@@ -24,7 +24,7 @@ CloudKit offers a family of APIs, varying from Operation-based to “immediate�
 
 Canopy wraps many Operation-based API-s behind a single consistent pattern: async API-s with `Result` return types, returning either requested results or a failure.
 
-Many people prefer working with throwing results. You can convert a Canopy result to throwing result easily using the [`get()`](https://developer.apple.com/documentation/swift/result/get()) function of the Swift Result type.
+Many people prefer working with throwing results. You can convert a Canopy result to throwing result easily using the [`get()`](https://developer.apple.com/documentation/swift/result/get()) function of the Swift Result type at the call site.
 
 As an example, if you have this Canopy API call:
 
@@ -53,11 +53,11 @@ Canopy implements standard behavior for many of them, and aims to work in a way 
 
 ## Documentation and best practices
 
-This site aims to document aspects of Canopy and CloudKit that are useful for working with CloudKit, with or without Canopy.
+This site aims to document best practices and quirks around CloudKit that are useful to know when working with it, with or without Canopy.
 
 ## Example app
 
-The Thoughts example app that’s part of the Canopy package showcases best practices of using and testing your CloudKit code, as well as offering a broader playground for modern multi-platform, multi-window app development.
+The Thoughts example app is a complement to Canopy and showcases best practices of using and testing your CloudKit code, as well as offering a broader playground for modern multi-platform, multi-window app development.
 
 <doc:Thoughts-example-app>
 
