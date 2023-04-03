@@ -13,8 +13,8 @@ Canopy source and installation instructions, including the source for this site,
 ### About Canopy
 
 - <doc:Motivation-and-scope>
-- <doc:Features-and-behaviors>
 - <doc:Testable-CloudKit-apps-with-Canopy>
+- <doc:Features-and-behaviors>
 - <doc:Thoughts-example-app>
 
 ### CloudKit articles
