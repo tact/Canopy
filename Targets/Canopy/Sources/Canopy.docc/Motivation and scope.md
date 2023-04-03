@@ -65,9 +65,7 @@ The Thoughts example app that’s part of the Canopy package showcases best prac
 
 CloudKit comes in two flavors. The first and earlier one is vanilla CloudKit, which is the main interest area for Canopy. It’s conceptually very simple: you put CKRecords in, you get CKRecords back. It doesn’t prescribe anything about your client-side storage.
 
-CloudKit started with this approach, and its core design has remained stable. It has received some modifications along the way. For example, initially you could only share record hierarchies with other participants, but later on, entire record zone sharing was added.
-
-Canopy does not currently implement record zone sharing, but it fits within the project goals and vision and can be added.
+CloudKit started with this approach, and its core design has remained stable. It has received some modifications along the way. For example, initially you could only share record hierarchies with other participants, but later on, entire record zone sharing was added. Canopy does not currently implement record zone sharing, but it fits within the project goals and vision and can be added.
 
 The other flavor of CloudKit is using [Core Data and CloudKit together](https://developer.apple.com/documentation/coredata/mirroring_a_core_data_store_with_cloudkit/setting_up_core_data_with_cloudkit) with [NSPersistentCloudKitContainer.](https://developer.apple.com/documentation/coredata/nspersistentcloudkitcontainer) This is much more powerful than vanilla CloudKit, and heavily determines your client-side stack.
 
