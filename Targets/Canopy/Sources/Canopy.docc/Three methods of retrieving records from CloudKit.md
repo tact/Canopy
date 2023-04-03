@@ -62,7 +62,7 @@ This is the only API for retrieving records that provides decent **progress feed
 
 The previous two methods were kind of similar: retrieve some records from the current state of the database according to a specific input (query or record names). Changes-based retrieving is an entirely different beast. Instead of a query, I think of it as “stream of events”, where the events are “add record”, “modify record”, “delete record” (or equivalent zone modifications if you retrieve database changes). This method lets you get a playback of these events over a longer or shorter period of time.
 
-The two APIs for this are [CK fetch database changes operation](https://developer.apple.com/documentation/cloudkit/ckfetchdatabasechangesoperation) and its cousin [CK fetch record zone changes operation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonechangesoperation). (For brevity, the text below will refer to them below as CKFDCO and CKFRZCO. See-Kay-Fedco and See-Kay-Ferzco. Just rolling off your tongue.)
+The two APIs for this are [CKFetchDatabaseChangesOperation](https://developer.apple.com/documentation/cloudkit/ckfetchdatabasechangesoperation) and its cousin [CKFetchRecordZoneChangesOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonechangesoperation). (For brevity, the text below will refer to them below as CKFDCO and CKFRZCO. See-Kay-Fedco and See-Kay-Ferzco. Just rolling off your tongue.)
 
 The corresponding Canopy APIs are ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)``. 
 
