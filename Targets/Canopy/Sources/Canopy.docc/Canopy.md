@@ -37,7 +37,7 @@ Canopy source and installation instructions, including the source for this site,
 
 ### Token store
 
-Token store manages client-side storage of database and zone change tokens. You only need to use TokenStore if you use the ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` or ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)`` API-s.
+Token store manages client-side storage of database and zone change tokens. You only need to use TokenStore if you use the ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` or ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)`` APIs.
 
 - ``TokenStoreType``
 - ``TestTokenStore``

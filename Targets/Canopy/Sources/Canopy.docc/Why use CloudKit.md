@@ -8,7 +8,7 @@ Should you use CloudKit as the backend for your app?
 
 There is no universal answer to this question. It depends on the context of your app, your users, and you as the developer. It has business, technical, and operational aspects. This article explores some of the tradeoffs which may help you make this decision.
 
-Apple has an article with similar title on their site: [Determining If CloudKit Is Right for Your App.](https://developer.apple.com/documentation/cloudkit/determining_if_cloudkit_is_right_for_your_app) The focus of that article is more narrow and technical: it helps you decide between various cloud storage services and API-s that Apple itself offers. It contains good technical information and you should consider it, but does not discuss the complete picture.
+Apple has an article with similar title on their site: [Determining If CloudKit Is Right for Your App.](https://developer.apple.com/documentation/cloudkit/determining_if_cloudkit_is_right_for_your_app) The focus of that article is more narrow and technical: it helps you decide between various cloud storage services and APIs that Apple itself offers. It contains good technical information and you should consider it, but does not discuss the complete picture.
 
 This article asks a broader question: if you are a developer who needs a cloud backend for your app, and CloudKit roughly fits your data model, how should you think about the offerings of both Apple and other service providers?
 

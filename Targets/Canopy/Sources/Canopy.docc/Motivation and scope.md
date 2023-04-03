@@ -4,11 +4,11 @@ A summary of Canopy motivation, technical design goals, and scope.
 
 ## Overview
 
-[CloudKit](https://developer.apple.com/icloud/cloudkit/) is a set of Apple API-s that let you store your app data in iCloud. It was introduced at [WWDC 14.](https://www.wwdcnotes.com/notes/wwdc14/208/) While it has gained new features along the way, the fundamentals have remained exactly as they were introduced. It is a stable first-party Apple API and service.
+[CloudKit](https://developer.apple.com/icloud/cloudkit/) is a set of Apple APIs that let you store your app data in iCloud. It was introduced at [WWDC 14.](https://www.wwdcnotes.com/notes/wwdc14/208/) While it has gained new features along the way, the fundamentals have remained exactly as they were introduced. It is a stable first-party Apple API and service.
 
-Out of the box, CloudKit provides you a set of API-s and two runtime environments, “development” and “production”, both running in iCloud. There’s no support for local testing.
+Out of the box, CloudKit provides you a set of APIs and two runtime environments, “development” and “production”, both running in iCloud. There’s no support for local testing.
 
-Canopy is built on top of CloudKit API-s and aims to make it easier to develop solid CloudKit apps. Here are some the elements that drive the design of the Canopy package.
+Canopy is built on top of CloudKit APIs and aims to make it easier to develop solid CloudKit apps. Here are some the elements that drive the design of the Canopy package.
 
 ## Testable CloudKit apps
 
@@ -20,9 +20,9 @@ Canopy also offers some ideas around isolating dependencies for your UI tests, a
 
 ## Consistent modern API
 
-CloudKit offers a family of APIs, varying from Operation-based to “immediate” async API-s.
+CloudKit offers a family of APIs, varying from Operation-based to “immediate” async APIs.
 
-Canopy wraps many Operation-based API-s behind a single consistent pattern: async API-s with `Result` return types, returning either requested results or a failure.
+Canopy wraps many Operation-based APIs behind a single consistent pattern: async APIs with `Result` return types, returning either requested results or a failure.
 
 Many people prefer working with throwing results. You can convert a Canopy result to throwing result easily using the [`get()`](https://developer.apple.com/documentation/swift/result/get()) function of the Swift Result type at the call site.
 

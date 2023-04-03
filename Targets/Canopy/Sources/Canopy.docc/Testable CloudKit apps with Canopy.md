@@ -4,7 +4,7 @@ How to use Canopy to build testable apps.
 
 ## Overview
 
-When you use Apple CloudKit API-s, your CloudKit code works against real CloudKit backends. Apple operates two CloudKit environments for you: “development” and “production”. You do your development work with debug build against development environment. The live version of your app uses the production environment.
+When you use Apple CloudKit APIs, your CloudKit code works against real CloudKit backends. Apple operates two CloudKit environments for you: “development” and “production”. You do your development work with debug build against development environment. The live version of your app uses the production environment.
 
 ![Testing CloudKit code without Canopy](testing-without-canopy)
 
@@ -69,7 +69,7 @@ The replaying mocks are not aware of your app’s data. You get the best results
 
 The above approach works well for unit testing where you can independently construct your features and inject dependencies to them.
 
-UI testing works differently. Your app is built and run as a black box, with the accessibility API-s controlling and introspecting the app UI. Traditional dependency injection does not work because the UI test does not have control how the application code gets built.
+UI testing works differently. Your app is built and run as a black box, with the accessibility APIs controlling and introspecting the app UI. Traditional dependency injection does not work because the UI test does not have control how the application code gets built.
 
 Canopy suggests an approach to UI testing where the desired state of the app is built on the UI test side, and injected into the application through the process environment. When the application starts, it sees whether it is running in debug configuration, and if so, whether the state has been injected. If so, it constructs its data store using the mock data and interacts with those, instead of the real cloud interfaces. See <doc:Thoughts-example-app> and its UI tests for a real example.
 
@@ -77,7 +77,7 @@ Canopy suggests an approach to UI testing where the desired state of the app is 
 
 This approach currently requires to always link your app against `CanopyTestTools`, slightly increasing the app size and complexity. We hope that there will be a way to do conditional linking only if the app is built for UI testing and needs to construct the mock store with replaying containers.
 
-Being able to inject the state via launch environment is one of the reasons why `ReplayingMockCKContainer`, `ReplayingMockCKDatabase` and all their nested types conform to `Codable`. The state can easily be encoded and decoded with standard encoding API-s, and you can have these types be part of other more complex nested `Codable` types, as you see done in Thoughts app example. 
+Being able to inject the state via launch environment is one of the reasons why `ReplayingMockCKContainer`, `ReplayingMockCKDatabase` and all their nested types conform to `Codable`. The state can easily be encoded and decoded with standard encoding APIs, and you can have these types be part of other more complex nested `Codable` types, as you see done in Thoughts app example. 
 
 ## Simulating request failures during live application use
 

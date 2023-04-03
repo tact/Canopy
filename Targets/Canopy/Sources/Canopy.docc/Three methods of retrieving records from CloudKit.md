@@ -22,11 +22,11 @@ After you have stored some records in CloudKit, there are three methods of retri
 
 ## The three methods
 
-Let’s call them “Query-based”, “Fetch-based” and “Changes-based”, because these are the names of tabs that you see in the [CloudKit dashboard](https://icloud.developer.apple.com/) which let you perform each of these methods interactively in the UI. If you have a CloudKit app, go to your app’s iCloud dashboard and play along. There are corresponding API-s for all of them that are mentioned below.
+Let’s call them “Query-based”, “Fetch-based” and “Changes-based”, because these are the names of tabs that you see in the [CloudKit dashboard](https://icloud.developer.apple.com/) which let you perform each of these methods interactively in the UI. If you have a CloudKit app, go to your app’s iCloud dashboard and play along. There are corresponding APIs for all of them that are mentioned below.
 
-When to use which method? It depends, obviously, on your exact scenario. Tact app uses all in various places, and Canopy has API-s for all. All of them have their own quirks, many of which are documented below. There is no “better” or “worse” method, just different tradeoffs for each.
+When to use which method? It depends, obviously, on your exact scenario. Tact app uses all in various places, and Canopy has APIs for all. All of them have their own quirks, many of which are documented below. There is no “better” or “worse” method, just different tradeoffs for each.
 
-Only Operation-based API-s are discussed below. There are other flavors of some of these methods available (like [fetching one record with a completion handler](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449126-fetch)), but it appears that most of the CloudKit documentation is geared towards operations. Most Canopy API-s are also based on these Operation-based API-s, so that’s what we’ll focus on.
+Only Operation-based APIs are discussed below. There are other flavors of some of these methods available (like [fetching one record with a completion handler](https://developer.apple.com/documentation/cloudkit/ckdatabase/1449126-fetch)), but it appears that most of the CloudKit documentation is geared towards operations. Most Canopy APIs are also based on these Operation-based APIs, so that’s what we’ll focus on.
 
 ## Query-based retrieving
 
@@ -62,11 +62,11 @@ This is the only API for retrieving records that provides decent **progress feed
 
 The previous two methods were kind of similar: retrieve some records from the current state of the database according to a specific input (query or record names). Changes-based retrieving is an entirely different beast. Instead of a query, I think of it as “stream of events”, where the events are “add record”, “modify record”, “delete record” (or equivalent zone modifications if you retrieve database changes). This method lets you get a playback of these events over a longer or shorter period of time.
 
-The two API-s for this are [CK fetch database changes operation](https://developer.apple.com/documentation/cloudkit/ckfetchdatabasechangesoperation) and its cousin [CK fetch record zone changes operation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonechangesoperation). (For brevity, the text below will refer to them below as CKFDCO and CKFRZCO. See-Kay-Fedco and See-Kay-Ferzco. Just rolling off your tongue.)
+The two APIs for this are [CK fetch database changes operation](https://developer.apple.com/documentation/cloudkit/ckfetchdatabasechangesoperation) and its cousin [CK fetch record zone changes operation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonechangesoperation). (For brevity, the text below will refer to them below as CKFDCO and CKFRZCO. See-Kay-Fedco and See-Kay-Ferzco. Just rolling off your tongue.)
 
-The corresponding Canopy API-s are ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)``. 
+The corresponding Canopy APIs are ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)``. 
 
-On the reference page of CKFDCO, Apple has one of the most useful bits of CloudKit documentation, hidden in the obscurity of documenting one specific operation, that describes the pattern for using these API-s together to most efficiently fetch changes of your app’s data in CloudKit.
+On the reference page of CKFDCO, Apple has one of the most useful bits of CloudKit documentation, hidden in the obscurity of documenting one specific operation, that describes the pattern for using these APIs together to most efficiently fetch changes of your app’s data in CloudKit.
 
 > When your app launches for the first time, use this operation to fetch all the database’s changes. Cache the results on-device and use [CKDatabaseSubscription](https://developer.apple.com/documentation/cloudkit/ckdatabasesubscription) to subscribe to future changes. Fetch those changes on receipt of the push notifications the subscription generates. It’s not necessary to perform a fetch each time your app launches, or to schedule fetches at regular intervals.
 
