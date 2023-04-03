@@ -13,7 +13,7 @@ public extension CKDatabaseAPIType {
       with: recordIDs,
       desiredKeys: desiredKeys,
       perRecordIDProgressBlock: perRecordIDProgressBlock,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
   
@@ -26,7 +26,7 @@ public extension CKDatabaseAPIType {
     await queryRecords(
       with: query,
       in: zoneID,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
   
@@ -41,7 +41,7 @@ public extension CKDatabaseAPIType {
       saving: recordsToSave,
       deleting: recordIDsToDelete,
       perRecordProgressBlock: perRecordProgressBlock,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
   
@@ -54,7 +54,7 @@ public extension CKDatabaseAPIType {
     await deleteRecords(
       with: query,
       in: zoneID,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
 
@@ -67,7 +67,7 @@ public extension CKDatabaseAPIType {
     await modifyZones(
       saving: recordZonesToSave,
       deleting: recordZoneIDsToDelete,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
 
@@ -78,7 +78,7 @@ public extension CKDatabaseAPIType {
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
     await fetchZones(
       with: recordZoneIDs,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
   
@@ -86,7 +86,7 @@ public extension CKDatabaseAPIType {
   func fetchAllZones(
     qualityOfService: QualityOfService = .default
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
-    await fetchAllZones(qualityOfService: qualityOfService)
+    await fetchAllZones(qos: qualityOfService)
   }
   
   /// FIXME shorthand modifySubscriptions
@@ -98,7 +98,7 @@ public extension CKDatabaseAPIType {
     await modifySubscriptions(
       saving: subscriptionsToSave,
       deleting: subscriptionIDsToDelete,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
   
@@ -106,7 +106,7 @@ public extension CKDatabaseAPIType {
   func fetchDatabaseChanges(
     qualityOfService: QualityOfService = .default
   ) async -> Result<FetchDatabaseChangesResult, CanopyError> {
-    await fetchDatabaseChanges(qualityOfService: qualityOfService)
+    await fetchDatabaseChanges(qos: qualityOfService)
   }
 
   /// FIXME shorthand fetchZoneChanges
@@ -118,7 +118,7 @@ public extension CKDatabaseAPIType {
     await fetchZoneChanges(
       recordZoneIDs: recordZoneIDs,
       fetchMethod: fetchMethod,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
 }

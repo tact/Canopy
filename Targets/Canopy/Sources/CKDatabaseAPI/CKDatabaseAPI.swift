@@ -26,7 +26,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     saving recordsToSave: [CKRecord]?,
     deleting recordIDsToDelete: [CKRecord.ID]?,
     perRecordProgressBlock: PerRecordProgressBlock?,
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
     let settings = await settingsProvider()
     let modifyRecordsBehavior = settings.modifyRecordsBehavior
@@ -62,7 +62,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       recordIDsToDelete: recordIDsToDelete,
       perRecordProgressBlock: perRecordProgressBlock,
       database: database,
-      qualityOfService: qualityOfService,
+      qualityOfService: qos,
       autoBatchToSmallerWhenLimitExceeded: settings.autoBatchTooLargeModifyOperations,
       autoRetryForRetriableErrors: settings.autoRetryForRetriableErrors
     )
@@ -71,27 +71,27 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   func queryRecords(
     with query: CKQuery,
     in zoneID: CKRecordZone.ID?,
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<[CKRecord], CKRecordError> {
     await QueryRecords.with(
       query,
       recordZoneID: zoneID,
       database: database,
-      qualityOfService: qualityOfService
+      qualityOfService: qos
     )
   }
   
   func deleteRecords(
     with query: CKQuery,
     in zoneID: CKRecordZone.ID?,
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
     let recordsResult = await QueryRecords.with(
       query,
       recordZoneID: zoneID,
       database: database,
       desiredKeys: [],
-      qualityOfService: qualityOfService
+      qualityOfService: qos
     )
     
     switch recordsResult {
@@ -105,7 +105,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
         saving: nil,
         deleting: recordIDs,
         perRecordProgressBlock: nil,
-        qualityOfService: qualityOfService
+        qualityOfService: qos
       )
     case let .failure(error):
       return .failure(error)
@@ -116,7 +116,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     with recordIDs: [CKRecord.ID],
     desiredKeys: [CKRecord.FieldKey]?,
     perRecordIDProgressBlock: PerRecordIDProgressBlock?,
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<FetchRecordsResult, CKRecordError> {
     await withCheckedContinuation { continuation in
       var foundRecords: [CKRecord] = []
@@ -125,7 +125,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
 
       let fetchRecordsOperation = CKFetchRecordsOperation(recordIDs: recordIDs)
       fetchRecordsOperation.perRecordProgressBlock = perRecordIDProgressBlock
-      fetchRecordsOperation.qualityOfService = qualityOfService
+      fetchRecordsOperation.qualityOfService = qos
       fetchRecordsOperation.desiredKeys = desiredKeys
 
       fetchRecordsOperation.perRecordResultBlock = { recordId, result in
@@ -172,11 +172,11 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   func modifyZones(
     saving recordZonesToSave: [CKRecordZone]?,
     deleting recordZoneIDsToDelete: [CKRecordZone.ID]?,
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<ModifyZonesResult, CKRecordZoneError> {
     await withCheckedContinuation { continuation in
       let zoneOperation = CKModifyRecordZonesOperation(recordZonesToSave: recordZonesToSave, recordZoneIDsToDelete: recordZoneIDsToDelete)
-      zoneOperation.qualityOfService = qualityOfService
+      zoneOperation.qualityOfService = qos
       
       var savedZones: [CKRecordZone] = []
       var deletedZoneIDs: [CKRecordZone.ID] = []
@@ -225,15 +225,15 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   }
   
   func fetchZones(
-    with recordZoneIDs: [CKRecordZone.ID], qualityOfService: QualityOfService
+    with recordZoneIDs: [CKRecordZone.ID], qos: QualityOfService
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
-    await fetchZones(type: .zoneIDs(recordZoneIDs), qualityOfService: qualityOfService)
+    await fetchZones(type: .zoneIDs(recordZoneIDs), qualityOfService: qos)
   }
   
   func fetchAllZones(
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
-    await fetchZones(type: .allZones, qualityOfService: qualityOfService)
+    await fetchZones(type: .allZones, qualityOfService: qos)
   }
 
   private func fetchZones(
@@ -282,11 +282,11 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   func modifySubscriptions(
     saving subscriptionsToSave: [CKSubscription]?,
     deleting subscriptionIDsToDelete: [CKSubscription.ID]?,
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<ModifySubscriptionsResult, CKSubscriptionError> {
     await withCheckedContinuation { continuation in
       let subscriptionOperation = CKModifySubscriptionsOperation(subscriptionsToSave: subscriptionsToSave, subscriptionIDsToDelete: subscriptionIDsToDelete)
-      subscriptionOperation.qualityOfService = qualityOfService
+      subscriptionOperation.qualityOfService = qos
       
       var savedSubscriptions: [CKSubscription] = []
       var deletedSubscriptionIDs: [CKSubscription.ID] = []
@@ -335,7 +335,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   }
 
   func fetchDatabaseChanges(
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<FetchDatabaseChangesResult, CanopyError> {
     await fetchDatabaseChangesSemaphore.wait()
     defer { fetchDatabaseChangesSemaphore.signal() }
@@ -370,7 +370,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       var purgedRecordZoneIDs: [CKRecordZone.ID] = []
       
       let changesOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: token)
-      changesOperation.qualityOfService = qualityOfService
+      changesOperation.qualityOfService = qos
       changesOperation.fetchAllChanges = true
       
       changesOperation.recordZoneWithIDChangedBlock = { recordZoneID in
@@ -431,7 +431,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   func fetchZoneChanges(
     recordZoneIDs: [CKRecordZone.ID],
     fetchMethod: FetchZoneChangesMethod,
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<FetchZoneChangesResult, CanopyError> {
     await fetchZoneChangesSemaphore.wait()
     defer { fetchZoneChangesSemaphore.signal() }
@@ -497,7 +497,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
       var zoneIDWithExpiredToken: CKRecordZone.ID?
       
       let changesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: recordZoneIDs, configurationsByRecordZoneID: configurations)
-      changesOperation.qualityOfService = qualityOfService
+      changesOperation.qualityOfService = qos
       changesOperation.fetchAllChanges = true // will send repeated requests until all changes fetched
       
       changesOperation.recordWasChangedBlock = { _, result in

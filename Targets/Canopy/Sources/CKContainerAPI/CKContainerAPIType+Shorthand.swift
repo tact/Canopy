@@ -8,7 +8,7 @@ public extension CKContainerAPIType {
   ) async -> Result<[CKShare.Participant], CKRecordError> {
     await fetchShareParticipants(
       with: lookupInfos,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
   
@@ -19,7 +19,7 @@ public extension CKContainerAPIType {
   ) async -> Result<[CKShare], CKRecordError> {
     await acceptShares(
       with: metadatas,
-      qualityOfService: qualityOfService
+      qos: qualityOfService
     )
   }
 }

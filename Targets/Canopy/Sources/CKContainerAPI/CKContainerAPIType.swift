@@ -29,11 +29,11 @@ public protocol CKContainerAPIType {
   /// This is the primary method how a shared record owner adds other members to the resource.
   func fetchShareParticipants(
     with lookupInfos: [CKUserIdentity.LookupInfo],
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<[CKShare.Participant], CKRecordError>
   
   func acceptShares(
     with metadatas: [CKShare.Metadata],
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<[CKShare], CKRecordError>
 }
