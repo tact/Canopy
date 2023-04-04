@@ -59,7 +59,7 @@ func test_success() async {
 
 You see that a `ReplayingMockCKDatabase` is initialized with one result to a modification operation. An API request is then run, and compared with the expected result, which in this case is a success. In the test suite, you will see similar tests also for failure scenarios.
 
-See the <doc:Thoughts-example-app> for how to build the features and tests in the context of a real app. The important thing to realize here is that most of your application and feature code does not know, and should not know, whether it is running against a real or mock backend. The point of dependency injection and controlling is to test the real behavior against an isolated mock, so you can have confidence that it behaves correctly in the live context.
+See the <doc:Thoughts-example-app> for how to build the features and tests in the context of a real app. The important thing to realize here is that most of your application and feature code does not know, and should not know, whether it is running against a real or mock backend. The point of dependency isolation and controlling is to test the real behavior against an isolated mock, so you can have confidence that it behaves correctly in the live context.
 
 The above simple example shows just one response being played back, but there’s no limit to how many responses a replaying mock has: it can have many, and you can test a complex multi-step CloudKit interaction with this approach. In Tact app, we have tests for application startup from both “blank” and “previously installed” states, which simulate tens of CloudKit requests in this fashion.
 
