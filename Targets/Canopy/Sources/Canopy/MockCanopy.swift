@@ -37,13 +37,28 @@ public struct MockCanopy: CanopyType {
     switch scope {
     case .public:
       guard let db = mockPublicDatabase else { fatalError("Requested public database which wasn’t correctly injected") }
-      return CKDatabaseAPI(db, settingsProvider: settingsProvider, tokenStore: TestTokenStore())
+      return CKDatabaseAPI(
+        database: db,
+        databaseScope: .public,
+        settingsProvider: settingsProvider,
+        tokenStore: TestTokenStore()
+      )
     case .private:
       guard let db = mockPrivateDatabase else { fatalError("Requested private database which wasn’t correctly injected") }
-      return CKDatabaseAPI(db, settingsProvider: settingsProvider, tokenStore: TestTokenStore())
+      return CKDatabaseAPI(
+        database: db,
+        databaseScope: .private,
+        settingsProvider: settingsProvider,
+        tokenStore: TestTokenStore()
+      )
     case .shared:
       guard let db = mockSharedDatabase else { fatalError("Requested shared database which wasn’t correctly injected") }
-      return CKDatabaseAPI(db, settingsProvider: settingsProvider, tokenStore: TestTokenStore())
+      return CKDatabaseAPI(
+        database: db,
+        databaseScope: .shared,
+        settingsProvider: settingsProvider,
+        tokenStore: TestTokenStore()
+      )
     @unknown default:
       fatalError("Unknown CloudKit database scope")
     }
@@ -51,6 +66,9 @@ public struct MockCanopy: CanopyType {
   
   public func containerAPI() -> CKContainerAPIType {
     guard let container = mockContainer else { fatalError("Requested CKContainer which wasn’t correctly injected") }
-    return CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 1))
+    return CKContainerAPI(
+      container: container,
+      accountChangedSequence: .mock(elementsToProduce: 1)
+    )
   }
 }

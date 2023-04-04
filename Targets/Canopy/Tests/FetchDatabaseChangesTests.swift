@@ -22,7 +22,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
       )
     ])
     let testTokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, tokenStore: testTokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: testTokenStore)
     let result = try? await api.fetchDatabaseChanges().get()
     XCTAssertEqual(result, FetchDatabaseChangesResult(
       changedRecordZoneIDs: [changedRecordZoneID1, changedRecordZoneID2],
@@ -45,7 +45,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
       )
     ])
     let testTokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings() }, tokenStore: testTokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { CanopySettings() }, tokenStore: testTokenStore)
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
@@ -66,7 +66,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
       )
     ])
     let testTokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, tokenStore: testTokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: testTokenStore)
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
@@ -88,7 +88,14 @@ final class FetchDatabaseChangesTests: XCTestCase {
       )
     ])
     let testTokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings(fetchDatabaseChangesBehavior: .regular(0.1)) }, tokenStore: testTokenStore)
+    let api = CKDatabaseAPI(
+      database: db,
+      databaseScope: .private,
+      settingsProvider: {
+        CanopySettings(fetchDatabaseChangesBehavior: .regular(0.1))
+      },
+      tokenStore: testTokenStore
+    )
     let result = try? await api.fetchDatabaseChanges().get()
     XCTAssertEqual(result, FetchDatabaseChangesResult(
       changedRecordZoneIDs: [changedRecordZoneID1],
@@ -112,7 +119,14 @@ final class FetchDatabaseChangesTests: XCTestCase {
       )
     ])
     let testTokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings(fetchDatabaseChangesBehavior: .simulatedFail(nil)) }, tokenStore: testTokenStore)
+    let api = CKDatabaseAPI(
+      database: db,
+      databaseScope: .private,
+      settingsProvider: {
+        CanopySettings(fetchDatabaseChangesBehavior: .simulatedFail(nil))
+      },
+      tokenStore: testTokenStore
+    )
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
@@ -140,7 +154,14 @@ final class FetchDatabaseChangesTests: XCTestCase {
       )
     ])
     let testTokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings(fetchDatabaseChangesBehavior: .simulatedFail(0.1)) }, tokenStore: testTokenStore)
+    let api = CKDatabaseAPI(
+      database: db,
+      databaseScope: .private,
+      settingsProvider: {
+        CanopySettings(fetchDatabaseChangesBehavior: .simulatedFail(0.1))
+      },
+      tokenStore: testTokenStore
+    )
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {

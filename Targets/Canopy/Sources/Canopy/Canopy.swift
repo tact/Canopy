@@ -41,11 +41,11 @@ public actor Canopy: CanopyType {
     let databaseAPI: CKDatabaseAPI
     switch scope {
     case .public:
-      databaseAPI = api(using: publicCloudDatabaseProvider())
+      databaseAPI = api(using: publicCloudDatabaseProvider(), scope: .public)
     case .private:
-      databaseAPI = api(using: privateCloudDatabaseProvider())
+      databaseAPI = api(using: privateCloudDatabaseProvider(), scope: .private)
     case .shared:
-      databaseAPI = api(using: sharedCloudDatabaseProvider())
+      databaseAPI = api(using: sharedCloudDatabaseProvider(), scope: .shared)
     @unknown default:
       fatalError("Unknown CKDatabase scope: \(scope)")
     }
@@ -57,13 +57,21 @@ public actor Canopy: CanopyType {
     if let containerAPI {
       return containerAPI
     } else {
-      let newContainerAPI = CKContainerAPI(containerProvider(), accountChangedSequence: .live)
+      let newContainerAPI = CKContainerAPI(
+        container: containerProvider(),
+        accountChangedSequence: .live
+      )
       containerAPI = newContainerAPI
       return newContainerAPI
     }
   }
 
-  private func api(using database: CKDatabaseType) -> CKDatabaseAPI {
-    CKDatabaseAPI(database, settingsProvider: settingsProvider, tokenStore: tokenStoreProvider())
+  private func api(using database: CKDatabaseType, scope: CKDatabase.Scope) -> CKDatabaseAPI {
+    CKDatabaseAPI(
+      database: database,
+      databaseScope: scope,
+      settingsProvider: settingsProvider,
+      tokenStore: tokenStoreProvider()
+    )
   }
 }

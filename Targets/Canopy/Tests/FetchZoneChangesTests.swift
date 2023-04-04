@@ -33,7 +33,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: tokenStore)
     let result = try! await api.fetchZoneChanges(
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
@@ -71,7 +71,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: tokenStore)
     let result = try! await api.fetchZoneChanges(
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenOnly
@@ -111,7 +111,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: tokenStore)
 
     do {
       let _ = try await api.fetchZoneChanges(
@@ -148,7 +148,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: tokenStore)
     
     do {
       let _ = try await api.fetchZoneChanges(
@@ -186,7 +186,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: tokenStore)
     
     do {
       let _ = try await api.fetchZoneChanges(
@@ -228,7 +228,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings(fetchZoneChangesBehavior: .regular(0.1)) }, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { CanopySettings(fetchZoneChangesBehavior: .regular(0.1)) }, tokenStore: tokenStore)
     let result = try! await api.fetchZoneChanges(
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
@@ -266,7 +266,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings(fetchZoneChangesBehavior: .simulatedFail(nil)) }, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { CanopySettings(fetchZoneChangesBehavior: .simulatedFail(nil)) }, tokenStore: tokenStore)
     do {
       let _ = try await api.fetchZoneChanges(
         recordZoneIDs: [zoneID],
@@ -311,7 +311,7 @@ final class FetchZoneChangesTests: XCTestCase {
       )
     ])
     let tokenStore = TestTokenStore()
-    let api = CKDatabaseAPI(db, settingsProvider: { CanopySettings(fetchZoneChangesBehavior: .simulatedFail(0.1)) }, tokenStore: tokenStore)
+    let api = CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { CanopySettings(fetchZoneChangesBehavior: .simulatedFail(0.1)) }, tokenStore: tokenStore)
     do {
       let _ = try await api.fetchZoneChanges(
         recordZoneIDs: [zoneID],

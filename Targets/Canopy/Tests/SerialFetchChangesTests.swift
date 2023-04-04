@@ -91,12 +91,12 @@ final class SerialFetchChangesTests: XCTestCase {
           )
         )
       ],
-      scope: .private,
       sleep: 0.1
     )
     
     let api = CKDatabaseAPI(
-      testDB,
+      database: testDB,
+      databaseScope: .private,
       tokenStore: BalancingTokenStore(
         databaseViolationReporter: { scope in
           XCTFail("Token balance error for database scope: \(scope)")
@@ -157,12 +157,12 @@ final class SerialFetchChangesTests: XCTestCase {
           )
         )
       ],
-      scope: .private,
       sleep: 0.01
     )
     
     let api = CKDatabaseAPI(
-      testDB,
+      database: testDB,
+      databaseScope: .private,
       tokenStore: BalancingTokenStore(
         databaseViolationReporter: { _ in },
         zoneViolationReporter: { zoneID in
