@@ -35,8 +35,7 @@ final class DependencyTests: XCTestCase {
                 )
               )
             )
-          ],
-          scope: .private
+          ]
         )
       )
     } operation: {

@@ -18,7 +18,7 @@ final class ContainerAPITests: XCTestCase {
         )
       ]
     )
-    let containerAPI = CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     let result = try? await containerAPI.userRecordID.get()
     XCTAssertEqual(result, recordID)
   }
@@ -30,7 +30,7 @@ final class ContainerAPITests: XCTestCase {
         .userRecordID(.init(userRecordID: nil, error: ckError))
       ]
     )
-    let containerAPI = CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
       let _ = try await containerAPI.userRecordID.get()
     } catch {
@@ -44,7 +44,7 @@ final class ContainerAPITests: XCTestCase {
         .accountStatus(.init(status: .available, error: nil))
       ]
     )
-    let containerAPI = CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     let result = try? await containerAPI.accountStatus.get()
     XCTAssertEqual(result, .available)
   }
@@ -55,7 +55,7 @@ final class ContainerAPITests: XCTestCase {
         .accountStatus(.init(status: .available, error: nil))
       ]
     )
-    let containerAPI = CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     let result = try! await containerAPI.accountStatus.get()
     XCTAssertEqual(result, .available)
     
@@ -78,7 +78,7 @@ final class ContainerAPITests: XCTestCase {
         )
       ]
     )
-    let containerAPI = CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
       let _ = try await containerAPI.accountStatus.get()
     } catch {
@@ -96,7 +96,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 3))
+    let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 3))
     var statuses: [CKAccountStatus] = []
     let stream = try? await containerAPI.accountStatusStream.get()
     for await status in stream! {
@@ -115,7 +115,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(container, accountChangedSequence: .mock(elementsToProduce: 2))
+    let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 2))
     var statuses1: [CKAccountStatus] = []
     
     let stream1 = try! await containerAPI.accountStatusStream.get()
@@ -159,7 +159,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     let participants = try? await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     XCTAssertEqual(participants, [CKShare.Participant.mock, CKShare.Participant.mock])
   }
@@ -188,7 +188,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
       let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     } catch {
@@ -220,7 +220,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
       let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     } catch {
@@ -245,7 +245,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     let shares = try! await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     XCTAssertEqual(shares.count, 2)
   }
@@ -267,7 +267,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
       let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     } catch {
@@ -292,7 +292,7 @@ final class ContainerAPITests: XCTestCase {
       ]
     )
     
-    let containerAPI = CKContainerAPI(mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
+    let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
       let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     } catch {

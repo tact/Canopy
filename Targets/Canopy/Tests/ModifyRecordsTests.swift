@@ -5,7 +5,7 @@ import XCTest
 
 final class ModifyRecordsTests: XCTestCase {
   private func databaseAPI(_ db: CKDatabaseType, settings: CanopySettingsType = CanopySettings()) -> CKDatabaseAPIType {
-    CKDatabaseAPI(db, settingsProvider: { settings }, tokenStore: TestTokenStore())
+    CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { settings }, tokenStore: TestTokenStore())
   }
   
   private func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
@@ -210,7 +210,8 @@ final class ModifyRecordsTests: XCTestCase {
     )
     
     let databaseAPI = CKDatabaseAPI(
-      db,
+      database: db,
+      databaseScope: .private,
       settingsProvider: { CanopySettings(autoBatchTooLargeModifyOperations: true) },
       tokenStore: TestTokenStore()
     )
@@ -246,7 +247,8 @@ final class ModifyRecordsTests: XCTestCase {
     )
     
     let databaseAPI = CKDatabaseAPI(
-      db,
+      database: db,
+      databaseScope: .private,
       settingsProvider: { CanopySettings(autoBatchTooLargeModifyOperations: false) },
       tokenStore: TestTokenStore()
     )
@@ -276,7 +278,8 @@ final class ModifyRecordsTests: XCTestCase {
     )
     
     let databaseAPI = CKDatabaseAPI(
-      db,
+      database: db,
+      databaseScope: .private,
       settingsProvider: { CanopySettings(autoRetryForRetriableErrors: true) },
       tokenStore: TestTokenStore()
     )
@@ -305,7 +308,8 @@ final class ModifyRecordsTests: XCTestCase {
     )
     
     let databaseAPI = CKDatabaseAPI(
-      db,
+      database: db,
+      databaseScope: .private,
       settingsProvider: { CanopySettings(autoRetryForRetriableErrors: false) },
       tokenStore: TestTokenStore()
     )

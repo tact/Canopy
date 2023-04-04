@@ -7,8 +7,6 @@ public actor ReplayingMockCKDatabase {
   /// How many `add` calls were made to this database.
   public private(set) var operationsRun = 0
   
-  let scope: CKDatabase.Scope
-  
   /// Whether to sleep in the operations where sleep has been enabled.
   let sleep: Float?
   
@@ -27,11 +25,9 @@ public actor ReplayingMockCKDatabase {
   
   public init(
     operationResults: [OperationResult] = [],
-    scope: CKDatabase.Scope = .private,
     sleep: Float? = nil
   ) {
     self.operationResults = operationResults
-    self.scope = scope
     self.sleep = sleep
   }
   
@@ -75,8 +71,6 @@ public actor ReplayingMockCKDatabase {
 
 extension ReplayingMockCKDatabase: CKDatabaseType {
   public nonisolated var debugDescription: String { "ReplayingMockCKDatabase" }
-  
-  public nonisolated var databaseScope: CKDatabase.Scope { scope }
   
   public nonisolated func add(_ operation: CKDatabaseOperation) {
     Task {
