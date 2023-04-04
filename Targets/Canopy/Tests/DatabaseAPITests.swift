@@ -10,11 +10,11 @@ import XCTest
 /// Some tests are in individual test classes (fetch changes).
 final class DatabaseAPITests: XCTestCase {
   private func databaseAPI(_ db: CKDatabaseType, settings: CanopySettingsType = CanopySettings()) -> CKDatabaseAPIType {
-    CKDatabaseAPI(db, settingsProvider: { settings }, tokenStore: TestTokenStore())
+    CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { settings }, tokenStore: TestTokenStore())
   }
   
   func test_init_with_default_settings() async {
-    let databaseAPI = CKDatabaseAPI(ReplayingMockCKDatabase(), tokenStore: TestTokenStore())
+    let databaseAPI = CKDatabaseAPI(database: ReplayingMockCKDatabase(), databaseScope: .private, tokenStore: TestTokenStore())
     let fetchDatabaseChangesBehavior = await databaseAPI.settingsProvider().fetchDatabaseChangesBehavior
     XCTAssertEqual(fetchDatabaseChangesBehavior, .regular(nil))
   }

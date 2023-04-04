@@ -6,6 +6,7 @@ import Semaphore
 
 class CKDatabaseAPI: CKDatabaseAPIType {
   private let database: CKDatabaseType
+  private let databaseScope: CKDatabase.Scope
   internal let settingsProvider: () async -> CanopySettingsType
   private let tokenStore: TokenStoreType
   private let fetchDatabaseChangesSemaphore = AsyncSemaphore(value: 1)
@@ -13,11 +14,13 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   private let logger = Logger(subsystem: "Canopy", category: "CloudKitSyncAPI")
 
   init(
-    _ database: CKDatabaseType,
+    database: CKDatabaseType,
+    databaseScope: CKDatabase.Scope,
     settingsProvider: @escaping () async -> CanopySettingsType = { CanopySettings() },
     tokenStore: TokenStoreType
   ) {
     self.database = database
+    self.databaseScope = databaseScope
     self.settingsProvider = settingsProvider
     self.tokenStore = tokenStore
   }
@@ -340,6 +343,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     await fetchDatabaseChangesSemaphore.wait()
     defer { fetchDatabaseChangesSemaphore.signal() }
     
+    let databaseScope = self.databaseScope
     let fetchDatabaseChangesBehavior = await settingsProvider().fetchDatabaseChangesBehavior
     switch fetchDatabaseChangesBehavior {
     case let .regular(delay):
@@ -362,7 +366,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     
     let database = database
     let tokenStore = tokenStore
-    let token = await tokenStore.tokenForDatabaseScope(database.databaseScope)
+    let token = await tokenStore.tokenForDatabaseScope(databaseScope)
 
     return await withCheckedContinuation { continuation in
       var changedRecordZoneIDs: [CKRecordZone.ID] = []
@@ -402,7 +406,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
             // We don’t re-run the operation automatically, because the caller may also
             // want to clear or change its local state in this case.
             Task {
-              await tokenStore.storeToken(nil, forDatabaseScope: database.databaseScope)
+              await tokenStore.storeToken(nil, forDatabaseScope: databaseScope)
               continuation.resume(returning: .failure(requestError))
             }
           } else {
@@ -411,7 +415,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
         case let .success((token, _)):
           // We assume moreComing to be false, because we specified fetchAllChanges = true above.
           Task { [changedRecordZoneIDs, deletedRecordZoneIDs, purgedRecordZoneIDs] in
-            await tokenStore.storeToken(token, forDatabaseScope: database.databaseScope)
+            await tokenStore.storeToken(token, forDatabaseScope: databaseScope)
             continuation.resume(
               returning: .success(
                 .init(

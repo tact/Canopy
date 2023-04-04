@@ -5,7 +5,7 @@ actor CKContainerAPI: CKContainerAPIType {
   let container: CKContainerType
   var statusContinuation: AsyncStream<CKAccountStatus>.Continuation?
   
-  init(_ container: CKContainerType, accountChangedSequence: CKAccountChangedSequence) {
+  init(container: CKContainerType, accountChangedSequence: CKAccountChangedSequence) {
     self.container = container
     Task {
       for await _ in accountChangedSequence {
