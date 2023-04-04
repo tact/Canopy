@@ -301,6 +301,23 @@ final class DatabaseAPITests: XCTestCase {
     }
   }
   
+  func test_fetch_all_zones_success() async {
+    let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
+    let db = ReplayingMockCKDatabase(operationResults: [
+      .fetchZones(
+        .init(
+          fetchZoneResults: [
+            .init(zoneID: mockZone.zoneID, result: .success(mockZone))
+          ],
+          fetchZonesResult: .init(result: .success(()))
+        )
+      )
+    ])
+    let api = databaseAPI(db)
+    let result = try! await api.fetchAllZones(qualityOfService: .default).get()
+    XCTAssertTrue(result.first!.isEqualToZone(mockZone))
+  }
+  
   func test_fetch_zones_success() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
     let db = ReplayingMockCKDatabase(operationResults: [
