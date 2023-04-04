@@ -70,8 +70,6 @@ public actor ReplayingMockCKDatabase {
 }
 
 extension ReplayingMockCKDatabase: CKDatabaseType {
-  public nonisolated var debugDescription: String { "ReplayingMockCKDatabase" }
-  
   public nonisolated func add(_ operation: CKDatabaseOperation) {
     Task {
       await privateAdd(operation)
