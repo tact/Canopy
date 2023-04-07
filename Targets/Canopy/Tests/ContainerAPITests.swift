@@ -87,6 +87,12 @@ final class ContainerAPITests: XCTestCase {
   }
   
   func test_accountStatus_stream() async {
+    // This test was sometimes failing. The cause was that the account statuses were sometimes delivered out of order.
+    // https://github.com/tact/Canopy/issues/6
+    // Got a repeatable scenario by running this as a stress test with many iterations.
+    // A fix is to delay the status change notifications in the mock stream by a small amount.
+    // Not great because it makes the tests slower. Better solution would be to somehow ensure
+    // that the status deliveries are never out-of-order in ReplayingMockCKContainer.
     let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil)),
@@ -98,12 +104,13 @@ final class ContainerAPITests: XCTestCase {
     
     let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 3))
     var statuses: [CKAccountStatus] = []
-    let stream = try? await containerAPI.accountStatusStream.get()
-    for await status in stream! {
+    let stream = try! await containerAPI.accountStatusStream.get()
+    for await status in stream {
       statuses.append(status)
       if statuses.count == 3 { break }
     }
-    XCTAssertEqual(statuses, [.available, .noAccount, .restricted])
+    let expectedStatuses: [CKAccountStatus] = [.available, .noAccount, .restricted]
+    XCTAssertEqual(statuses, expectedStatuses)
   }
   
   func test_accountStatus_twoStreams() async {

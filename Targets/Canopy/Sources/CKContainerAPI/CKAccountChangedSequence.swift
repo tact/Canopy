@@ -39,6 +39,10 @@ struct CKAccountChangedSequence: AsyncSequence {
         guard mockElementsToProduce > 0 else {
           return nil
         }
+        // Don’t emit the signal too quickly.
+        // Otherwise this was causing some flaky tests and out-of-order status delivery.
+        // A better solution would be to better sequence the task creation in ReplayingMockCKContainer.
+        try? await Task.sleep(nanoseconds: UInt64(0.01 * Double(NSEC_PER_SEC)))
         mockElementsToProduce -= 1
         return ()
       case let .live(notifications):
