@@ -61,5 +61,4 @@ Token store manages client-side storage of database and zone change tokens. You 
 - ``ModifyZonesResult``
 - ``ModifySubscriptionsResult``
 - ``FetchZoneChangesResult``
-- ``FetchRecordChangesResult``
 - ``DeletedCKRecord``
