@@ -108,7 +108,7 @@ Some highlights from documentation:
 
 ### Example app
 
-The `Thoughts` example app showcases using Canopy in a real app, and demonstrates some best practices for modern multi-platform, multi-window app development.
+The [Thoughts](https://github.com/Tact/Thoughts) example app showcases using Canopy in a real app, and demonstrates some best practices for modern multi-platform, multi-window app development.
 
 [Thoughts example app](https://canopy-docs.justtact.com/documentation/canopy/thoughts-example-app)
 
