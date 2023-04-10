@@ -5,7 +5,8 @@ public extension CKContainerAPIType {
   ///
   /// This is one step of implementing a custom record sharing interface. You obtain share participants and add them to a `CKShare`.
   ///
-  /// For more info, see [CKFetchShareParticipantsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchshareparticipantsoperation/). Canopy internally calls this operation to execute this function.
+  /// For more info, see [CKFetchShareParticipantsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchshareparticipantsoperation/).
+  /// Canopy internally calls this operation to execute this function.
   ///
   /// - Parameters:
   ///   - lookupInfos: An array of user lookup infos to resolve into share participants.
@@ -26,9 +27,11 @@ public extension CKContainerAPIType {
   
   /// Obtain access to a CKShare after the system has prompted the user to accept the share.
   ///
-  /// After the user uses the OS-provided interface to accept joining a shared record in CloudKit, your app is called with the share metadata. You must then use this `acceptShares` call, to convert the metadata into a real share which you then have access to.
+  /// After the user uses the OS-provided interface to accept joining a shared record in CloudKit, your app is called with the share metadata.
+  /// You must then use this `acceptShares` call, to convert the metadata into a real share which you then have access to.
   ///
-  /// For more info, see [CKAcceptSharesOperation.](https://developer.apple.com/documentation/cloudkit/ckacceptsharesoperation) Canopy internally calls this operation to execute this function.
+  /// For more info, see [CKAcceptSharesOperation.](https://developer.apple.com/documentation/cloudkit/ckacceptsharesoperation)
+  /// Canopy internally calls this operation to execute this function.
   ///
   /// - Parameters:
   ///   - with: An array of `CKShare.Metadata` that you received e.g from the underlying system, which to convert into shares.

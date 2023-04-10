@@ -221,7 +221,8 @@ public extension CKDatabaseAPIType {
   
   /// Fetch changes that have happened in a given CKDatabase.
   ///
-  /// Change-based fetching is a powerful way to work with CloudKit. See the chapter “Changes-based retrieving” in <doc:Three-methods-of-retrieving-records-from-CloudKit> for how it works.
+  /// Change-based fetching is a powerful way to work with CloudKit. See the chapter “Changes-based retrieving”
+  /// in <doc:Three-methods-of-retrieving-records-from-CloudKit> for how it works.
   ///
   /// Fetching changes with Canopy is serialized. You can call this function multiple times and simultaneously. Only
   /// one change fetch request is processed at a time: later requests wait for earlier ones to finish.
@@ -242,7 +243,8 @@ public extension CKDatabaseAPIType {
 
   /// Fetch changes that have happened in a given `CKRecordZone`.
   ///
-  /// Change-based fetching is a powerful way to work with CloudKit. See the chapter “Changes-based retrieving” in <doc:Three-methods-of-retrieving-records-from-CloudKit> for how it works.
+  /// Change-based fetching is a powerful way to work with CloudKit. See the chapter “Changes-based retrieving”
+  /// in <doc:Three-methods-of-retrieving-records-from-CloudKit> for how it works.
   ///
   /// Fetching changes with Canopy is serialized. You can call this function multiple times and simultaneously. Only
   /// one change fetch request is processed at a time: later requests wait for earlier ones to finish.
