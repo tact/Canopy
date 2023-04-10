@@ -12,7 +12,7 @@ Following is an overview of the behaviors that Canopy implements.
 
 [CKQueryOperation](https://developer.apple.com/documentation/cloudkit/ckqueryoperation) returns records in response to a query. If the number is large, the operation also returns a cursor, and you must re-run the operation with this cursor to get the next page of the results, and keep repeating this process until there is no more cursor returned, which means that you have received all results.
 
-The maximum limit isn’t specified and may also change over time. It has previously been around a few hundred records per response. You shouldn’t rely on this being any specific number.
+The maximum limit of records returned per page isn’t specified and may change over time. It has previously been around a few hundred records per response. You shouldn’t rely on this being any specific number.
 
 Canopy’s corresponding API ``CKDatabaseAPIType/queryRecords(with:in:qualityOfService:)`` handles all of the above for you, so you never need to implement cursors. You run the query, and in the end, you get back a single set of results, no matter how many CloudKit queries it actually took to get them. Canopy internally handles all the cursors and paging. There is currently no behavior in Canopy to just return one page.
 

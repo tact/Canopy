@@ -40,7 +40,7 @@ Thoughts is architected to be testable and mockable. You can see this with Swift
 
 ## Future ideas
 
-**Full offline mode.** Although Thoughts functions with CloudKit connectivity problems, it does not function fully as an offline app. When there is a problem saving data to CloudKit, Thoughts retries a few times through Canopy’s auto-retry, but eventually gives up, and does not attempt another save when the connection is restored. Another save attempt is made only after you again edit a thought. Fully functional offline mode would be an interesting extension.
+**Full offline mode.** Although Thoughts functions with CloudKit connectivity problems, it does not function fully as an offline app. When there is a problem saving data to CloudKit, Thoughts retries a few times through Canopy’s auto-retry, but eventually gives up if there really is no connection (or there is a permanent simulated error), and does not attempt another save when the connection is restored. Another save attempt is made only after you again edit a thought. Fully functional offline mode would be an interesting extension.
 
 **Preserving window state.** Although Thoughts remembers window positions and sizes on macOS automatically through SwiftUI magic, it currently does not preserve the navigation state.
 

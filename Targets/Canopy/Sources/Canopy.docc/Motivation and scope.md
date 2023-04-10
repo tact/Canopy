@@ -8,7 +8,7 @@ A summary of Canopy motivation, technical design goals, and scope.
 
 Out of the box, CloudKit provides you a set of APIs and two runtime environments, “development” and “production”, both running in iCloud. There’s no support for local testing.
 
-Canopy is built on top of CloudKit APIs and aims to make it easier to develop solid CloudKit apps. Here are some the elements that drive the design of the Canopy package.
+Canopy is built on top of CloudKit API and aims to make it easier to develop solid CloudKit apps. Here are some the elements that drive the design of the Canopy package.
 
 ## Testable CloudKit apps
 
@@ -63,7 +63,7 @@ The Thoughts example app is a complement to Canopy and showcases best practices 
 
 ## Scope
 
-CloudKit comes in two flavors. The first and earlier one is vanilla CloudKit, which is the main interest area for Canopy. It’s conceptually very simple: you put `CKRecord`s in, you get `CKRecord`s back. It doesn’t prescribe anything about your client-side storage.
+CloudKit comes in two flavors. The first and earlier one is vanilla CloudKit, which is the main interest area for Canopy. It’s conceptually very simple: you store a `CKRecord` into CloudKit’s bucket of records, and you get the same `CKRecord` back. It doesn’t prescribe anything about your client-side storage.
 
 CloudKit started with this approach, and its core design has remained stable. It has received some modifications along the way. For example, initially you could only share record hierarchies with other participants, but later on, entire record zone sharing was added. Canopy does not currently implement record zone sharing, but it fits within the project goals and vision and can be added.
 

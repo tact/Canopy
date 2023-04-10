@@ -2,8 +2,8 @@ import CanopyTypes
 import CloudKit
 
 /// A static mock version of Canopy, appropriate for using in tests or other contexts
-/// where you need to isolate the CloudKit dependency and provide a static
-/// deterministic view of the CloudKit data.
+/// where you need to isolate the CloudKit dependency and provide a
+/// deterministic view of CloudKit data with simulated mock data.
 ///
 /// You initialize MockCanopy with instances of mock container and databases.
 /// The Canopy API then receives API calls and plays back the responses to those

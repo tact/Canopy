@@ -12,7 +12,7 @@ It is good that the two environments are separated like this. However, your depe
 
 Testing all the combinations of connectivity, data and account state is tedious.
 
-For longer discussion on isolating dependencies, read [“What are dependencies?”](https://pointfreeco.github.io/swift-dependencies/main/documentation/dependencies/whataredependencies) by Pointfreeco. Although it discusses a simplistic clock example, all your network and cloud dependencies, including CloudKit, are examples of dependencies you want to isolate for reliable and fast tests and previews.
+For a longer discussion on isolating dependencies, read [“What are dependencies?”](https://pointfreeco.github.io/swift-dependencies/main/documentation/dependencies/whataredependencies) by [Point-Free.](https://www.pointfree.co) Although it discusses a simplistic clock example, all your network and cloud dependencies, including CloudKit, are examples of dependencies you want to isolate for reliable and fast tests and previews.
 
 ## Isolating CloudKit dependency with replaying mock containers
 
@@ -61,9 +61,9 @@ You see that a `ReplayingMockCKDatabase` is initialized with one result to a mod
 
 See the <doc:Thoughts-example-app> for how to build the features and tests in the context of a real app. The important thing to realize here is that most of your application and feature code does not know, and should not know, whether it is running against a real or mock backend. The point of dependency isolation and controlling is to test the real behavior against an isolated mock, so you can have confidence that it behaves correctly in the live context.
 
-The above simple example shows just one response being played back, but there’s no limit to how many responses a replaying mock has: it can have many, and you can test a complex multi-step CloudKit interaction with this approach. In Tact app, we have tests for application startup from both “blank” and “previously installed” states, which simulate tens of CloudKit requests in this fashion.
+The above simple example shows just one response being played back, but there’s no limit to how many responses a replaying mock has: it can have many, and you can test a complex multi-step CloudKit interaction with this approach. In [Tact app](https://justtact.com), we have tests for application startup from both “blank” and “previously installed” states, which simulate tens of CloudKit requests in this fashion.
 
-The replaying mocks are not aware of your app’s data. You get the best results with them if you first develop your app a bit against CloudKit development environment, so you have some idea about what is the real shape of CloudKit responses. You can then build tests with replaying mocks, simulating those responses. Replaying mocks have no way to check that the responses make sense: you can construct completely nonsensical scenarios with them, and make your app respond adequately, if you so choose.
+The replaying mocks are not aware of your app’s data model and semantics. You get the best results with them if you first develop your app a bit against CloudKit development environment, so you have some idea about what is the real shape of CloudKit responses. You can then build tests with replaying mocks, simulating those responses. Replaying mocks have no way to check that the responses make sense: you can construct completely nonsensical scenarios with them, and make your app respond adequately, if you so choose.
 
 ## Using Canopy replaying mock containers with UI testing
 
@@ -75,13 +75,13 @@ Canopy suggests an approach to UI testing where the desired state of the app is 
 
 ![UI testing with Canopy](testing-ui)
 
-This approach currently requires to always link your app against `CanopyTestTools`, slightly increasing the app size and complexity. We hope that there will be a way to do conditional linking only if the app is built for UI testing and needs to construct the mock store with replaying containers.
+This approach currently requires to always link your app against `CanopyTestTools`, slightly increasing the app size and complexity. We hope to find a way to conditionally link the app against the test tools only if the app is built in test/debug configuration and needs to construct the mock store with replaying containers.
 
-Being able to inject the state via launch environment is one of the reasons why `ReplayingMockCKContainer`, `ReplayingMockCKDatabase` and all their nested types conform to `Codable`. The state can easily be encoded and decoded with standard encoding APIs, and you can have these types be part of other more complex nested `Codable` types, as you see done in Thoughts app example. 
+Being able to inject the state via launch environment is one of the reasons why `ReplayingMockCKContainer`, `ReplayingMockCKDatabase` and all their nested types conform to `Codable`. The state can easily be encoded and decoded with standard encoding APIs, and you can have these types be part of other more complex nested `Codable` types, as you see in Thoughts app example. 
 
 ## Simulating request failures during live application use
 
-Testing is something that you do in isolation or during continuous integration. Most of your non-engineering staff is not directly involved in the approaches to testing described above.
+Testing is something that you do during development or continuous integration. Most of your non-engineering staff is not directly involved in the approaches to testing described above.
 
 Canopy offers another method of testing that you can use with your wider team during the development period or even live use of your app, in the context of real data and devices: _simulating failures_. The idea is that during real use, your app behaves mostly as expected, but you can control it to explicitly fail some requests, which lets you test the UI of error handling.
 
