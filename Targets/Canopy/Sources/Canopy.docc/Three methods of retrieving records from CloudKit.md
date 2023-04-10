@@ -1,6 +1,6 @@
 # Three methods of retrieving records from CloudKit
 
-A discussion of how you can retrieve records from CloudKit.
+You can ask CloudKit for records with a query operation, fetch specific records, or only recent changes.
 
 ## Overview
 

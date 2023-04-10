@@ -1,6 +1,6 @@
 # Features and behaviors
 
-Canopy implements some standard features and behaviors for working with CloudKit.
+Canopy implements several standard features and behaviors for working with CloudKit.
 
 ## Overview
 

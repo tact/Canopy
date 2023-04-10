@@ -1,6 +1,6 @@
 # Thoughts example app
 
-Thoughts is an example app that showcases how to build and test your code with Canopy, as well as other best practices for modern app development.
+Thoughts is a sample app that shows how to build and test your code with Canopy, and illustrates several other best practices for modern app development.
 
 ## Overview
 

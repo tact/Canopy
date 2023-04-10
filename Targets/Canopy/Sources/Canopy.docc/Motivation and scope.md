@@ -1,6 +1,6 @@
 # Motivation and scope
 
-A summary of Canopy motivation, technical design goals, and scope.
+A summary of the motivation, technical design goals, and scope of the Canopy project.
 
 ## Overview
 

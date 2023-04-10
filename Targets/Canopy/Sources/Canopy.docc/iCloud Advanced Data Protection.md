@@ -1,6 +1,6 @@
 # iCloud Advanced Data Protection
 
-A discussion of what Advanced Data Protection for iCloud means for your CloudKit app.
+What Advanced Data Protection for iCloud means for your CloudKit app.
 
 _This article was [originally published](https://blog.justtact.com/advanced-data-protection/) on Tact engineering blog. Slightly edited for Canopy documentation._
 
