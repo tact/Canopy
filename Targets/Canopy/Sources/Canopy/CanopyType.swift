@@ -15,7 +15,7 @@ import Foundation
 /// database and container APIs that it vends. Instead, just request the database and container API every time when
 /// you need to run API requests.
 ///
-/// For testability, your features should built in a way where they interact with Canopy CloudKit APIs, without needing
+/// For testability, you should build your features in a way where they interact with Canopy CloudKit APIs, without needing
 /// to know whether they are talking to a real or mock backend.
 public protocol CanopyType {
   
