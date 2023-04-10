@@ -2,17 +2,17 @@
 
 What Advanced Data Protection for iCloud means for your CloudKit app.
 
-_This article was [originally published](https://blog.justtact.com/advanced-data-protection/) on Tact engineering blog. Slightly edited for Canopy documentation._
+_This article was [originally published](https://blog.justtact.com/advanced-data-protection/) on the Tact engineering blog. Slightly edited for Canopy documentation._
 
 In December 2022, Apple announced [powerful new data protections.](https://www.apple.com/newsroom/2022/12/apple-advances-user-security-with-powerful-new-data-protections/) Of the three announced protections, iMessage Contact Key Verification is specific to Messages, and thus beyond the scope of this post.
 
 Let’s talk about the other two.
 
-Security Keys for Apple ID do not have a direct impact on your app and its data, but are indirectly a great way to improve the security of user accounts. Since CloudKit apps use the users’ iCloud account which in turn uses their Apple ID, do consider using a hardware security key to further secure yourself, and discuss this also with your users.
+Security Keys for Apple ID do not have a direct impact on your app and its data, but are indirectly a great way to improve the security of user accounts. Since CloudKit apps use the users’ iCloud accounts which in turn use their Apple IDs, do consider using a hardware security key to further secure yourself, and discuss this also with your users.
 
 Advanced Data Protection (ADP) for iCloud is the most intriguing of the three, and the rest of this article will discuss how it can improve the security of user data in CloudKit apps.
 
-TL;DR: your app’s records in iCloud will be end-to-end encrypted if certain conditions are met. You have no way to verify some of the conditions on your end.
+**TL;DR:** your app’s records in iCloud will be end-to-end encrypted if certain conditions are met. You have no way to verify some of the conditions on your end.
 
 ## iCloud security basics
 
@@ -35,7 +35,7 @@ In a nutshell, data in both cases is encrypted both in transit and at rest in th
 
 If you use CloudKit to store your app data in iCloud, you need to look at the [encryptedValues](https://developer.apple.com/documentation/cloudkit/ckrecord/3746821-encryptedvalues) API in `CKRecord`. This is your single entry point to storing and retrieving the encrypted values that could be end-to-end encrypted with Advanced Data Protection.
 
-There’s three categories of data to think about.
+There are three categories of data to think about.
 
 * `CKAsset` records are already always encrypted.
 * `CKReference` fields are never encrypted, since the server needs access to them to identify relations between records.
@@ -45,11 +45,11 @@ You lose certain features with encryption. As the documentation says:
 
 > CloudKit doesn’t support indexes on encrypted fields. Don’t include encrypted fields in your predicate or sort descriptors when fetching records with `CKQuery` and `CKQueryOperation`.
 
-This is pretty obvious, but worth mentioning. Since the server no longer has access to the field contents, you obviously cannot query, search or sort by them.
+This is pretty obvious, but worth mentioning. Since the server no longer has access to the field contents, you obviously cannot query, search, or sort by them.
 
 ## Sharing
 
-Sharing has impact on ADP and end-to-end encryption. The data security overview says:
+Sharing has an impact on ADP and end-to-end encryption. The data security overview says:
 
 > iWork collaboration, the Shared Albums feature in Photos, and sharing content with “anyone with the link,” do not support Advanced Data Protection. When you use these features, the encryption keys for the shared content are securely uploaded to Apple data centers so that iCloud can facilitate real-time collaboration or web sharing.
 
@@ -61,7 +61,7 @@ Let’s now put all the pieces together and ask: when is the data in a given `CK
 
 1. You use the `encryptedValues` API and `CKAsset` to store the data that you want to protect.
 2. If the record belongs in a shared record hierarchy, `publicPermission` on the `CKShare` that governs the share is `none`.
-3. Current user, and in case of shared record also all other users, have ADP enabled on their iCloud account.
+3. The current user, and in case of shared record also all other users, have ADP enabled on their iCloud account.
 
 As a developer, you have control over conditions 1 and 2. Here’s the thing though: **you have no way to tell at runtime in your app if condition 3 is met.** There is no way for you to know if the current user or other `CKShare` members have ADP enabled on their account or not.
 
@@ -77,6 +77,6 @@ This makes perfect sense. Not exposing users’ account choices is a good approa
 
 People interested in Tact sometimes ask me about end-to-end encryption. Until now, I had to say Tact just doesn’t have any. Now, I can say that it’s there if the above conditions are met.
 
-Implementing any security protocol correctly, including end-to-end encryption, is hard. I have infinitely more faith in Apple’s than my own ability to do it well. I hope that they will follow up with independent security analyses and audits that’s common industry practice for these kinds of systems, to provide users and developers extra assurance in their implementation.
+Implementing any security protocol correctly, including end-to-end encryption, is hard. I have infinitely more faith in Apple’s than my own ability to do it well. I hope that they will follow up with independent security analyses and audits that are common industry practice for these kinds of systems, to provide users and developers extra assurance in their implementation.
 
 As a developer, since you don’t have access to users’ account choices, you have no way to definitively inform your users about whether ADP applies to the data they store in your system. The best you can do today is complete your part of the equation by using `encryptedValues` and `CKAsset`s, and educating your users about enabling ADP on their account if they choose to do so.
