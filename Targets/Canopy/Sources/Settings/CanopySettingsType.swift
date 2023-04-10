@@ -54,9 +54,9 @@ public protocol CanopySettingsType {
   
   /// Retry failed operations that are retriable.
   ///
-  /// Some operations can fail, but CloudKit indicates that you can retry them.
+  /// Some CloudKit operations can fail, but CloudKit indicates that you can retry them.
   /// For example, modification operations can fail because there is no network,
-  /// or a zone is busy (multiple writes happening at the cloud side).
+  /// or a zone is busy (multiple writes to a record zone are happening on the cloud side).
   ///
   /// CloudKit indicates such situations with an error code, and also indicates
   /// a delay after which it advises to try again.
