@@ -44,7 +44,7 @@ If there is a need for other behaviors that consider the server change tag, thes
 
 Note that regardless of the save policy, CloudKit always returns a [recordChangeTag](https://developer.apple.com/documentation/cloudkit/ckrecord/1462195-recordchangetag) with all your CKRecords. This indicates the version of a given record. If you so choose, you can store this, and compare it to the `recordChangeTag` returned in future requests for the same record, to understand whether a record has changed on the cloud side.
 
-### Auto-batching modification requests to smaller batches if needed
+## Auto-batching modification requests to smaller batches if needed
 
 If you run a [CKModifyRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckmodifyrecordsoperation) with a dataset that is too large, you may receive back the [limitExceeded](https://developer.apple.com/documentation/cloudkit/ckerror/code/limitexceeded) error. This indicates that you must split your operation in half and try again.
 
@@ -52,7 +52,7 @@ Canopy implements this automatically. You can submit an arbitrarily large modifi
 
 If you’d like, you can turn this behavior off by setting ``CanopySettingsType/autoBatchTooLargeModifyOperations`` to `false` in Canopy settings. You will then get back the `limitExceeded` error and can implement the reaction to it in your own code.
 
-### Auto-retrying modification for retriable errors
+## Auto-retrying modification for retriable errors
 
 `CKModifyRecordsOperation` may return an error that indicates you can retry the operation after a while. Two common cases where it happens is flaky network conditions and multiple people modifying the same CloudKit zone at the same time (e.g multiple users adding content to the same zone and parent record).
 
@@ -67,3 +67,9 @@ Fetching database and zone changes with change tokens is a powerful way to under
 When using this technique, you should have only one change request of a given type “in flight” at any given time. If you run two simultaneous requests to receive zone changes for the same zone, you may receive back two different change tokens and two different sets of records. It’s difficult to reason about which of them is the “right” one.
 
 Canopy serializes the database and zone fetches and makes sure only one request of a given type is in flight at any given time. You may still ask it to run many requests, but execution of later requests will wait for earlier ones to finish.
+
+## Account status stream for current user
+
+Observing account status changes for the current user is a multi-step process with the system CloudKit API. You must listen to [CKAccountChanged](https://developer.apple.com/documentation/foundation/nsnotification/name/1399172-ckaccountchanged) notifications. Whenever you get one, you need to use the [accountStatus](https://developer.apple.com/documentation/cloudkit/ckcontainer/1399180-accountstatus) API of `CKContainer` to find out what the actual status is.
+
+Canopy does all of this work internally, and provides you a simple stream of the account statuses. See ``CKContainerAPIType/accountStatusStream``.
