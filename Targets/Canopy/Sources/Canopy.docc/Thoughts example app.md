@@ -26,17 +26,17 @@ _I would like to keep a list of my thoughts that syncs neatly across all my devi
 
 ![Thoughts SwiftUI previews](thoughts-previews)
 
-**Ready for Advanced Data Protection.** Thoughts uses [encryptedValues](https://developer.apple.com/documentation/cloudkit/ckrecord/3746821-encryptedvalues) to store all the private user data, so if the user has Advanced Data Protection on their account, end-to-end encryption will apply. Read more: <doc:iCloud-Advanced-Data-Protection>
+**Ready for Advanced Data Protection.** Thoughts uses [encryptedValues](https://developer.apple.com/documentation/cloudkit/ckrecord/3746821-encryptedvalues) to store all the private user data, so if the user has enabled Advanced Data Protection on their account, end-to-end encryption will apply. For details, see <doc:iCloud-Advanced-Data-Protection>.
 
 ## Architecture
 
 ![Thoughts architecture](thoughts-architecture)
 
-The Thoughts architecture could perhaps be labeled “store and viewmodels”. There is a central store that acts as in-memory source of truth while the app is running, and interacts both with views and external world. Viewmodels use Store as their data source, and keep view-local state such as the transient state of UI in a view.
+The Thoughts architecture could perhaps be labeled “store and viewmodels”. There is a central store that acts as the in-memory source of truth while the app is running, and interacts both with views and the external world. Viewmodels use Store as their data source, and keep view-local state such as the transient state of UI in a view.
 
 The division of “UI-land” and “Backend-land” is arbitrary. Perhaps the clearest distinction is that the UI-land code is running in the main queue, as all UI code on Apple platforms must, though there are some exceptions (viewmodels have long-running background tasks to subscribe and react to store changes).
 
-Thoughts is architected to be testable and mockable. You can see this with SwiftUI previews. Even though you may not be able to build and run the app (at least until you replace the team and container IDs with your own ones), you can get a taste of the whole app UI via tests and previews.
+Thoughts is architected to be testable and mockable. You can see this with SwiftUI previews. Even though you may not be able to build and run the app (at least until you replace the team and container IDs with your own), you can get a taste of the whole app UI via tests and previews.
 
 ## Future ideas
 
@@ -44,4 +44,4 @@ Thoughts is architected to be testable and mockable. You can see this with Swift
 
 **Preserving window state.** Although Thoughts remembers window positions and sizes on macOS automatically through SwiftUI magic, it currently does not preserve the navigation state.
 
-**Sharing and collaboration.** Currently, Thoughts is designed to work only in a single user scenario, but the data model design has possible sharing in mind. Most importantly, its records on CloudKit are stored in a custom zone in the user’s private CloudKit database. Should sharing with other users ever get implemented in Thoughts, it will be straightforward from CloudKit perspective.
+**Sharing and collaboration.** Currently, Thoughts is designed to work only in a single user scenario, but the data model design has possible sharing in mind. Most importantly, its records on CloudKit are stored in a custom zone in the user’s private CloudKit database. Should sharing with other users ever be implemented in Thoughts, it will be straightforward from a CloudKit perspective.
