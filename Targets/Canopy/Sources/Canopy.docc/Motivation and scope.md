@@ -36,7 +36,7 @@ You can easily convert it to a throwing call like this:
 
 ```swift
 do {
-  let result = await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(…).get()
+  let result = try await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(…).get()
   // use result
 } catch {
   // handle thrown error
