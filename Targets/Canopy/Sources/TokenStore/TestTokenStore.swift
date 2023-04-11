@@ -1,5 +1,11 @@
 import CloudKit
 
+/// A token store that does not actually store any tokens, but counts how often its methods are called.
+///
+/// This store is appropriate to use in tests and previews, where you do not need any real interaction with the tokens.
+///
+/// The function call counts are used by Canopy test suite. You can also use them in your own tests, to make sure
+/// that the tokens are actually stored and requested as you expect.
 public class TestTokenStore: TokenStoreType {
   public init() {}
   

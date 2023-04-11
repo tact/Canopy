@@ -1,6 +1,6 @@
 import CloudKit
 
-/// CKFetchRecordsOperation successful result
+/// Successful result for a function call to fetch records.
 public struct FetchRecordsResult {
   /// Records that were found.
   public let foundRecords: [CKRecord]

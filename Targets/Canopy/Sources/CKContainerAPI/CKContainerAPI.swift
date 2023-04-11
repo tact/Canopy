@@ -67,13 +67,13 @@ actor CKContainerAPI: CKContainerAPIType {
   
   nonisolated func fetchShareParticipants(
     with lookupInfos: [CKUserIdentity.LookupInfo],
-    qualityOfService: QualityOfService
+    qos: QualityOfService
   ) async -> Result<[CKShare.Participant], CKRecordError> {
     await withCheckedContinuation { continuation in
       var participants: [CKShare.Participant] = []
       var recordError: CKRecordError?
       let fetchParticipantsOperation = CKFetchShareParticipantsOperation(userIdentityLookupInfos: lookupInfos)
-      fetchParticipantsOperation.qualityOfService = qualityOfService
+      fetchParticipantsOperation.qualityOfService = qos
       
       fetchParticipantsOperation.perShareParticipantResultBlock = { _, result in
         switch result {
@@ -97,18 +97,17 @@ actor CKContainerAPI: CKContainerAPIType {
         }
       }
       
-      fetchParticipantsOperation.qualityOfService = qualityOfService
       container.add(fetchParticipantsOperation)
     }
   }
   
-  nonisolated func acceptShares(with metadatas: [CKShare.Metadata], qualityOfService: QualityOfService) async -> Result<[CKShare], CKRecordError> {
+  nonisolated func acceptShares(with metadatas: [CKShare.Metadata], qos: QualityOfService) async -> Result<[CKShare], CKRecordError> {
     await withCheckedContinuation { continuation in
       var recordError: CKRecordError?
       var acceptedShares: [CKShare] = []
       
       let acceptSharesOperation = CKAcceptSharesOperation(shareMetadatas: metadatas)
-      acceptSharesOperation.qualityOfService = qualityOfService
+      acceptSharesOperation.qualityOfService = qos
       
       acceptSharesOperation.perShareResultBlock = { _, result in
         switch result {

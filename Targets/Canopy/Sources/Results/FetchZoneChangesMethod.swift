@@ -22,7 +22,9 @@ public enum FetchZoneChangesMethod {
   ///
   /// It would be nice to have this as an API on CloudKit record zones, to fetch
   /// the current change token. Doing a “playback” of all history to get
-  /// just the current token is a bit of an inefficient hack/workaround.
+  /// just the current token is an inefficient hack/workaround. See last chapter
+  /// of <doc:Three-methods-of-retrieving-records-from-CloudKit>
+  /// for a longer discussion.
   case changeTokenOnly
 
   var desiredKeys: [CKRecord.FieldKey]? {

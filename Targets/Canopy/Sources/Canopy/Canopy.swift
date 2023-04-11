@@ -4,7 +4,7 @@ import Foundation
 
 /// Main Canopy implementation.
 ///
-/// You construct it with injected CloudKit container and databases, token store, and settings provider closure.
+/// You construct Canopy with injected CloudKit container and databases, token store, and settings provider.
 /// Canopy has reasonable defaults for all of these, and you need to only override the ones that need to use
 /// a different value from the default.
 public actor Canopy: CanopyType {
@@ -18,6 +18,18 @@ public actor Canopy: CanopyType {
   private var containerAPI: CKContainerAPI?
   private var databaseAPIs: [CKDatabase.Scope: CKDatabaseAPI] = [:]
 
+  /// Initialize the live Canopy API.
+  ///
+  /// - Parameters:
+  ///   - container: A real or mock `CKContainer`.
+  ///   - publicCloudDatabase: a real or mock `CKDatabase` instance representing the public CloudKit database.
+  ///   - privateCloudDatabase: a real or mock `CKDatabase` instance representing the private CloudKit database.
+  ///   - privateCloudDatabase: a real or mock `CKDatabase` instance representing the shared CloudKit database.
+  ///   - settings: a closure that returns Canopy settings.
+  ///   Canopy requests settings from the closure every time that it runs a request whose behavior might be altered by the settings.
+  ///   This is designed as a closure because the settings may change during application runtime.
+  ///   - tokenStore: an object that stores and returns zone and database tokens for the requests that work with the tokens.
+  ///   Canopy only interacts with the token store when using the ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)`` APIs. If you don’t use these APIs, you can ignore this parameter.
   public init(
     container: @escaping @autoclosure () -> CKContainerType = CKContainer.default(),
     publicCloudDatabase: @escaping @autoclosure () -> CKDatabaseType = CKContainer.default().publicCloudDatabase,
