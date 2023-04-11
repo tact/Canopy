@@ -41,7 +41,7 @@ Canopy provides all its API as `async Result`. Many people prefer to instead use
 
 ```swift
 do {
-  let result = await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecords(…).get()
+  let result = try await Canopy().databaseAPI(usingDatabaseScope: .private).fetchRecords(…).get()
   // use result
 } catch {
   // handle thrown error
