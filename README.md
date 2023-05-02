@@ -50,7 +50,7 @@ do {
 
 ### Dependency injection for testability
 
-Canopy is designed for enabling your code to be testable. You do your part by using [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) pattern in most of your code and features. Most of your code should not instatiate Canopy directly, but should receive it from outside. For example:
+Canopy is designed for enabling your code to be testable. You do your part by using [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) pattern in most of your code and features. Most of your code should not instantiate Canopy directly, but should receive it from outside. For example:
 
 ```swift
 actor MyService {
