@@ -11,7 +11,7 @@ var dependencies: [PackageDescription.Package.Dependency] = [
   ),
   .package(
     url: "https://github.com/pointfreeco/swift-dependencies",
-    from: "0.2.0"
+    from: "1.0.0"
   )
 ]
 
