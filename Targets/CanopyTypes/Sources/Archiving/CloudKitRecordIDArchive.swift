@@ -11,7 +11,7 @@ import Foundation
 
 public struct CloudKitRecordIDArchive: Codable {
   private let data: Data
-
+  
   public var recordIDs: [CKRecord.ID] {
     do {
       let decodedRecords = try NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: CKRecord.ID.self, from: data)
