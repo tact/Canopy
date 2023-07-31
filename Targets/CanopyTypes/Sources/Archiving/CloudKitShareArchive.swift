@@ -14,7 +14,7 @@ public struct CloudKitShareArchive: Codable {
 
   public var shares: [CKShare] {
     do {
-      let decodedShares = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
+      let decodedShares = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, CKShare.self], from: data)
       return decodedShares as? [CKShare] ?? []
     } catch {
       return []

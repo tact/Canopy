@@ -11,10 +11,10 @@ import Foundation
 
 public struct CloudKitRecordArchive: Codable {
   private let data: Data
-
+  
   public var records: [CKRecord] {
     do {
-      let decodedRecords = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
+      let decodedRecords = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, CKRecord.self], from: data)
       return decodedRecords as? [CKRecord] ?? []
     } catch {
       return []
