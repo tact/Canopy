@@ -6,7 +6,7 @@ public struct CloudKitShareMetadataArchive: Codable {
 
   public var shareMetadatas: [CKShare.Metadata] {
     do {
-      let decodedShareMetadatas = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data)
+      let decodedShareMetadatas = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, CKShare.Metadata.self], from: data)
       return decodedShareMetadatas as? [CKShare.Metadata] ?? []
     } catch {
       return []
