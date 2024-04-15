@@ -45,6 +45,10 @@ public extension CKDatabaseAPIType {
   ///   - with: The `CKQuery` specifying your query. See [CloudKit documentation for CKQuery](https://developer.apple.com/documentation/cloudkit/ckquery)
   ///   about how to construct your query.
   ///   - in: The record zone ID to query the records from. or `nil` to use the default zone.
+  ///   - resultsLimit: An optional number of results to return. By default (if this is `nil`),
+  ///   this function returns all matching results, which may be retrieved across several queries. Specify a results limit
+  ///   to set a cap. Note that this should be equal or lower to the CloudKit limit of maximum results per query, which
+  ///   is around a few hundred.
   ///   - qualityOfService: The desired quality of service of the request. Defaults to `.default` if not provided.
   ///
   /// - Returns:
@@ -53,11 +57,13 @@ public extension CKDatabaseAPIType {
   func queryRecords(
     with query: CKQuery,
     in zoneID: CKRecordZone.ID?,
+    resultsLimit: Int? = nil,
     qualityOfService: QualityOfService = .default
   ) async -> Result<[CKRecord], CKRecordError> {
     await queryRecords(
       with: query,
       in: zoneID,
+      resultsLimit: resultsLimit,
       qos: qualityOfService
     )
   }
