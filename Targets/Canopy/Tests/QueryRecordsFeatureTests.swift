@@ -72,6 +72,34 @@ final class QueryRecordsFeatureTests: XCTestCase {
     XCTAssertEqual(records[19].recordID.recordName, "id20")
   }
   
+  func test_results_limit_query() async {
+    let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
+    let db = ReplayingMockCKDatabase(
+      operationResults: [
+        .query(
+          .init(
+            queryRecordResults: records(startIndex: 1, endIndex: 10).map {
+              ReplayingMockCKDatabase.QueryRecordResult(recordID: $0.recordID, result: .success($0))
+            },
+            queryResult: .init(result: .success(CKQueryOperation.Cursor.mock))
+          )
+        )
+      ]
+    )
+    
+    let records = try! await QueryRecords.with(
+      query,
+      recordZoneID: nil,
+      database: db,
+      resultsLimit: 10
+    ).get()
+    XCTAssertEqual(records.count, 10)
+    let operationsRun = await db.operationsRun
+    XCTAssertEqual(operationsRun, 1)
+    XCTAssertEqual(records[0].recordID.recordName, "id1")
+    XCTAssertEqual(records[9].recordID.recordName, "id10")
+  }
+  
   func test_depth3_query() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(

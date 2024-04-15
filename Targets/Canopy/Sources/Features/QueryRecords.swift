@@ -30,6 +30,7 @@ struct QueryRecords {
     recordZoneID: CKRecordZone.ID?,
     database: CKDatabaseType,
     desiredKeys: [CKRecord.FieldKey]? = nil,
+    resultsLimit: Int? = nil,
     qualityOfService: QualityOfService = .default
   ) async -> Result<[CKRecord], CKRecordError> {
     var startingPoint = QueryOperationStartingPoint.query(query)
@@ -41,6 +42,7 @@ struct QueryRecords {
         recordZoneID: recordZoneID,
         database: database,
         desiredKeys: desiredKeys,
+        resultsLimit: resultsLimit,
         qualityOfService: qualityOfService
       )
       
@@ -53,6 +55,11 @@ struct QueryRecords {
         guard !Task.isCancelled else {
           return .failure(.init(from: CKError(CKError.Code.operationCancelled)))
         }
+        // If there was a results limit, just return the result even if there was a cursor
+        if resultsLimit != nil {
+          return .success(records + newRecords)
+        }
+        
         startingPoint = QueryOperationStartingPoint.cursor(cursor)
         records += newRecords
       }
@@ -64,6 +71,7 @@ struct QueryRecords {
     recordZoneID: CKRecordZone.ID?,
     database: CKDatabaseType,
     desiredKeys: [CKRecord.FieldKey]? = nil,
+    resultsLimit: Int? = nil,
     qualityOfService: QualityOfService = .userInitiated
   ) async -> QueryOperationResult {
     await withCheckedContinuation { continuation in
@@ -81,6 +89,10 @@ struct QueryRecords {
       operation.zoneID = recordZoneID
       operation.desiredKeys = desiredKeys
       operation.qualityOfService = qualityOfService
+      
+      if let resultsLimit {
+        operation.resultsLimit = resultsLimit
+      }
       
       operation.recordMatchedBlock = { _, result in
         switch result {

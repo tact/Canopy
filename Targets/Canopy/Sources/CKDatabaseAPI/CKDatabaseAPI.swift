@@ -74,12 +74,14 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   func queryRecords(
     with query: CKQuery,
     in zoneID: CKRecordZone.ID?,
+    resultsLimit: Int?,
     qos: QualityOfService
   ) async -> Result<[CKRecord], CKRecordError> {
     await QueryRecords.with(
       query,
       recordZoneID: zoneID,
       database: database,
+      resultsLimit: resultsLimit,
       qualityOfService: qos
     )
   }

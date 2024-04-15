@@ -15,10 +15,11 @@ public protocol CKDatabaseAPIType {
   typealias PerRecordProgressBlock = (CKRecord, Double) -> Void
   typealias PerRecordIDProgressBlock = (CKRecord.ID, Double) -> Void
 
-  /// See ``CKDatabaseAPIType/queryRecords(with:in:qualityOfService:)`` for preferred way of calling this API.
+  /// See ``CKDatabaseAPIType/queryRecords(with:in:resultsLimit:qualityOfService:)`` for preferred way of calling this API.
   func queryRecords(
     with query: CKQuery,
     in zoneID: CKRecordZone.ID?,
+    resultsLimit: Int?,
     qos: QualityOfService
   ) async -> Result<[CKRecord], CKRecordError>
 
