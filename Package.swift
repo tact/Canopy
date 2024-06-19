@@ -47,7 +47,7 @@ let package = Package(
         "CanopyTypes",
         .product(name: "Dependencies", package: "swift-dependencies")
       ],
-      path: "Targets/Canopy/Sources",
+      path: "Targets/Canopy/Sources"
       // https://danielsaidi.com/blog/2022/05/18/how-to-suppress-linking-warning
       // Canopy by default gives a warning about unsafe code for application extensions. Not sure why it says that.
       // See the above blog post for more info.
@@ -55,33 +55,21 @@ let package = Package(
       // This could also be obsolete, latest Canopy does not give warnings with extensions any more.
       // Keeping this info here just for a while longer.
       // linkerSettings: [.unsafeFlags(["-Xlinker", "-no_application_extension"])]
-      swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency")
-      ]
     ),
     .target(
       name: "CanopyTestTools",
       dependencies: ["CanopyTypes"],
-      path: "Targets/CanopyTestTools/Sources",
-      swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency")
-      ]
+      path: "Targets/CanopyTestTools/Sources"
     ),
     .testTarget(
       name: "CanopyTests",
       dependencies: ["Canopy", "CanopyTestTools"],
-      path: "Targets/Canopy/Tests",
-      swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency")
-      ]
+      path: "Targets/Canopy/Tests"
     ),
     .target(
       name: "CanopyTypes",
       dependencies: [],
-      path: "Targets/CanopyTypes/Sources",
-      swiftSettings: [
-        .enableExperimentalFeature("StrictConcurrency")
-      ]
+      path: "Targets/CanopyTypes/Sources"
     )
   ]
 )
