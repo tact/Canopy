@@ -3,6 +3,7 @@ import CanopyTestTools
 import CloudKit
 import XCTest
 
+@available(iOS 16.4, macOS 13.3, *)
 final class CanopyTests: XCTestCase {
   func test_init_with_default_settings() async {
     let _ = Canopy(

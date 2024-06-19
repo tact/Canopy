@@ -18,6 +18,7 @@ import XCTest
 /// fetches. Next fetches wait for previous ones to finish.
 ///
 /// These tests make sure that this behavior is correct.
+@available(iOS 16.4, macOS 13.3, *)
 final class SerialFetchChangesTests: XCTestCase {
   /// A token store that balances calls to getting and storing tokens.
   ///

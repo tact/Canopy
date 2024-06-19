@@ -5,6 +5,7 @@ import CloudKit
 import Foundation
 import XCTest
 
+@available(iOS 16.4, macOS 13.3, *)
 final class FetchDatabaseChangesTests: XCTestCase {
   func test_success() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)

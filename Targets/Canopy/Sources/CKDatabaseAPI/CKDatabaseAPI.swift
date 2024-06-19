@@ -4,6 +4,7 @@ import Foundation
 import os.log
 import Semaphore
 
+@available(iOS 16.4, macOS 13.3, *)
 actor CKDatabaseAPI: CKDatabaseAPIType {
   private let database: CKDatabaseType
   private let databaseScope: CKDatabase.Scope

@@ -7,6 +7,7 @@ import Foundation
 /// You construct Canopy with injected CloudKit container and databases, token store, and settings provider.
 /// Canopy has reasonable defaults for all of these, and you need to only override the ones that need to use
 /// a different value from the default.
+@available(iOS 16.4, macOS 13.3, *)
 public actor Canopy: CanopyType {
   private let containerProvider: @Sendable () -> CKContainerType
   private let publicCloudDatabaseProvider: @Sendable () -> CKDatabaseType

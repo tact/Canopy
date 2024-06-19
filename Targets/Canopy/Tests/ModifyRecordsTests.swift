@@ -3,6 +3,7 @@ import CanopyTestTools
 import CloudKit
 import XCTest
 
+@available(iOS 16.4, macOS 13.3, *)
 final class ModifyRecordsTests: XCTestCase {
   private func databaseAPI(_ db: CKDatabaseType, settings: CanopySettingsType = CanopySettings()) -> CKDatabaseAPIType {
     CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { settings }, tokenStore: TestTokenStore())
