@@ -2,7 +2,7 @@ import CloudKit
 import Foundation
 
 /// Archive optionally containing a cursor.
-public struct CloudKitCursorArchive: Codable {
+public struct CloudKitCursorArchive: Codable, Sendable {
   private let data: Data
 
   public var cursor: CKQueryOperation.Cursor? {

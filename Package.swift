@@ -62,17 +62,26 @@ let package = Package(
     .target(
       name: "CanopyTestTools",
       dependencies: ["CanopyTypes"],
-      path: "Targets/CanopyTestTools/Sources"
+      path: "Targets/CanopyTestTools/Sources",
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency")
+      ]
     ),
     .testTarget(
       name: "CanopyTests",
       dependencies: ["Canopy", "CanopyTestTools"],
-      path: "Targets/Canopy/Tests"
+      path: "Targets/Canopy/Tests",
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency")
+      ]
     ),
     .target(
       name: "CanopyTypes",
       dependencies: [],
-      path: "Targets/CanopyTypes/Sources"
+      path: "Targets/CanopyTypes/Sources",
+      swiftSettings: [
+        .enableExperimentalFeature("StrictConcurrency")
+      ]
     )
   ]
 )

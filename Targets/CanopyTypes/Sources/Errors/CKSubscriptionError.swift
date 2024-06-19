@@ -11,7 +11,7 @@ import Foundation
 
 // CKSubscriptionError for CKSubscriptions.
 // In this type, the keys are expected to be CKSubscription.ID,
-public struct CKSubscriptionError: CKTransactionError, Codable, Equatable {
+public struct CKSubscriptionError: CKTransactionError, Codable, Equatable, Sendable {
   public let code: Int
   public let localizedDescription: String
   public let retryAfterSeconds: Double

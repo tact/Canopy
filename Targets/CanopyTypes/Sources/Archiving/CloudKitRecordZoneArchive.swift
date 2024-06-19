@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct CloudKitRecordZoneArchive: Codable {
+public struct CloudKitRecordZoneArchive: Codable, Sendable {
   private let data: Data
 
   public var zones: [CKRecordZone] {

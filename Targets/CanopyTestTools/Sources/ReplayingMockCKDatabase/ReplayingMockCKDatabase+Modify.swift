@@ -4,7 +4,7 @@ import CloudKit
 // Types and functionality for CKModifyRecordsOperation results.
 public extension ReplayingMockCKDatabase {
   /// Result for one saved record. perRecordSaveBlock is called with this.
-  struct SavedRecordResult: Codable {
+  struct SavedRecordResult: Codable, Sendable {
     let recordIDArchive: CloudKitRecordIDArchive
     let codableResult: CodableResult<CloudKitRecordArchive, CKRecordError>
     
@@ -25,7 +25,7 @@ public extension ReplayingMockCKDatabase {
   }
   
   /// Result for one deleted record. perRecordDeleteBlock is called with this.
-  struct DeletedRecordIDResult: Codable {
+  struct DeletedRecordIDResult: Codable, Sendable {
     let recordIDArchive: CloudKitRecordIDArchive
     let codableResult: CodableResult<CodableVoid, CKRecordError>
     
@@ -45,7 +45,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct ModifyResult: Codable {
+  struct ModifyResult: Codable, Sendable {
     let codableResult: CodableResult<CodableVoid, CKRecordError>
     
     public init(result: Result<Void, Error>) {
@@ -63,7 +63,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct ModifyOperationResult: Codable {
+  struct ModifyOperationResult: Codable, Sendable {
     let savedRecordResults: [SavedRecordResult]
     let deletedRecordIDResults: [DeletedRecordIDResult]
     let modifyResult: ModifyResult

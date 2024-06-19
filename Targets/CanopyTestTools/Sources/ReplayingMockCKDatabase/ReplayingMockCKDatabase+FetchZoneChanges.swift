@@ -2,7 +2,7 @@ import CanopyTypes
 import CloudKit
 
 public extension ReplayingMockCKDatabase {
-  struct RecordWasChangedInZoneResult: Codable {
+  struct RecordWasChangedInZoneResult: Codable, Sendable {
     let recordIDArchive: CloudKitRecordIDArchive
     let codableResult: CodableResult<CloudKitRecordArchive, CKRequestError>
     
@@ -22,7 +22,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct RecordWithIDWasDeletedInZoneResult: Codable {
+  struct RecordWithIDWasDeletedInZoneResult: Codable, Sendable {
     let recordIDArchive: CloudKitRecordIDArchive
     let recordType: CKRecord.RecordType
     
@@ -32,13 +32,13 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  internal struct OneZoneFetchResultSuccess: Codable {
+  internal struct OneZoneFetchResultSuccess: Codable, Sendable {
     let serverChangeTokenArchive: CloudKitServerChangeTokenArchive
     let clientChangeTokenData: Data?
     let moreComing: Bool
   }
   
-  struct OneZoneFetchResult: Codable {
+  struct OneZoneFetchResult: Codable, Sendable {
     let zoneIDArchive: CloudKitRecordZoneIDArchive
     let codableResult: CodableResult<OneZoneFetchResultSuccess, CKRequestError>
 
@@ -78,7 +78,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct FetchZoneChangesResult: Codable {
+  struct FetchZoneChangesResult: Codable, Sendable {
     let codableResult: CodableResult<CodableVoid, CKRequestError>
         
     public init(result: Result<Void, Error>) {
@@ -96,7 +96,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct FetchZoneChangesOperationResult: Codable {
+  struct FetchZoneChangesOperationResult: Codable, Sendable {
     let recordWasChangedInZoneResults: [RecordWasChangedInZoneResult]
     let recordWithIDWasDeletedInZoneResults: [RecordWithIDWasDeletedInZoneResult]
     let oneZoneFetchResults: [OneZoneFetchResult]

@@ -7,7 +7,7 @@ extension ReplayingMockCKDatabase {
     let moreComing: Bool
   }
   
-  public struct FetchDatabaseChangesResult: Codable {
+  public struct FetchDatabaseChangesResult: Codable, Sendable {
     let codableResult: CodableResult<FetchDatabaseChangesSuccess, CanopyError>
     
     public static let success = FetchDatabaseChangesResult(result: .success((serverChangeToken: CKServerChangeToken.mock, moreComing: false)))
@@ -29,7 +29,7 @@ extension ReplayingMockCKDatabase {
     }
   }
   
-  public struct FetchDatabaseChangesOperationResult: Codable {
+  public struct FetchDatabaseChangesOperationResult: Codable, Sendable {
     /// A successful result that indicates no changes.
     ///
     /// Useful to use in tests and previews where you don’t need to inject any results, to save some typing.
