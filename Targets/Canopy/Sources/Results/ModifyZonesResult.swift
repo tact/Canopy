@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct ModifyZonesResult: Equatable {
+public struct ModifyZonesResult: Equatable, Sendable {
   public let savedZones: [CKRecordZone]
   public let deletedZoneIDs: [CKRecordZone.ID]
   

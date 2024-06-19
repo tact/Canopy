@@ -8,7 +8,7 @@ import Foundation
 /// Limiting record key fields may reduce the download size if you are
 /// interested only in the tokens, or only some specific fields (but e.g
 /// not asset fields that may contain large files).
-public enum FetchZoneChangesMethod {
+public enum FetchZoneChangesMethod: Sendable {
   /// Fetch tokens and all available data.
   case changeTokenAndAllData
   

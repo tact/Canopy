@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct FetchZoneChangesResult {
+public struct FetchZoneChangesResult: Sendable {
   public let changedRecords: [CKRecord]
   public let deletedRecords: [DeletedCKRecord]
   

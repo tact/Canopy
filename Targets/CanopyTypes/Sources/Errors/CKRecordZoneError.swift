@@ -11,7 +11,7 @@ import Foundation
 
 // CKRecordZoneError for CKRecordZones.
 // In this type, the keys are expected to be CKRecord.ID,
-public struct CKRecordZoneError: CKTransactionError, Codable, Equatable {
+public struct CKRecordZoneError: CKTransactionError, Codable, Equatable, Sendable {
   public let code: Int
   public let localizedDescription: String
   public let retryAfterSeconds: Double

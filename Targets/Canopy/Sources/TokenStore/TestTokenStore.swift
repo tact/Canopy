@@ -6,7 +6,7 @@ import CloudKit
 ///
 /// The function call counts are used by Canopy test suite. You can also use them in your own tests, to make sure
 /// that the tokens are actually stored and requested as you expect.
-public class TestTokenStore: TokenStoreType {
+public actor TestTokenStore: TokenStoreType {
   public init() {}
   
   /// How many times "storeToken:forDatabaseScope:" has been called.

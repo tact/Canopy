@@ -1,5 +1,5 @@
 import CloudKit
 
-public protocol CKDatabaseType {
+public protocol CKDatabaseType: Sendable {
   func add(_ operation: CKDatabaseOperation)
 }

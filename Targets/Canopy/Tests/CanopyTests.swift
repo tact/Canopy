@@ -18,15 +18,19 @@ final class CanopyTests: XCTestCase {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     
-    struct ModifiableSettings: CanopySettingsType {
+    actor ModifiableSettings: CanopySettingsType {
       var modifyRecordsBehavior: RequestBehavior = .regular(nil)
-      var fetchZoneChangesBehavior: RequestBehavior = .regular(nil)
-      var fetchDatabaseChangesBehavior: RequestBehavior = .regular(nil)
-      var autoBatchTooLargeModifyOperations: Bool = true
-      var autoRetryForRetriableErrors: Bool = true
+      let fetchZoneChangesBehavior: RequestBehavior = .regular(nil)
+      let fetchDatabaseChangesBehavior: RequestBehavior = .regular(nil)
+      let autoBatchTooLargeModifyOperations: Bool = true
+      let autoRetryForRetriableErrors: Bool = true
+      
+      func setModifyRecordsBehavior(behavior: RequestBehavior) {
+        modifyRecordsBehavior = behavior
+      }
     }
     
-    var modifiableSettings = ModifiableSettings()
+    let modifiableSettings = ModifiableSettings()
     
     let canopy = Canopy(
       container: ReplayingMockCKContainer(),
@@ -64,7 +68,7 @@ final class CanopyTests: XCTestCase {
     XCTAssertTrue(result1.savedRecords[0].isEqualToRecord(changedRecord))
     
     // Second request will fail after modifying the settings.
-    modifiableSettings.modifyRecordsBehavior = .simulatedFail(nil)
+    await modifiableSettings.setModifyRecordsBehavior(behavior: .simulatedFail(nil))
     
     do {
       let _ = try await api.modifyRecords(saving: [changedRecord]).get()

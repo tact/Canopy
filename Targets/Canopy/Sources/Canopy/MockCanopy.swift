@@ -17,14 +17,14 @@ public struct MockCanopy: CanopyType {
   private let mockSharedDatabase: CKDatabaseType?
   private let mockPublicDatabase: CKDatabaseType?
   private let mockContainer: CKContainerType?
-  private let settingsProvider: () async -> CanopySettingsType
+  private let settingsProvider: @Sendable () async -> CanopySettingsType
   
   public init(
     mockPrivateDatabase: CKDatabaseType? = nil,
     mockSharedDatabase: CKDatabaseType? = nil,
     mockPublicDatabase: CKDatabaseType? = nil,
     mockContainer: CKContainerType? = nil,
-    settingsProvider: @escaping () async -> CanopySettingsType = { CanopySettings() }
+    settingsProvider: @escaping @Sendable () async -> CanopySettingsType = { CanopySettings() }
   ) {
     self.mockPublicDatabase = mockPublicDatabase
     self.mockSharedDatabase = mockSharedDatabase

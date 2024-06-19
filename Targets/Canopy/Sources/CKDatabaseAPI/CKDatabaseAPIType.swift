@@ -10,10 +10,10 @@ import Foundation
 ///
 /// Methods of this protocol have a preferred shorthand way of calling them via a protocol extension,
 /// which lets you skip specifying some parameters and provides reasonable default values for them.
-public protocol CKDatabaseAPIType {
+public protocol CKDatabaseAPIType: Sendable {
   
-  typealias PerRecordProgressBlock = (CKRecord, Double) -> Void
-  typealias PerRecordIDProgressBlock = (CKRecord.ID, Double) -> Void
+  typealias PerRecordProgressBlock = @Sendable (CKRecord, Double) -> Void
+  typealias PerRecordIDProgressBlock = @Sendable (CKRecord.ID, Double) -> Void
 
   /// See ``CKDatabaseAPIType/queryRecords(with:in:resultsLimit:qualityOfService:)`` for preferred way of calling this API.
   func queryRecords(

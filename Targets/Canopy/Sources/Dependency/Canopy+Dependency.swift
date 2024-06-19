@@ -1,6 +1,6 @@
 import Dependencies
 
-private enum CanopyKey: DependencyKey {
+private enum CanopyKey: DependencyKey, Sendable {
   static let liveValue: CanopyType = Canopy()
   static let testValue: CanopyType = MockCanopy()
   static let previewValue: CanopyType = MockCanopy()

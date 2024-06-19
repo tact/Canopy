@@ -9,7 +9,7 @@
 /// is to let you test failed requests in a real client environment. You could have a
 /// “developer switch” somewhere in your app to simulate errors, to see how your app
 /// responds to errors in a real build.
-public enum RequestBehavior: Equatable {
+public enum RequestBehavior: Equatable, Sendable {
   /// Regular behavior. Attempt to run the request against the backend. If the optional
   /// associated value is present, the request is delayed for the given number of seconds,
   /// somewhat simulating slow network conditions and letting you see how your UI
@@ -30,17 +30,17 @@ public enum RequestBehavior: Equatable {
 /// By default, Canopy uses reasonable defaults for all these settings. If you would like
 /// to modify Canopy behavior, you can construct Canopy with a `CanopySettings` struct
 /// which has some of the values modified, or pass any custom value that implements this protocol.
-public protocol CanopySettingsType {
+public protocol CanopySettingsType: Sendable {
   /// Behavior for “modify records” request.
   ///
   /// Applies to both saving and deleting records.
-  var modifyRecordsBehavior: RequestBehavior { get }
+  var modifyRecordsBehavior: RequestBehavior { get async }
   
   /// Behavior for “fetch database changes” request.
-  var fetchDatabaseChangesBehavior: RequestBehavior { get }
+  var fetchDatabaseChangesBehavior: RequestBehavior { get async }
   
   /// Behavior for “fetch zone changes” request.
-  var fetchZoneChangesBehavior: RequestBehavior { get }
+  var fetchZoneChangesBehavior: RequestBehavior { get async }
   
   /// Resend a modification request if the initial batch is too large.
   ///
@@ -50,7 +50,7 @@ public protocol CanopySettingsType {
   ///
   /// Canopy does this by default. If you wish, you can turn this off.
   /// You will then get `limitExceeded` error returned.
-  var autoBatchTooLargeModifyOperations: Bool { get }
+  var autoBatchTooLargeModifyOperations: Bool { get async }
   
   /// Retry failed operations that are retriable.
   ///
@@ -66,5 +66,5 @@ public protocol CanopySettingsType {
   ///
   /// Currently this is implemented in Canopy only for modifying records.
   /// All other requests fail immediately without retrying if there is an error.
-  var autoRetryForRetriableErrors: Bool { get }
+  var autoRetryForRetriableErrors: Bool { get async }
 }

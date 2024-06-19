@@ -65,7 +65,7 @@ actor CKContainerAPI: CKContainerAPIType {
     statusContinuation?.yield(status)
   }
   
-  nonisolated func fetchShareParticipants(
+  func fetchShareParticipants(
     with lookupInfos: [CKUserIdentity.LookupInfo],
     qos: QualityOfService
   ) async -> Result<[CKShare.Participant], CKRecordError> {
