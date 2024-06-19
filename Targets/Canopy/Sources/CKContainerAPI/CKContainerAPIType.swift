@@ -16,7 +16,7 @@ public enum CKContainerAPIError: Error {
 /// which lets you skip specifying some parameters and provides reasonable default values for them.
 ///
 /// To access your app’s actual data in CloudKit, see ``CKDatabaseAPIType``.
-public protocol CKContainerAPIType {
+public protocol CKContainerAPIType: Sendable {
   /// Obtain the user record ID for the current CloudKit user.
   ///
   /// You don’t need to do this for regular CloudKit use. Your app doesn’t need to know anything about the current user,

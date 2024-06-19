@@ -5,6 +5,7 @@ import CloudKit
 import Foundation
 import XCTest
 
+@available(iOS 16.4, macOS 13.3, *)
 final class FetchDatabaseChangesTests: XCTestCase {
   func test_success() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
@@ -29,8 +30,12 @@ final class FetchDatabaseChangesTests: XCTestCase {
       deletedRecordZoneIDs: [deletedRecordZoneID],
       purgedRecordZoneIDs: [purgedRecordZoneID]
     ))
-    XCTAssertEqual(testTokenStore.getTokenForDatabaseScopeCalls, 1)
-    XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 1)
+    
+    let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
+    let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
+    
+    XCTAssertEqual(getTokenForDatabaseScopeCalls, 1)
+    XCTAssertEqual(storeTokenForDatabaseScopeCalls, 1)
   }
   
   func test_token_expired_error() async {
@@ -50,7 +55,8 @@ final class FetchDatabaseChangesTests: XCTestCase {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
       XCTAssertEqual(error as! CanopyError, CanopyError.ckChangeTokenExpired)
-      XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 1) // nil token was stored
+      let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
+      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 1) // nil token was stored
     }
   }
   
@@ -71,7 +77,8 @@ final class FetchDatabaseChangesTests: XCTestCase {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
       XCTAssertEqual(error as! CanopyError, CanopyError.ckRequestError(CKRequestError(from: CKError(CKError.Code.networkFailure))))
-      XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 0) // nothing should have been stored
+      let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
+      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 0) // nothing should have been stored
     }
   }
   
@@ -102,8 +109,10 @@ final class FetchDatabaseChangesTests: XCTestCase {
       deletedRecordZoneIDs: [],
       purgedRecordZoneIDs: []
     ))
-    XCTAssertEqual(testTokenStore.getTokenForDatabaseScopeCalls, 1)
-    XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 1)
+    let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
+    let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
+    XCTAssertEqual(getTokenForDatabaseScopeCalls, 1)
+    XCTAssertEqual(storeTokenForDatabaseScopeCalls, 1)
   }
   
   func test_simulated_fail() async {
@@ -136,8 +145,11 @@ final class FetchDatabaseChangesTests: XCTestCase {
       default:
         XCTFail("Unexpected error type: \(error)")
       }
-      XCTAssertEqual(testTokenStore.getTokenForDatabaseScopeCalls, 0)
-      XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 0)
+      let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
+      let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
+
+      XCTAssertEqual(getTokenForDatabaseScopeCalls, 0)
+      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 0)
     }
   }
   
@@ -171,8 +183,12 @@ final class FetchDatabaseChangesTests: XCTestCase {
       default:
         XCTFail("Unexpected error type: \(error)")
       }
-      XCTAssertEqual(testTokenStore.getTokenForDatabaseScopeCalls, 0)
-      XCTAssertEqual(testTokenStore.storeTokenForDatabaseScopeCalls, 0)
+      
+      let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
+      let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
+
+      XCTAssertEqual(getTokenForDatabaseScopeCalls, 0)
+      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 0)
     }
   }
 }

@@ -7,7 +7,7 @@ import os.log
 /// on macOS during development, because the `defaults` command-line utility and many other tools
 /// provide you easy access to the stored tokens in your system. You can verify that the tokens do get stored,
 /// and clear them manually if needed.
-public struct UserDefaultsTokenStore: TokenStoreType {
+public actor UserDefaultsTokenStore: TokenStoreType {
   private let logger = Logger(subsystem: "Canopy", category: "UserDefaultsTokenStore")
   
   public init() {}

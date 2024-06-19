@@ -2,7 +2,7 @@ import CanopyTypes
 import CloudKit
 
 public extension ReplayingMockCKDatabase {
-  struct SavedZoneResult: Codable {
+  struct SavedZoneResult: Codable, Sendable {
     let zoneIDArchive: CloudKitRecordZoneIDArchive
     let codableResult: CodableResult<CloudKitRecordZoneArchive, CKRecordZoneError>
     
@@ -22,7 +22,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct DeletedZoneIDResult: Codable {
+  struct DeletedZoneIDResult: Codable, Sendable {
     let zoneIDArchive: CloudKitRecordZoneIDArchive
     let codableResult: CodableResult<CodableVoid, CKRecordZoneError>
     
@@ -42,7 +42,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct ModifyZonesResult: Codable {
+  struct ModifyZonesResult: Codable, Sendable {
     let codableResult: CodableResult<CodableVoid, CKRecordZoneError>
     
     public init(result: Result<Void, Error>) {
@@ -60,7 +60,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct ModifyZonesOperationResult: Codable {
+  struct ModifyZonesOperationResult: Codable, Sendable {
     public let savedZoneResults: [SavedZoneResult]
     public let deletedZoneIDResults: [DeletedZoneIDResult]
     public let modifyZonesResult: ModifyZonesResult

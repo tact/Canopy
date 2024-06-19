@@ -17,7 +17,7 @@ import CloudKit
 /// TokenStore and Canopy currently assume that the application works with only one CKContainer.
 /// There is currently no facility to distinguish between multiple CKContainers. This is a good enough assumption
 /// for most CloudKit applications.
-public protocol TokenStoreType {
+public protocol TokenStoreType: Sendable {
   /// Store a token for the given database scope.
   ///
   /// - Parameter token: token to be stored. May be nil if it needs to be removed from storage for whatever reason.

@@ -4,6 +4,7 @@ import CloudKit
 import Dependencies
 import XCTest
 
+@available(iOS 16.4, macOS 13.3, *)
 final class DependencyTests: XCTestCase {
   struct Fetcher {
     @Dependency(\.cloudKit) private var canopy

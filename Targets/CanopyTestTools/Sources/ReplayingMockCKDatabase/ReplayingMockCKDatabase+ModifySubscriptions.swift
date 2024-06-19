@@ -2,7 +2,7 @@ import CanopyTypes
 import CloudKit
 
 public extension ReplayingMockCKDatabase {
-  struct SavedSubscriptionResult: Codable {
+  struct SavedSubscriptionResult: Codable, Sendable {
     let subscriptionID: CKSubscription.ID
     let codableResult: CodableResult<CloudKitSubscriptionArchive, CKSubscriptionError>
     
@@ -22,7 +22,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct DeletedSubscriptionIDResult: Codable {
+  struct DeletedSubscriptionIDResult: Codable, Sendable {
     let subscriptionID: CKSubscription.ID
     let codableResult: CodableResult<CodableVoid, CKSubscriptionError>
     
@@ -42,7 +42,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct ModifySubscriptionsResult: Codable {
+  struct ModifySubscriptionsResult: Codable, Sendable {
     let codableResult: CodableResult<CodableVoid, CKSubscriptionError>
 
     public init(result: Result<Void, Error>) {
@@ -60,7 +60,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct ModifySubscriptionsOperationResult: Codable {
+  struct ModifySubscriptionsOperationResult: Codable, Sendable {
     public let savedSubscriptionResults: [SavedSubscriptionResult]
     public let deletedSubscriptionIDResults: [DeletedSubscriptionIDResult]
     public let modifySubscriptionsResult: ModifySubscriptionsResult

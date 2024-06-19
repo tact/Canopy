@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct CloudKitServerChangeTokenArchive: Codable {
+public struct CloudKitServerChangeTokenArchive: Codable, Sendable {
   private let data: Data
 
   public var token: CKServerChangeToken {

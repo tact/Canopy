@@ -2,7 +2,7 @@ import CanopyTypes
 import CloudKit
 
 public extension ReplayingMockCKContainer {
-  struct PerShareResult: Codable {
+  struct PerShareResult: Codable, Sendable {
     let shareMetadataArchive: CloudKitShareMetadataArchive
     let codableResult: CodableResult<CloudKitShareArchive, CKRecordError>
     
@@ -22,7 +22,7 @@ public extension ReplayingMockCKContainer {
     }
   }
   
-  struct AcceptSharesResult: Codable {
+  struct AcceptSharesResult: Codable, Sendable {
     let codableResult: CodableResult<CodableVoid, CKRecordError>
     
     public init(result: Result<Void, Error>) {
@@ -40,7 +40,7 @@ public extension ReplayingMockCKContainer {
     }
   }
   
-  struct AcceptSharesOperationResult: Codable {
+  struct AcceptSharesOperationResult: Codable, Sendable {
     let perShareResults: [PerShareResult]
     let acceptSharesResult: AcceptSharesResult
     

@@ -5,7 +5,7 @@
 ///
 /// This does not include conversion to/from the actual Result because we may want to
 /// massage the types a bit. Conversion should be done at the sites of use.
-enum CodableResult<T, E>: Codable where T: Codable, E: Error, E: Codable {
+enum CodableResult<T, E>: Codable, Sendable where T: Codable, T: Sendable, E: Error, E: Codable, E: Sendable {
   case success(T)
   case failure(E)
 }

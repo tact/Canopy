@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct CloudKitSubscriptionArchive: Codable {
+public struct CloudKitSubscriptionArchive: Codable, Sendable {
   private let data: Data
 
   public var subscription: CKSubscription {

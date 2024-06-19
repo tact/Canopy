@@ -3,7 +3,7 @@ import CloudKit
 import Foundation
 
 public actor ReplayingMockCKContainer {
-  public enum OperationResult: Codable {
+  public enum OperationResult: Codable, Sendable {
     case userRecordID(UserRecordIDResult)
     case accountStatus(AccountStatusResult)
     case fetchShareParticipants(FetchShareParticipantsOperationResult)

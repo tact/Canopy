@@ -9,7 +9,7 @@
 import CloudKit
 import Foundation
 
-public enum CanopyError: Error, Codable, Equatable {
+public enum CanopyError: Error, Codable, Equatable, Sendable {
   case unknown
   case ckAccountError(String, Int) // description, code
   case ckSavedRecordsIsEmpty

@@ -1,6 +1,6 @@
 import CloudKit
 
-public struct ModifySubscriptionsResult: Equatable {
+public struct ModifySubscriptionsResult: Equatable, Sendable {
   public let savedSubscriptions: [CKSubscription]
   public let deletedSubscriptionIDs: [CKSubscription.ID]
   

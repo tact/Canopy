@@ -1,7 +1,7 @@
 import CloudKit
 
 /// Successful result for a function call to fetch records.
-public struct FetchRecordsResult {
+public struct FetchRecordsResult: Sendable {
   /// Records that were found.
   public let foundRecords: [CKRecord]
   

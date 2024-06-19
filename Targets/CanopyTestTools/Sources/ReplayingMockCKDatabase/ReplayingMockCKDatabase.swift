@@ -10,7 +10,7 @@ public actor ReplayingMockCKDatabase {
   /// Whether to sleep in the operations where sleep has been enabled.
   let sleep: Float?
   
-  public enum OperationResult: Codable {
+  public enum OperationResult: Codable, Sendable {
     case modify(ModifyOperationResult)
     case query(QueryOperationResult)
     case fetch(FetchOperationResult)

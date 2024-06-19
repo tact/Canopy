@@ -4,7 +4,7 @@ import CloudKit
 // Types and functionality for CKQueryOperation results.
 public extension ReplayingMockCKDatabase {
   /// Result for one record. recordMatchedBlock is called with this. Also used by ReplayingMockCKDatabase+Fetch.
-  struct QueryRecordResult: Codable {
+  struct QueryRecordResult: Codable, Sendable {
     let recordIDArchive: CloudKitRecordIDArchive
     let codableResult: CodableResult<CloudKitRecordArchive, CKRecordError>
     
@@ -29,7 +29,7 @@ public extension ReplayingMockCKDatabase {
   }
 
   /// Record for the whole query. queryResultBlock is called with this.
-  struct QueryResult: Codable {
+  struct QueryResult: Codable, Sendable {
     let codableResult: CodableResult<CloudKitCursorArchive?, CKRecordError>
     
     public init(result: Result<CKQueryOperation.Cursor?, Error>) {
@@ -54,7 +54,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
   
-  struct QueryOperationResult: Codable {
+  struct QueryOperationResult: Codable, Sendable {
     public let queryRecordResults: [QueryRecordResult]
     public let queryResult: QueryResult
     

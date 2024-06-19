@@ -2,7 +2,7 @@ import CanopyTypes
 import CloudKit
 
 public extension ReplayingMockCKDatabase {
-  struct FetchResult: Codable {
+  struct FetchResult: Codable, Sendable {
     let codableResult: CodableResult<CodableVoid, CKRecordError>
     
     public init(result: Result<Void, Error>) {
@@ -20,7 +20,7 @@ public extension ReplayingMockCKDatabase {
     }
   }
 
-  struct FetchOperationResult: Codable {
+  struct FetchOperationResult: Codable, Sendable {
     public let fetchRecordResults: [QueryRecordResult]
     public let fetchResult: FetchResult
     

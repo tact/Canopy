@@ -12,19 +12,20 @@ import CloudKit
 /// You only need to inject the containers and databases that your tests actually use.
 /// If you try to use a dependency that’s not been injected correctly, MockCanopy crashes
 /// with an error message indicating that.
+@available(iOS 16.4, macOS 13.3, *)
 public struct MockCanopy: CanopyType {
   private let mockPrivateDatabase: CKDatabaseType?
   private let mockSharedDatabase: CKDatabaseType?
   private let mockPublicDatabase: CKDatabaseType?
   private let mockContainer: CKContainerType?
-  private let settingsProvider: () async -> CanopySettingsType
+  private let settingsProvider: @Sendable () async -> CanopySettingsType
   
   public init(
     mockPrivateDatabase: CKDatabaseType? = nil,
     mockSharedDatabase: CKDatabaseType? = nil,
     mockPublicDatabase: CKDatabaseType? = nil,
     mockContainer: CKContainerType? = nil,
-    settingsProvider: @escaping () async -> CanopySettingsType = { CanopySettings() }
+    settingsProvider: @escaping @Sendable () async -> CanopySettingsType = { CanopySettings() }
   ) {
     self.mockPublicDatabase = mockPublicDatabase
     self.mockSharedDatabase = mockSharedDatabase

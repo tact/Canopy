@@ -5,6 +5,7 @@ import CloudKit
 import Foundation
 import XCTest
 
+@available(iOS 16.4, macOS 13.3, *)
 final class FetchZoneChangesTests: XCTestCase {
   func test_success() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
@@ -40,8 +41,10 @@ final class FetchZoneChangesTests: XCTestCase {
     ).get()
     XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
     XCTAssertEqual(result.deletedRecords, [])
-    XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 1)
-    XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 1)
+    let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
+    let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+    XCTAssertEqual(getTokenForRecordZoneCalls, 1)
+    XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
   }
   
   func test_fetch_tokens_only() async {
@@ -78,8 +81,10 @@ final class FetchZoneChangesTests: XCTestCase {
     ).get()
     XCTAssertEqual(result.changedRecords, [])
     XCTAssertEqual(result.deletedRecords, [])
-    XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 1)
-    XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 1)
+    let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
+    let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+    XCTAssertEqual(getTokenForRecordZoneCalls, 1)
+    XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
   }
   
   func test_record_error() async {
@@ -120,7 +125,8 @@ final class FetchZoneChangesTests: XCTestCase {
       ).get()
     } catch {
       XCTAssertEqual(error as! CanopyError, .ckRecordError(.init(from: CKError(CKError.Code.networkUnavailable))))
-      XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 0)
+      let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
     }
   }
   
@@ -156,9 +162,12 @@ final class FetchZoneChangesTests: XCTestCase {
         fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
-      XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 2)
+      let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
+      let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+
+      XCTAssertEqual(getTokenForRecordZoneCalls, 2)
       // Stored only one nil token
-      XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 1)
+      XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
       XCTAssertEqual(error as! CanopyError, .ckRecordZoneError(.init(from: CKError(CKError.Code.changeTokenExpired))))
     }
   }
@@ -194,8 +203,11 @@ final class FetchZoneChangesTests: XCTestCase {
         fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
-      XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 1)
-      XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 0)
+      let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
+      let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+
+      XCTAssertEqual(getTokenForRecordZoneCalls, 1)
+      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
       
       XCTAssertEqual(error as! CanopyError, .ckRequestError(.init(from: CKError(CKError.Code.accountTemporarilyUnavailable))))
     }
@@ -235,8 +247,11 @@ final class FetchZoneChangesTests: XCTestCase {
     ).get()
     XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
     XCTAssertEqual(result.deletedRecords, [])
-    XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 1)
-    XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 1)
+    let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
+    let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+
+    XCTAssertEqual(getTokenForRecordZoneCalls, 1)
+    XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
   }
   
   func test_simulated_fail() async {
@@ -279,8 +294,11 @@ final class FetchZoneChangesTests: XCTestCase {
       default:
         XCTFail("Unexpected error type: \(error)")
       }
-      XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 0)
-      XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 0)
+      let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
+      let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+
+      XCTAssertEqual(getTokenForRecordZoneCalls, 0)
+      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
     }
   }
   
@@ -324,8 +342,11 @@ final class FetchZoneChangesTests: XCTestCase {
       default:
         XCTFail("Unexpected error type: \(error)")
       }
-      XCTAssertEqual(tokenStore.getTokenForRecordZoneCalls, 0)
-      XCTAssertEqual(tokenStore.storeTokenForRecordZoneCalls, 0)
+      let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
+      let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
+
+      XCTAssertEqual(getTokenForRecordZoneCalls, 0)
+      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
     }
   }
 }

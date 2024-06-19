@@ -9,7 +9,7 @@
 import CloudKit
 import Foundation
 
-public struct CloudKitShareParticipantArchive: Codable {
+public struct CloudKitShareParticipantArchive: Codable, Sendable {
   private let data: Data
 
   public var shareParticipants: [CKShare.Participant] {

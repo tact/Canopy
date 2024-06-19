@@ -17,7 +17,7 @@ import Foundation
 ///
 /// For testability, you should build your features in a way where they interact with Canopy CloudKit APIs, without needing
 /// to know whether they are talking to a real or mock backend.
-public protocol CanopyType {
+public protocol CanopyType: Sendable {
   
   /// Get the API provider to run requests against a CloudKit container.
   func containerAPI() async -> CKContainerAPIType

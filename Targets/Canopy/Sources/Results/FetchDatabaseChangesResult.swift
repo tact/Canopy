@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct FetchDatabaseChangesResult: Equatable {
+public struct FetchDatabaseChangesResult: Equatable, Sendable {
   public let changedRecordZoneIDs: [CKRecordZone.ID]
   public let deletedRecordZoneIDs: [CKRecordZone.ID]
   public let purgedRecordZoneIDs: [CKRecordZone.ID]

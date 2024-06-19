@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct CloudKitLookupInfoArchive: Codable {
+public struct CloudKitLookupInfoArchive: Codable, Sendable {
   private let data: Data
 
   public var lookupInfos: [CKUserIdentity.LookupInfo] {

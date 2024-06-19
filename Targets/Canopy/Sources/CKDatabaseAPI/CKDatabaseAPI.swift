@@ -4,7 +4,8 @@ import Foundation
 import os.log
 import Semaphore
 
-class CKDatabaseAPI: CKDatabaseAPIType {
+@available(iOS 16.4, macOS 13.3, *)
+actor CKDatabaseAPI: CKDatabaseAPIType {
   private let database: CKDatabaseType
   private let databaseScope: CKDatabase.Scope
   internal let settingsProvider: () async -> CanopySettingsType
@@ -16,7 +17,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
   init(
     database: CKDatabaseType,
     databaseScope: CKDatabase.Scope,
-    settingsProvider: @escaping () async -> CanopySettingsType = { CanopySettings() },
+    settingsProvider: @escaping @Sendable () async -> CanopySettingsType = { CanopySettings() },
     tokenStore: TokenStoreType
   ) {
     self.database = database
@@ -32,7 +33,7 @@ class CKDatabaseAPI: CKDatabaseAPIType {
     qos: QualityOfService
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
     let settings = await settingsProvider()
-    let modifyRecordsBehavior = settings.modifyRecordsBehavior
+    let modifyRecordsBehavior = await settings.modifyRecordsBehavior
     switch modifyRecordsBehavior {
     case let .regular(delay):
       if let delay {

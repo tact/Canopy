@@ -5,6 +5,7 @@ import CloudKit
 import Foundation
 import XCTest
 
+@available(iOS 17, macOS 14, *)
 final class QueryRecordsFeatureTests: XCTestCase {
   func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
     stride(from: startIndex, to: endIndex + 1, by: 1).map { i in

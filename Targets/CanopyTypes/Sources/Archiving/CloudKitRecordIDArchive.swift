@@ -9,7 +9,7 @@
 import CloudKit
 import Foundation
 
-public struct CloudKitRecordIDArchive: Codable {
+public struct CloudKitRecordIDArchive: Codable, Sendable {
   private let data: Data
 
   public var recordIDs: [CKRecord.ID] {

@@ -13,7 +13,7 @@ import Foundation
 // Reason is that the partial errors dictionary will be using different keys for different operations
 // In this type, the keys are expected to be CKRecord.ID,
 
-public struct CKRecordError: CKTransactionError, Codable, Equatable {
+public struct CKRecordError: CKTransactionError, Codable, Equatable, Sendable {
   public let code: Int
   public let localizedDescription: String
   public let retryAfterSeconds: Double

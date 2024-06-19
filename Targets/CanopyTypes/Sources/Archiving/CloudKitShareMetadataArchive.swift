@@ -1,7 +1,7 @@
 import CloudKit
 import Foundation
 
-public struct CloudKitShareMetadataArchive: Codable {
+public struct CloudKitShareMetadataArchive: Codable, Sendable {
   private let data: Data
 
   public var shareMetadatas: [CKShare.Metadata] {

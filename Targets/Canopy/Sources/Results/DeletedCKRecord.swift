@@ -1,6 +1,6 @@
 import CloudKit
 
-public struct DeletedCKRecord: Codable, Equatable {
+public struct DeletedCKRecord: Codable, Equatable, Sendable {
   private let typeString: String
   private let recordName: String
   private let zoneName: String
