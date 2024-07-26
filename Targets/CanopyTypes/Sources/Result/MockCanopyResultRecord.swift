@@ -1,18 +1,18 @@
 import CloudKit
 
-struct MockValueStore: CanopyRecordValueGetting, Sendable {
-  let values: [String: CanopyRecordValueProtocol]
+struct MockValueStore: CanopyRecordValueGetting, @unchecked Sendable {
+  let values: [String: CKRecordValueProtocol]
   
-  init(values: [String : CanopyRecordValueProtocol]) {
+  init(values: [String : CKRecordValueProtocol]) {
     self.values = values
   }
   
-  subscript(_ key: String) -> (any CanopyRecordValueProtocol)? {
+  subscript(_ key: String) -> (any CKRecordValueProtocol)? {
     values[key]
   }
 }
 
-struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
+public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
   let encryptedValuesStore: MockValueStore
   let valuesStore: MockValueStore
   
@@ -26,7 +26,7 @@ struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
   let parent: CKRecord.Reference?
   let share: CKRecord.Reference?
   
-  init(
+  public init(
     recordID: CKRecord.ID = .init(recordName: "mockRecordName"),
     recordType: CKRecord.RecordType,
     creationDate: Date? = nil,
@@ -36,8 +36,8 @@ struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
     recordChangeTag: String? = nil,
     parent: CKRecord.Reference? = nil,
     share: CKRecord.Reference? = nil,
-    values: [String: CanopyRecordValueProtocol] = [:],
-    encryptedValues: [String: CanopyRecordValueProtocol] = [:]
+    values: [String: CKRecordValueProtocol] = [:],
+    encryptedValues: [String: CKRecordValueProtocol] = [:]
   ) {
     self.recordID = recordID
     self.recordType = recordType
@@ -52,7 +52,7 @@ struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
     encryptedValuesStore = MockValueStore(values: encryptedValues)
   }
   
-  subscript(_ key: String) -> (any CanopyRecordValueProtocol)? {
+  public subscript(_ key: String) -> (any CKRecordValueProtocol)? {
     valuesStore[key]
   }
   
