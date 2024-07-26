@@ -1,7 +1,9 @@
 import CloudKit
 
+protocol CanopyRecordValueProtocol: CKRecordValueProtocol, Sendable {}
+
 protocol CanopyRecordValueGetting {
-  subscript(_ key: String) -> (any CKRecordValueProtocol)? { get }
+  subscript(_ key: String) -> (any CanopyRecordValueProtocol)? { get }
 }
 
 protocol CanopyResultRecordType: CanopyRecordValueGetting {
