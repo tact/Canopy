@@ -1,17 +1,5 @@
 import CloudKit
 
-struct MockValueStore: CanopyRecordValueGetting, @unchecked Sendable {
-  let values: [String: CKRecordValueProtocol]
-  
-  init(values: [String : CKRecordValueProtocol]) {
-    self.values = values
-  }
-  
-  subscript(_ key: String) -> (any CKRecordValueProtocol)? {
-    values[key]
-  }
-}
-
 public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
   let encryptedValuesStore: MockValueStore
   let valuesStore: MockValueStore
