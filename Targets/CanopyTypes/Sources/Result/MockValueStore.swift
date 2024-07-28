@@ -55,23 +55,26 @@ extension MockValueStore: Codable {
       #warning("Remove the debug print")
       print("Key: \(key), value: \(value)")
       try nestedContainer.encode(key, forKey: .key)
-      if let stringValue = value as? String {
+      if let stringValue = value as? String, !force_nsType(key: key) {
         try nestedContainer.encode(DataType.string.rawValue, forKey: .type)
         try nestedContainer.encode(stringValue, forKey: .value)
-      } else if let intValue = value as? Int {
+      } else if let intValue = value as? Int, !force_nsType(key: key) {
         try nestedContainer.encode(DataType.int.rawValue, forKey: .type)
         try nestedContainer.encode(intValue, forKey: .value)
-      } else if let doubleValue = value as? Double {
+      } else if let doubleValue = value as? Double, !force_nsType(key: key) {
         try nestedContainer.encode(DataType.double.rawValue, forKey: .type)
         try nestedContainer.encode(doubleValue, forKey: .value)
       } else if let numberValue = value as? NSNumber {
-        // Does not seem to ever get here. Numbers are cast to
-        // basic values successfully above. But will keep this code path
-        // here anyway just in case.
         try nestedContainer.encode(DataType.nsNumber.rawValue, forKey: .type)
-        let data = try NSKeyedArchiver.archivedData(withRootObject: numberValue, requiringSecureCoding: true)
+        let data = try NSKeyedArchiver.archivedData(
+          withRootObject: numberValue,
+          requiringSecureCoding: true
+        )
         try nestedContainer.encode(data, forKey: .value)
       } else {
+        // Maybe not necessary since the above matching is exhaustive
+        // for CKRecordProtocol? Also not sure how to force a unit test
+        // to hit this.
         throw EncodingError.invalidValue(
           value,
           EncodingError.Context(
@@ -81,6 +84,16 @@ extension MockValueStore: Codable {
         )
       }
     }
+  }
+  
+  /// Whether the value for this key should be treated as NSType (NSNumber, NSString etc).
+  ///
+  /// Typically number and string values are cast to corresponding Swift types. This is fine
+  /// for regular use, but in unit tests, we do want to also cover the NSType code paths.
+  /// So this prefix of the key ignores the Swift types and lets the coding happen via
+  /// the relevant NSType.
+  private func force_nsType(key: String) -> Bool {
+    key.hasPrefix("_force_nstype")
   }
   
   init(from decoder: Decoder) throws {

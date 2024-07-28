@@ -44,7 +44,7 @@ final class MockValueStoreTests: XCTestCase {
   
   func test_codes_nsnumber() throws {
     let sut = MockValueStore(values: [
-      "numberKey": NSNumber(value: 2.5)
+      "_force_nstype_numberKey": NSNumber(floatLiteral: 2.5)
     ])
     let jsonEncoder = JSONEncoder()
     let data = try jsonEncoder.encode(sut)
@@ -53,7 +53,7 @@ final class MockValueStoreTests: XCTestCase {
     
     let jsonDecoder = JSONDecoder()
     let outcome = try jsonDecoder.decode(MockValueStore.self, from: data)
-    let numberValue = outcome["numberKey"] as? NSNumber
+    let numberValue = outcome["_force_nstype_numberKey"] as? NSNumber
     
     let expected = NSNumber(floatLiteral: 2.5)
     XCTAssertEqual(numberValue, expected)
