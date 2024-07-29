@@ -72,7 +72,6 @@ extension CanopyResultRecord: CanopyResultRecordType {
     case .mock(let mock): mock.recordChangeTag
     case .ckRecord(let ckRecord, _): ckRecord.recordChangeTag
     }
-
   }
   
   public var parent: CKRecord.Reference? {
@@ -80,7 +79,6 @@ extension CanopyResultRecord: CanopyResultRecordType {
     case .mock(let mock): mock.parent
     case .ckRecord(let ckRecord, _): ckRecord.parent
     }
-
   }
   
   public var share: CKRecord.Reference? {
