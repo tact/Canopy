@@ -22,7 +22,7 @@ extension MockValueStore: Codable {
   private enum DataType: String {
     // https://developer.apple.com/documentation/cloudkit/ckrecordvalueprotocol
     case array
-//    case bool
+    case bool
 //    case ckAsset
 //    case ckRecordReference
 //    case clLocation
@@ -31,21 +31,25 @@ extension MockValueStore: Codable {
     case double
 //    case float
     case int
-//    case int16
-//    case int32
-//    case int64
-//    case int8
+    case int16
+    case int32
+    case int64
+    case int8
+    
+    // cannot support nsArray because keyed container only unarchiving arrays
+    // when arrays contain one specific non-protocol type.
 //    case nsArray
+    
 //    case nsData
 //    case nsDate
     case nsNumber
 //    case nsString
     case string
-//    case uint
-//    case uint16
-//    case uint32
-//    case uint64
-//    case uint8
+    case uint
+    case uint16
+    case uint32
+    case uint64
+    case uint8
   }
   
   func encode(to encoder: Encoder) throws {
@@ -80,6 +84,36 @@ extension MockValueStore: Codable {
     } else if let stringValue = value as? String, !should_force_nsType(key: key) {
       try container.encode(DataType.string.rawValue, forKey: .type)
       try container.encode(stringValue, forKey: .value)
+    } else if let boolValue = value as? Bool {
+      try container.encode(DataType.bool.rawValue, forKey: .type)
+      try container.encode(boolValue, forKey: .value)
+    } else if let uint8Value = value as? UInt8, !should_force_nsType(key: key) {
+      try container.encode(DataType.uint8.rawValue, forKey: .type)
+      try container.encode(uint8Value, forKey: .value)
+    } else if let uint16Value = value as? UInt16, !should_force_nsType(key: key) {
+      try container.encode(DataType.uint16.rawValue, forKey: .type)
+      try container.encode(uint16Value, forKey: .value)
+    } else if let uint32Value = value as? UInt32, !should_force_nsType(key: key) {
+      try container.encode(DataType.uint32.rawValue, forKey: .type)
+      try container.encode(uint32Value, forKey: .value)
+    } else if let uint64Value = value as? UInt64, !should_force_nsType(key: key) {
+      try container.encode(DataType.uint64.rawValue, forKey: .type)
+      try container.encode(uint64Value, forKey: .value)
+    } else if let uintValue = value as? UInt, !should_force_nsType(key: key) {
+      try container.encode(DataType.uint.rawValue, forKey: .type)
+      try container.encode(uintValue, forKey: .value)
+    } else if let int8Value = value as? Int8, !should_force_nsType(key: key) {
+      try container.encode(DataType.int8.rawValue, forKey: .type)
+      try container.encode(int8Value, forKey: .value)
+    } else if let int16Value = value as? Int16, !should_force_nsType(key: key) {
+      try container.encode(DataType.int16.rawValue, forKey: .type)
+      try container.encode(int16Value, forKey: .value)
+    } else if let int32Value = value as? Int32, !should_force_nsType(key: key) {
+      try container.encode(DataType.int32.rawValue, forKey: .type)
+      try container.encode(int32Value, forKey: .value)
+    } else if let int64Value = value as? Int64, !should_force_nsType(key: key) {
+      try container.encode(DataType.int64.rawValue, forKey: .type)
+      try container.encode(int64Value, forKey: .value)
     } else if let intValue = value as? Int, !should_force_nsType(key: key) {
       try container.encode(DataType.int.rawValue, forKey: .type)
       try container.encode(intValue, forKey: .value)
@@ -120,8 +154,18 @@ extension MockValueStore: Codable {
       )
     }
     switch dataType {
-    case .int:
-      return try container.decode(Int.self, forKey: .value)
+    case .int: return try container.decode(Int.self, forKey: .value)
+    case .int8: return try container.decode(Int8.self, forKey: .value)
+    case .int16: return try container.decode(Int16.self, forKey: .value)
+    case .int32: return try container.decode(Int32.self, forKey: .value)
+    case .int64: return try container.decode(Int64.self, forKey: .value)
+    case .uint: return try container.decode(UInt.self, forKey: .value)
+    case .uint8: return try container.decode(UInt8.self, forKey: .value)
+    case .uint16: return try container.decode(UInt16.self, forKey: .value)
+    case .uint32: return try container.decode(UInt32.self, forKey: .value)
+    case .uint64: return try container.decode(UInt64.self, forKey: .value)
+    case .bool:
+      return try container.decode(Bool.self, forKey: .value)
     case .string:
       return try container.decode(String.self, forKey: .value)
     case .double:

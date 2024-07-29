@@ -20,15 +20,55 @@ final class MockValueStoreTests: XCTestCase {
     XCTAssertEqual(key2Value, "Another value")
   }
   
-  func test_codes_int() throws {
+  func test_codes_ints() throws {
     let sut = MockValueStore(values: [
-      "intKey": 42
+      "intKey": Int(42),
+      "zeroKey": Int(0),
+      "oneKey": Int(1),
+      "twoKey": Int(2),
+      "int8Key": Int8(9),
+      "int16Key": Int16(17),
+      "int32Key": Int32(33),
+      "int64Key": Int64(65)
     ])
     let data = try JSONEncoder().encode(sut)
+    let jsonString = String(decoding: data, as: UTF8.self)
+    print("JSON: \(jsonString)")
     let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
-    let intValue = outcome["intKey"] as? Int
     
-    XCTAssertEqual(intValue, 42)
+    
+    XCTAssertEqual(outcome["intKey"] as! Int, 42)
+    XCTAssertEqual(outcome["zeroKey"] as! Int, 0)
+    XCTAssertEqual(outcome["oneKey"] as! Int, 1)
+    XCTAssertEqual(outcome["twoKey"] as! Int, 2)
+    XCTAssertEqual(outcome["int8Key"] as! Int8, 9)
+    XCTAssertEqual(outcome["int16Key"] as! Int16, 17)
+    XCTAssertEqual(outcome["int32Key"] as! Int32, 33)
+    XCTAssertEqual(outcome["int64Key"] as! Int64, 65)
+  }
+  
+  func test_codes_uints() throws {
+    let sut = MockValueStore(values: [
+      "zeroKey": UInt(0),
+      "oneKey": UInt(1),
+      "twoKey": UInt(2),
+      "uint8Key": UInt8(9),
+      "uint16Key": UInt16(17),
+      "uint32Key": UInt32(33),
+      "uint64Key": UInt64(65)
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let jsonString = String(decoding: data, as: UTF8.self)
+    print("JSON: \(jsonString)")
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    
+    XCTAssertEqual(outcome["zeroKey"] as! UInt, 0)
+    XCTAssertEqual(outcome["oneKey"] as! UInt, 1)
+    XCTAssertEqual(outcome["twoKey"] as! UInt, 2)
+    XCTAssertEqual(outcome["uint8Key"] as! UInt8, 9)
+    XCTAssertEqual(outcome["uint16Key"] as! UInt16, 17)
+    XCTAssertEqual(outcome["uint32Key"] as! UInt32, 33)
+    XCTAssertEqual(outcome["uint64Key"] as! UInt64, 65)
   }
   
   func test_codes_double() throws {
@@ -40,6 +80,20 @@ final class MockValueStoreTests: XCTestCase {
     let doubleValue = outcome["doubleKey"] as? Double
     
     XCTAssertEqual(doubleValue, 3.14)
+  }
+  
+  func test_codes_bool() throws {
+    let sut = MockValueStore(values: [
+      "trueValue": true,
+      "falseValue": false
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let trueValue = outcome["trueValue"] as! Bool
+    let falseValue = outcome["falseValue"] as! Bool
+    
+    XCTAssertTrue(trueValue)
+    XCTAssertFalse(falseValue)
   }
   
   func test_codes_nsnumber() throws {
