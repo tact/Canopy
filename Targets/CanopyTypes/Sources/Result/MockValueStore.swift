@@ -21,7 +21,7 @@ extension MockValueStore: Codable {
   
   private enum DataType: String {
     // https://developer.apple.com/documentation/cloudkit/ckrecordvalueprotocol
-//    case array
+    case array
 //    case bool
 //    case ckAsset
 //    case ckRecordReference
@@ -54,35 +54,99 @@ extension MockValueStore: Codable {
       var nestedContainer = container.nestedContainer(keyedBy: CodingKeys.self)
       #warning("Remove the debug print")
       print("Key: \(key), value: \(value)")
-      try nestedContainer.encode(key, forKey: .key)
-      if let stringValue = value as? String, !force_nsType(key: key) {
-        try nestedContainer.encode(DataType.string.rawValue, forKey: .type)
-        try nestedContainer.encode(stringValue, forKey: .value)
-      } else if let intValue = value as? Int, !force_nsType(key: key) {
-        try nestedContainer.encode(DataType.int.rawValue, forKey: .type)
-        try nestedContainer.encode(intValue, forKey: .value)
-      } else if let doubleValue = value as? Double, !force_nsType(key: key) {
-        try nestedContainer.encode(DataType.double.rawValue, forKey: .type)
-        try nestedContainer.encode(doubleValue, forKey: .value)
-      } else if let numberValue = value as? NSNumber {
-        try nestedContainer.encode(DataType.nsNumber.rawValue, forKey: .type)
-        let data = try NSKeyedArchiver.archivedData(
-          withRootObject: numberValue,
-          requiringSecureCoding: true
+      try encodeOneValue(
+        container: &nestedContainer,
+        key: key,
+        value: value
+      )
+    }
+  }
+  
+  private func encodeOneValue(
+    container: inout KeyedEncodingContainer<CodingKeys>,
+    key: String? = nil,
+    value: CKRecordValueProtocol
+  ) throws {
+    if let key {
+      try container.encode(key, forKey: .key)
+    }
+    if let arrayValue = value as? Array<CKRecordValueProtocol> {
+      try container.encode(DataType.array.rawValue, forKey: .type)
+      var arrayContainer = container.nestedUnkeyedContainer(forKey: .value)
+      for item in arrayValue {
+        var arrayItemContainer = arrayContainer.nestedContainer(keyedBy: CodingKeys.self)
+        try encodeOneValue(container: &arrayItemContainer, value: item)
+      }
+    } else if let stringValue = value as? String, !should_force_nsType(key: key) {
+      try container.encode(DataType.string.rawValue, forKey: .type)
+      try container.encode(stringValue, forKey: .value)
+    } else if let intValue = value as? Int, !should_force_nsType(key: key) {
+      try container.encode(DataType.int.rawValue, forKey: .type)
+      try container.encode(intValue, forKey: .value)
+    } else if let doubleValue = value as? Double, !should_force_nsType(key: key) {
+      try container.encode(DataType.double.rawValue, forKey: .type)
+      try container.encode(doubleValue, forKey: .value)
+    } else if let numberValue = value as? NSNumber {
+      try container.encode(DataType.nsNumber.rawValue, forKey: .type)
+      let data = try NSKeyedArchiver.archivedData(
+        withRootObject: numberValue,
+        requiringSecureCoding: true
+      )
+      try container.encode(data, forKey: .value)
+    } else {
+      // Maybe not necessary since the above matching is exhaustive
+      // for CKRecordProtocol? Also not sure how to force a unit test
+      // to hit this.
+      throw EncodingError.invalidValue(
+        value,
+        EncodingError.Context(
+          codingPath: [CodingKeys.value],
+          debugDescription: "Unsupported value data type"
         )
-        try nestedContainer.encode(data, forKey: .value)
+      )
+    }
+  }
+  
+  private static func decodeOneValue(
+    container: inout KeyedDecodingContainer<CodingKeys>
+  ) throws -> CKRecordValueProtocol {
+    let dataTypeString = try container.decode(String.self, forKey: .type)
+    guard let dataType = DataType(rawValue: dataTypeString) else {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: [CodingKeys.type],
+          debugDescription: "Invalid data type: \(dataTypeString)"
+        )
+      )
+    }
+    switch dataType {
+    case .int:
+      return try container.decode(Int.self, forKey: .value)
+    case .string:
+      return try container.decode(String.self, forKey: .value)
+    case .double:
+      return try container.decode(Double.self, forKey: .value)
+    case .nsNumber:
+      let numberData = try container.decode(Data.self, forKey: .value)
+      if let numberValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSNumber.self, from: numberData) {
+        return numberValue
       } else {
-        // Maybe not necessary since the above matching is exhaustive
-        // for CKRecordProtocol? Also not sure how to force a unit test
-        // to hit this.
-        throw EncodingError.invalidValue(
-          value,
-          EncodingError.Context(
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
             codingPath: [CodingKeys.value],
-            debugDescription: "Unsupported value data type"
+            debugDescription: "Invalid NSNumber value in source data"
           )
         )
       }
+    case .array:
+      // todo
+      var array: [CKRecordValueProtocol] = []
+      var arrayContainer = try container.nestedUnkeyedContainer(forKey: CodingKeys.value)
+      while !arrayContainer.isAtEnd {
+        var itemContainer = try arrayContainer.nestedContainer(keyedBy: CodingKeys.self)
+        array.append(try decodeOneValue(container: &itemContainer))
+      }
+      return array as CKRecordValueProtocol
     }
   }
   
@@ -92,40 +156,19 @@ extension MockValueStore: Codable {
   /// for regular use, but in unit tests, we do want to also cover the NSType code paths.
   /// So this prefix of the key ignores the Swift types and lets the coding happen via
   /// the relevant NSType.
-  private func force_nsType(key: String) -> Bool {
-    key.hasPrefix("_force_nstype")
+  private func should_force_nsType(key: String?) -> Bool {
+    guard let key else { return false }
+    return key.hasPrefix("_force_nstype")
   }
   
   init(from decoder: Decoder) throws {
     var _values: [String: CKRecordValueProtocol] = [:]
     var container = try decoder.unkeyedContainer()
     while !container.isAtEnd {
-      let nestedContainer = try container.nestedContainer(keyedBy: CodingKeys.self)
+      var nestedContainer = try container.nestedContainer(keyedBy: CodingKeys.self)
       let key = try nestedContainer.decode(String.self, forKey: .key)
-      let dataTypeString = try nestedContainer.decode(String.self, forKey: .type)
-      guard let dataType = DataType(rawValue: dataTypeString) else {
-        throw DecodingError.dataCorrupted(
-          DecodingError.Context(
-            codingPath: [],
-            debugDescription: "Invalid data type: \(dataTypeString)"
-          )
-        )
-      }
-      switch dataType {
-      case .int:
-        let intValue = try nestedContainer.decode(Int.self, forKey: .value)
-        _values[key] = intValue
-      case .string:
-        let stringValue = try nestedContainer.decode(String.self, forKey: .value)
-        _values[key] = stringValue
-      case .double:
-        let doubleValue = try nestedContainer.decode(Double.self, forKey: .value)
-        _values[key] = doubleValue
-      case .nsNumber:
-        let numberData = try nestedContainer.decode(Data.self, forKey: .value)
-        let numberValue = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSNumber.self, from: numberData)
-        _values[key] = numberValue
-      }
+      let value = try MockValueStore.decodeOneValue(container: &nestedContainer)
+      _values[key] = value
     }
     values = _values
   }
