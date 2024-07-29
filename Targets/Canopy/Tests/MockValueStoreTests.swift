@@ -20,6 +20,20 @@ final class MockValueStoreTests: XCTestCase {
     XCTAssertEqual(key2Value, "Another value")
   }
   
+  func test_codes_nsstring() throws {
+    let sut = MockValueStore(values: [
+      "_force_nstype_key1": NSString(string: "Hello world"),
+      "_force_nstype_key2": NSString(string: "Another value"),
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let key1Value = outcome["_force_nstype_key1"] as? NSString
+    let key2Value = outcome["_force_nstype_key2"] as? NSString
+
+    XCTAssertEqual(key1Value, "Hello world")
+    XCTAssertEqual(key2Value, "Another value")
+  }
+  
   func test_codes_ints() throws {
     let sut = MockValueStore(values: [
       "intKey": Int(42),
@@ -32,10 +46,7 @@ final class MockValueStoreTests: XCTestCase {
       "int64Key": Int64(65)
     ])
     let data = try JSONEncoder().encode(sut)
-    let jsonString = String(decoding: data, as: UTF8.self)
-    print("JSON: \(jsonString)")
     let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
-    
     
     XCTAssertEqual(outcome["intKey"] as! Int, 42)
     XCTAssertEqual(outcome["zeroKey"] as! Int, 0)
@@ -58,8 +69,6 @@ final class MockValueStoreTests: XCTestCase {
       "uint64Key": UInt64(65)
     ])
     let data = try JSONEncoder().encode(sut)
-    let jsonString = String(decoding: data, as: UTF8.self)
-    print("JSON: \(jsonString)")
     let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
     
     XCTAssertEqual(outcome["zeroKey"] as! UInt, 0)
@@ -148,6 +157,22 @@ final class MockValueStoreTests: XCTestCase {
       switch dataCorruptedError {
       case .dataCorrupted(let context):
         XCTAssertEqual(context.debugDescription, "Invalid NSNumber value in source data")
+      default:
+        XCTFail("Unexpected error: \(dataCorruptedError)")
+      }
+    }
+  }
+  
+  func test_throws_on_invalid_nsstring_data() {
+    let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"intKey\",\"type\":\"nsString\"}]"
+    let data = brokenTypeJson.data(using: .utf8)!
+    do {
+      let _ = try JSONDecoder().decode(MockValueStore.self, from: data)
+    } catch {
+      let dataCorruptedError = error as! DecodingError
+      switch dataCorruptedError {
+      case .dataCorrupted(let context):
+        XCTAssertEqual(context.debugDescription, "Invalid NSString value in source data")
       default:
         XCTFail("Unexpected error: \(dataCorruptedError)")
       }

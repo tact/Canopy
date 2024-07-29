@@ -43,7 +43,7 @@ extension MockValueStore: Codable {
 //    case nsData
 //    case nsDate
     case nsNumber
-//    case nsString
+    case nsString
     case string
     case uint
     case uint16
@@ -127,6 +127,13 @@ extension MockValueStore: Codable {
         requiringSecureCoding: true
       )
       try container.encode(data, forKey: .value)
+    } else if let nsStringValue = value as? NSString {
+      try container.encode(DataType.nsString.rawValue, forKey: .type)
+      let data = try NSKeyedArchiver.archivedData(
+        withRootObject: nsStringValue,
+        requiringSecureCoding: true
+      )
+      try container.encode(data, forKey: .value)
     } else {
       // Maybe not necessary since the above matching is exhaustive
       // for CKRecordProtocol? Also not sure how to force a unit test
@@ -164,12 +171,9 @@ extension MockValueStore: Codable {
     case .uint16: return try container.decode(UInt16.self, forKey: .value)
     case .uint32: return try container.decode(UInt32.self, forKey: .value)
     case .uint64: return try container.decode(UInt64.self, forKey: .value)
-    case .bool:
-      return try container.decode(Bool.self, forKey: .value)
-    case .string:
-      return try container.decode(String.self, forKey: .value)
-    case .double:
-      return try container.decode(Double.self, forKey: .value)
+    case .bool: return try container.decode(Bool.self, forKey: .value)
+    case .string: return try container.decode(String.self, forKey: .value)
+    case .double: return try container.decode(Double.self, forKey: .value)
     case .nsNumber:
       let numberData = try container.decode(Data.self, forKey: .value)
       if let numberValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSNumber.self, from: numberData) {
@@ -182,8 +186,19 @@ extension MockValueStore: Codable {
           )
         )
       }
+    case .nsString:
+      let stringData = try container.decode(Data.self, forKey: .value)
+      if let nsStringValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSString.self, from: stringData) {
+        return nsStringValue
+      } else {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: [CodingKeys.value],
+            debugDescription: "Invalid NSString value in source data"
+          )
+        )
+      }
     case .array:
-      // todo
       var array: [CKRecordValueProtocol] = []
       var arrayContainer = try container.nestedUnkeyedContainer(forKey: CodingKeys.value)
       while !arrayContainer.isAtEnd {
@@ -195,6 +210,8 @@ extension MockValueStore: Codable {
   }
   
   /// Whether the value for this key should be treated as NSType (NSNumber, NSString etc).
+  ///
+  /// Meant to be used primarily as a unit testing tool, safe to ignore in real life.
   ///
   /// Typically number and string values are cast to corresponding Swift types. This is fine
   /// for regular use, but in unit tests, we do want to also cover the NSType code paths.
