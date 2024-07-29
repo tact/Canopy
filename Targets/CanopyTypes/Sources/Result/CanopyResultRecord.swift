@@ -1,6 +1,6 @@
 import CloudKit
 
-public struct CanopyResultRecord {
+public struct CanopyResultRecord: Sendable {
   enum Kind {
     case mock(MockCanopyResultRecord)
     case ckRecord(CKRecord, CKRecordEncryptedValuesReader)
@@ -21,6 +21,66 @@ public struct CanopyResultRecord {
   
   public init(mock: MockCanopyResultRecord) {
     kind = .mock(mock)
+  }
+}
+
+extension CanopyResultRecord: Codable {
+  enum CodingKeys: CodingKey {
+    case type
+    case backingValue
+  }
+  
+  enum KindType: String {
+    case mock
+    case ckRecord
+  }
+
+  public init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    let kindTypeString = try container.decode(String.self, forKey: .type)
+    guard let type = KindType(rawValue: kindTypeString) else {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: [CodingKeys.type],
+          debugDescription: "Invalid backing value type: \(kindTypeString)"
+        )
+      )
+    }
+    switch type {
+    case .mock:
+      let mock = try container.decode(MockCanopyResultRecord.self, forKey: .backingValue)
+      kind = .mock(mock)
+    case .ckRecord:
+      let ckRecordData = try container.decode(Data.self, forKey: .backingValue)
+      guard let ckRecord = try? NSKeyedUnarchiver.unarchivedObject(
+        ofClass: CKRecord.self,
+        from: ckRecordData
+      ) else {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: [CodingKeys.backingValue],
+            debugDescription: "Invalid data for CKRecord"
+          )
+        )
+      }
+      kind = .ckRecord(ckRecord, CKRecordEncryptedValuesReader(record: ckRecord))
+    }
+  }
+  
+  public func encode(to encoder: any Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    switch kind {
+    case .mock(let mock):
+      try container.encode(KindType.mock.rawValue, forKey: .type)
+      try container.encode(mock, forKey: .backingValue)
+    case .ckRecord(let ckRecord, _):
+      try container.encode(KindType.ckRecord.rawValue, forKey: .type)
+      let ckRecordData = try NSKeyedArchiver.archivedData(
+        withRootObject: ckRecord,
+        requiringSecureCoding: true
+      )
+      try container.encode(ckRecordData, forKey: .backingValue)
+    }
   }
 }
 
