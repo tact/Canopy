@@ -27,7 +27,7 @@ extension MockValueStore: Codable {
 //    case ckRecordReference
 //    case clLocation
 //    case data
-//    case date
+    case date
     case double
 //    case float
     case int
@@ -41,7 +41,7 @@ extension MockValueStore: Codable {
 //    case nsArray
     
 //    case nsData
-//    case nsDate
+    case nsDate
     case nsNumber
     case nsString
     case string
@@ -56,8 +56,6 @@ extension MockValueStore: Codable {
     var container = encoder.unkeyedContainer()
     for (key, value) in values {
       var nestedContainer = container.nestedContainer(keyedBy: CodingKeys.self)
-      #warning("Remove the debug print")
-      print("Key: \(key), value: \(value)")
       try encodeOneValue(
         container: &nestedContainer,
         key: key,
@@ -134,6 +132,16 @@ extension MockValueStore: Codable {
         requiringSecureCoding: true
       )
       try container.encode(data, forKey: .value)
+    } else if let dateValue = value as? Date, !should_force_nsType(key: key) {
+      try container.encode(DataType.date.rawValue, forKey: .type)
+      try container.encode(dateValue, forKey: .value)
+    } else if let nsDateValue = value as? NSDate {
+      try container.encode(DataType.nsDate.rawValue, forKey: .type)
+      let data = try NSKeyedArchiver.archivedData(
+        withRootObject: nsDateValue,
+        requiringSecureCoding: true
+      )
+      try container.encode(data, forKey: .value)
     } else {
       // Maybe not necessary since the above matching is exhaustive
       // for CKRecordProtocol? Also not sure how to force a unit test
@@ -174,6 +182,7 @@ extension MockValueStore: Codable {
     case .bool: return try container.decode(Bool.self, forKey: .value)
     case .string: return try container.decode(String.self, forKey: .value)
     case .double: return try container.decode(Double.self, forKey: .value)
+    case .date: return try container.decode(Date.self, forKey: .value)
     case .nsNumber:
       let numberData = try container.decode(Data.self, forKey: .value)
       if let numberValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSNumber.self, from: numberData) {
@@ -195,6 +204,18 @@ extension MockValueStore: Codable {
           DecodingError.Context(
             codingPath: [CodingKeys.value],
             debugDescription: "Invalid NSString value in source data"
+          )
+        )
+      }
+    case .nsDate:
+      let dateData = try container.decode(Data.self, forKey: .value)
+      if let nsDateValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSDate.self, from: dateData) {
+        return nsDateValue
+      } else {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: [CodingKeys.value],
+            debugDescription: "Invalid NSDate value in source data"
           )
         )
       }

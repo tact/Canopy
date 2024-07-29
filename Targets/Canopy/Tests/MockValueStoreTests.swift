@@ -129,6 +129,30 @@ final class MockValueStoreTests: XCTestCase {
     XCTAssertEqual(arrayValue, ["one", "two", "three"])
   }
   
+  func test_codes_date() throws {
+    let date = Date()
+    let sut = MockValueStore(values: [
+      "dateKey": date
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let dateValue = outcome["dateKey"] as? Date
+    
+    XCTAssertEqual(dateValue, date)
+  }
+  
+  func test_codes_nsDate() throws {
+    let nsDate = NSDate()
+    let sut = MockValueStore(values: [
+      "_force_nstype_dateKey": nsDate
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let nsDateValue = outcome["_force_nstype_dateKey"] as? NSDate
+    
+    XCTAssertEqual(nsDateValue, nsDate)
+  }
+  
   // MARK: - Error and invalid data handling
   
   func test_throws_on_invalid_data_type() {
@@ -173,6 +197,22 @@ final class MockValueStoreTests: XCTestCase {
       switch dataCorruptedError {
       case .dataCorrupted(let context):
         XCTAssertEqual(context.debugDescription, "Invalid NSString value in source data")
+      default:
+        XCTFail("Unexpected error: \(dataCorruptedError)")
+      }
+    }
+  }
+  
+  func test_throws_on_invalid_nsdate_data() {
+    let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"dateKey\",\"type\":\"nsDate\"}]"
+    let data = brokenTypeJson.data(using: .utf8)!
+    do {
+      let _ = try JSONDecoder().decode(MockValueStore.self, from: data)
+    } catch {
+      let dataCorruptedError = error as! DecodingError
+      switch dataCorruptedError {
+      case .dataCorrupted(let context):
+        XCTAssertEqual(context.debugDescription, "Invalid NSDate value in source data")
       default:
         XCTFail("Unexpected error: \(dataCorruptedError)")
       }
