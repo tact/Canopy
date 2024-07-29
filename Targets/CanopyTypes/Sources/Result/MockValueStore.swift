@@ -35,11 +35,6 @@ extension MockValueStore: Codable {
     case int32
     case int64
     case int8
-    
-    // cannot support nsArray because keyed container only unarchiving arrays
-    // when arrays contain one specific non-protocol type.
-//    case nsArray
-    
     case nsData
     case nsDate
     case nsNumber
@@ -50,6 +45,14 @@ extension MockValueStore: Codable {
     case uint32
     case uint64
     case uint8
+    
+    // CKRecordValueProtocol also includes NSArray. However, MockValueStore
+    // cannot support NSArray because keyed container only supports
+    // unarchiving arrays when arrays contain one specific non-protocol type.
+    //
+    // NSArrays are bridged to Swift arrays, and coded and returned as
+    // Swift arrays by MockValue store. There is `test_codes_nsArray` unit test
+    // for this.
   }
   
   func encode(to encoder: Encoder) throws {

@@ -140,6 +140,18 @@ final class MockValueStoreTests: XCTestCase {
     XCTAssertEqual(arrayValue, ["one", "two", "three"])
   }
   
+  func test_codes_nsArray() throws {
+    let sut = MockValueStore(values: [
+      "texts": NSArray(array: ["one", "two", "three"])
+    ])
+    
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let arrayValue = outcome["texts"] as? Array<String>
+    
+    XCTAssertEqual(arrayValue, ["one", "two", "three"])
+  }
+  
   func test_codes_date() throws {
     let date = Date()
     let sut = MockValueStore(values: [
