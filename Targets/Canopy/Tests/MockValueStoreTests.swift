@@ -1,4 +1,5 @@
 @testable import CanopyTypes
+import CloudKit
 import Foundation
 import XCTest
 
@@ -199,6 +200,56 @@ final class MockValueStoreTests: XCTestCase {
     XCTAssertEqual(nsDataValue, NSData(bytes: [0x01, 0x02, 0x04] as [UInt8], length: 3))
   }
   
+  func test_codes_ckAsset() throws {
+    let url = Bundle.module.url(forResource: "textFile", withExtension: "txt")!
+    let ckAsset = CKAsset(fileURL: url)
+    let sut = MockValueStore(values: [
+      "assetKey": ckAsset
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let jsonString = String(decoding: data, as: UTF8.self)
+    print("Asset JSON: \(jsonString)")
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let asset = outcome["assetKey"] as? CKAsset
+    XCTAssertEqual(asset!.fileURL!.lastPathComponent, "textFile.txt")
+  }
+  
+  func test_codes_clLocation() throws {
+    let location = CLLocation(latitude: 37.332939350106514, longitude: -122.00488014474543)
+    let sut = MockValueStore(values: [
+      "locationKey": location
+    ])
+    
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let locationValue = outcome["locationKey"] as? CLLocation
+    XCTAssertEqual(locationValue!.distance(from: location), 0)
+  }
+  
+  func test_codes_ckRecordReference() throws {
+    let reference = CKRecord.Reference(recordID: .init(recordName: "demoRecord"), action: .none)
+    let sut = MockValueStore(values: [
+      "recordReferenceKey": reference
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let referenceValue = outcome["recordReferenceKey"] as? CKRecord.Reference
+    XCTAssertEqual(referenceValue?.recordID.recordName, "demoRecord")
+  }
+  
+  func test_codes_ckRecordReference_array() throws {
+    let reference1 = CKRecord.Reference(recordID: .init(recordName: "demoRecord1"), action: .none)
+    let reference2 = CKRecord.Reference(recordID: .init(recordName: "demoRecord2"), action: .none)
+    let sut = MockValueStore(values: [
+      "recordReferenceArrayKey": [reference1, reference2]
+    ])
+    let data = try JSONEncoder().encode(sut)
+    let outcome = try JSONDecoder().decode(MockValueStore.self, from: data)
+    let references = outcome["recordReferenceArrayKey"] as? [CKRecord.Reference]
+    XCTAssertEqual(references![0].recordID.recordName, "demoRecord1")
+    XCTAssertEqual(references![1].recordID.recordName, "demoRecord2")
+  }
+  
   // MARK: - Error and invalid data handling
   
   func test_throws_on_invalid_data_type() {
@@ -279,5 +330,53 @@ final class MockValueStoreTests: XCTestCase {
         XCTFail("Unexpected error: \(dataCorruptedError)")
       }
     }
+  }
+  
+  func test_throws_on_invalid_location_data() {
+    let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"dataKey\",\"type\":\"clLocation\"}]"
+    let data = brokenTypeJson.data(using: .utf8)!
+    do {
+      let _ = try JSONDecoder().decode(MockValueStore.self, from: data)
+    } catch {
+      let dataCorruptedError = error as! DecodingError
+      switch dataCorruptedError {
+      case .dataCorrupted(let context):
+        XCTAssertEqual(context.debugDescription, "Invalid CLLocation value in source data")
+      default:
+        XCTFail("Unexpected error: \(dataCorruptedError)")
+      }
+    }
+  }
+  
+  func test_throws_on_invalid_ckRecordReference_data() {
+    let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"dataKey\",\"type\":\"ckRecordReference\"}]"
+    let data = brokenTypeJson.data(using: .utf8)!
+    do {
+      let _ = try JSONDecoder().decode(MockValueStore.self, from: data)
+    } catch {
+      let dataCorruptedError = error as! DecodingError
+      switch dataCorruptedError {
+      case .dataCorrupted(let context):
+        XCTAssertEqual(context.debugDescription, "Invalid CKRecord.Reference value in source data")
+      default:
+        XCTFail("Unexpected error: \(dataCorruptedError)")
+      }
+    }
+  }
+  
+  func test_invalid_ckAsset_url() {
+    // CKAsset API says that “if the system can’t create the asset” (and I’d expect
+    // the URL pointing to nonexistent file to tigger this), the return value
+    // will be nil.
+    //
+    // In reality, there seems to be no file validation at asset creation
+    // time, and the system will happily construct a CKAsset with a nonexistent path.
+    // Presumably, CloudKit API-s will return errors if you actually try to do
+    // something with this asset.
+    let brokenAssetJson = "[{\"key\":\"assetKey\",\"type\":\"ckAsset\",\"value\":\"file:\\/\\/\\/some\\/nonexistent\\/path\\/textFile.txt\"}]"
+    let data = brokenAssetJson.data(using: .utf8)!
+    let store = try? JSONDecoder().decode(MockValueStore.self, from: data)
+    let asset = store!["assetKey"] as? CKAsset
+    XCTAssertEqual(asset!.fileURL!.lastPathComponent, "textFile.txt")
   }
 }

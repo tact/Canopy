@@ -64,7 +64,10 @@ let package = Package(
     .testTarget(
       name: "CanopyTests",
       dependencies: ["Canopy", "CanopyTestTools"],
-      path: "Targets/Canopy/Tests"
+      path: "Targets/Canopy/Tests",
+      resources: [
+        .process("Fixtures")
+      ]
     ),
     .target(
       name: "CanopyTypes",

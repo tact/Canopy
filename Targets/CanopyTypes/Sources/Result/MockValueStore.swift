@@ -1,5 +1,15 @@
 import CloudKit
 
+/// A key-value store for values that are permissible to have as values stored in a CKRecord.
+///
+/// The primary use for this type is static mocks to back `MockCanopyResultRecord`
+/// encrypted and non-encrypted value store.
+///
+/// The sendability cannot be enforced by the compiler, because some values may actually
+/// be mutable, and we can’t reasonably check for them being sendable here. Since this is
+/// anyway meant to be just a testing tool that you construct with static immutable data,
+/// we declare `@unchecked Sendable` here, and trust the call sites to
+/// not do anything weird.
 struct MockValueStore: CanopyRecordValueGetting, @unchecked Sendable {
   let values: [String: CKRecordValueProtocol]
   
@@ -23,9 +33,9 @@ extension MockValueStore: Codable {
     // https://developer.apple.com/documentation/cloudkit/ckrecordvalueprotocol
     case array
     case bool
-//    case ckAsset
-//    case ckRecordReference
-//    case clLocation
+    case ckAsset
+    case ckRecordReference
+    case clLocation
     case data
     case date
     case double
@@ -158,6 +168,38 @@ extension MockValueStore: Codable {
         requiringSecureCoding: true
       )
       try container.encode(data, forKey: .value)
+    } else if let locationValue = value as? CLLocation {
+      try container.encode(DataType.clLocation.rawValue, forKey: .type)
+      let data = try NSKeyedArchiver.archivedData(
+        withRootObject: locationValue,
+        requiringSecureCoding: true
+      )
+      try container.encode(data, forKey: .value)
+    } else if let referenceValue = value as? CKRecord.Reference {
+      try container.encode(DataType.ckRecordReference.rawValue, forKey: .type)
+      let data = try NSKeyedArchiver.archivedData(
+        withRootObject: referenceValue,
+        requiringSecureCoding: true
+      )
+      try container.encode(data, forKey: .value)
+    } else if let assetValue = value as? CKAsset {
+      // Since CKAsset is not codable or archivable, we just store its URL,
+      // and recreate the asset with the URL when decoding.
+      // Note that CKAsset URL-s are meant to be short-lived, so this won’t
+      // be suitable for long-term archiving.
+      guard let url = assetValue.fileURL else {
+        // There is no way for code to end up here that I can think of,
+        // since you can’t construct CKAssets with a missing fileURL.
+        throw EncodingError.invalidValue(
+          value,
+          EncodingError.Context(
+            codingPath: [CodingKeys.value],
+            debugDescription: "Missing URL value for CKAsset"
+          )
+        )
+      }
+      try container.encode(DataType.ckAsset.rawValue, forKey: .type)
+      try container.encode(url, forKey: .value)
     } else {
       // Maybe not necessary since the above matching is exhaustive
       // for CKRecordProtocol? Also not sure how to force a unit test
@@ -215,7 +257,10 @@ extension MockValueStore: Codable {
       }
     case .nsString:
       let stringData = try container.decode(Data.self, forKey: .value)
-      if let nsStringValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSString.self, from: stringData) {
+      if let nsStringValue = try? NSKeyedUnarchiver.unarchivedObject(
+        ofClass: NSString.self,
+        from: stringData
+      ) {
         return nsStringValue
       } else {
         throw DecodingError.dataCorrupted(
@@ -227,7 +272,10 @@ extension MockValueStore: Codable {
       }
     case .nsDate:
       let dateData = try container.decode(Data.self, forKey: .value)
-      if let nsDateValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSDate.self, from: dateData) {
+      if let nsDateValue = try? NSKeyedUnarchiver.unarchivedObject(
+        ofClass: NSDate.self,
+        from: dateData
+      ) {
         return nsDateValue
       } else {
         throw DecodingError.dataCorrupted(
@@ -239,7 +287,10 @@ extension MockValueStore: Codable {
       }
     case .nsData:
       let dataData = try container.decode(Data.self, forKey: .value)
-      if let nsDataValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSData.self, from: dataData) {
+      if let nsDataValue = try? NSKeyedUnarchiver.unarchivedObject(
+        ofClass: NSData.self,
+        from: dataData
+      ) {
         return nsDataValue
       } else {
         throw DecodingError.dataCorrupted(
@@ -249,6 +300,39 @@ extension MockValueStore: Codable {
           )
         )
       }
+    case .clLocation:
+      let locationData = try container.decode(Data.self, forKey: .value)
+      if let locationValue = try? NSKeyedUnarchiver.unarchivedObject(
+        ofClass: CLLocation.self,
+        from: locationData
+      ) {
+        return locationValue
+      } else {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: [CodingKeys.value],
+            debugDescription: "Invalid CLLocation value in source data"
+          )
+        )
+      }
+    case .ckRecordReference:
+      let referenceData = try container.decode(Data.self, forKey: .value)
+      if let referenceValue = try? NSKeyedUnarchiver.unarchivedObject(
+        ofClass: CKRecord.Reference.self,
+        from: referenceData
+      ) {
+        return referenceValue
+      } else {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: [CodingKeys.value],
+            debugDescription: "Invalid CKRecord.Reference value in source data"
+          )
+        )
+      }
+    case .ckAsset:
+      let url = try container.decode(URL.self, forKey: .value)
+      return CKAsset(fileURL: url)
     case .array:
       var array: [CKRecordValueProtocol] = []
       var arrayContainer = try container.nestedUnkeyedContainer(forKey: CodingKeys.value)
