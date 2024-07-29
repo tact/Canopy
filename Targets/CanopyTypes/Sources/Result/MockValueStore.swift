@@ -26,10 +26,10 @@ extension MockValueStore: Codable {
 //    case ckAsset
 //    case ckRecordReference
 //    case clLocation
-//    case data
+    case data
     case date
     case double
-//    case float
+    case float
     case int
     case int16
     case int32
@@ -40,7 +40,7 @@ extension MockValueStore: Codable {
     // when arrays contain one specific non-protocol type.
 //    case nsArray
     
-//    case nsData
+    case nsData
     case nsDate
     case nsNumber
     case nsString
@@ -118,6 +118,12 @@ extension MockValueStore: Codable {
     } else if let doubleValue = value as? Double, !should_force_nsType(key: key) {
       try container.encode(DataType.double.rawValue, forKey: .type)
       try container.encode(doubleValue, forKey: .value)
+    } else if let floatValue = value as? Float, !should_force_nsType(key: key) {
+      try container.encode(DataType.float.rawValue, forKey: .type)
+      try container.encode(floatValue, forKey: .value)
+    } else if let dataValue = value as? Data, !should_force_nsType(key: key) {
+      try container.encode(DataType.data.rawValue, forKey: .type)
+      try container.encode(dataValue, forKey: .value)
     } else if let numberValue = value as? NSNumber {
       try container.encode(DataType.nsNumber.rawValue, forKey: .type)
       let data = try NSKeyedArchiver.archivedData(
@@ -135,6 +141,13 @@ extension MockValueStore: Codable {
     } else if let dateValue = value as? Date, !should_force_nsType(key: key) {
       try container.encode(DataType.date.rawValue, forKey: .type)
       try container.encode(dateValue, forKey: .value)
+    } else if let nsDataValue = value as? NSData {
+      try container.encode(DataType.nsData.rawValue, forKey: .type)
+      let data = try NSKeyedArchiver.archivedData(
+        withRootObject: nsDataValue,
+        requiringSecureCoding: true
+      )
+      try container.encode(data, forKey: .value)
     } else if let nsDateValue = value as? NSDate {
       try container.encode(DataType.nsDate.rawValue, forKey: .type)
       let data = try NSKeyedArchiver.archivedData(
@@ -182,7 +195,9 @@ extension MockValueStore: Codable {
     case .bool: return try container.decode(Bool.self, forKey: .value)
     case .string: return try container.decode(String.self, forKey: .value)
     case .double: return try container.decode(Double.self, forKey: .value)
+    case .float: return try container.decode(Float.self, forKey: .value)
     case .date: return try container.decode(Date.self, forKey: .value)
+    case .data: return try container.decode(Data.self, forKey: .value)
     case .nsNumber:
       let numberData = try container.decode(Data.self, forKey: .value)
       if let numberValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSNumber.self, from: numberData) {
@@ -219,6 +234,18 @@ extension MockValueStore: Codable {
           )
         )
       }
+    case .nsData:
+      let dataData = try container.decode(Data.self, forKey: .value)
+      if let nsDataValue = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSData.self, from: dataData) {
+        return nsDataValue
+      } else {
+        throw DecodingError.dataCorrupted(
+          DecodingError.Context(
+            codingPath: [CodingKeys.value],
+            debugDescription: "Invalid NSData value in source data"
+          )
+        )
+      }
     case .array:
       var array: [CKRecordValueProtocol] = []
       var arrayContainer = try container.nestedUnkeyedContainer(forKey: CodingKeys.value)
@@ -238,6 +265,10 @@ extension MockValueStore: Codable {
   /// for regular use, but in unit tests, we do want to also cover the NSType code paths.
   /// So this prefix of the key ignores the Swift types and lets the coding happen via
   /// the relevant NSType.
+  ///
+  /// You could argue that all the NSType coding isn’t really necessary, but since those types
+  /// are part of `CKRecordValueProtocol`, I thought it’s nice to also encode them
+  /// according to their original type.
   private func should_force_nsType(key: String?) -> Bool {
     guard let key else { return false }
     return key.hasPrefix("_force_nstype")
