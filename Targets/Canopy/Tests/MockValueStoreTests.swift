@@ -209,8 +209,6 @@ final class ValueStoreTests: XCTestCase {
       "assetKey": ckAsset
     ])
     let data = try JSONEncoder().encode(sut)
-    let jsonString = String(decoding: data, as: UTF8.self)
-    print("Asset JSON: \(jsonString)")
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let asset = outcome["assetKey"] as? CKAsset
     XCTAssertEqual(asset!.fileURL!.lastPathComponent, "textFile.txt")
