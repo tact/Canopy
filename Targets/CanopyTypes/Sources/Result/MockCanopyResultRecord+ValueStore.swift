@@ -1,28 +1,30 @@
 import CloudKit
 
-/// A key-value store for values that are permissible to have as values stored in a CKRecord.
-///
-/// The primary use for this type is static mocks to back `MockCanopyResultRecord`
-/// encrypted and non-encrypted value store.
-///
-/// The sendability cannot be enforced by the compiler, because some values may actually
-/// be mutable, and we can’t reasonably check for them being sendable here. Since this is
-/// anyway meant to be just a testing tool that you construct with static immutable data,
-/// we declare `@unchecked Sendable` here, and trust the call sites to
-/// not do anything weird.
-struct MockValueStore: CanopyRecordValueGetting, @unchecked Sendable {
-  let values: [String: CKRecordValueProtocol]
-  
-  init(values: [String : CKRecordValueProtocol]) {
-    self.values = values
-  }
-  
-  subscript(_ key: String) -> (any CKRecordValueProtocol)? {
-    values[key]
+extension MockCanopyResultRecord {
+  /// A key-value store for values that are permissible to have as values stored in a CKRecord.
+  ///
+  /// The primary use for this type is static mocks to back `MockCanopyResultRecord`
+  /// encrypted and non-encrypted value store.
+  ///
+  /// The sendability cannot be enforced by the compiler, because some values may actually
+  /// be mutable, and we can’t reasonably check for them being sendable here. Since this is
+  /// anyway meant to be just a testing tool that you construct with static immutable data,
+  /// we declare `@unchecked Sendable` here, and trust the call sites to
+  /// not do anything weird.
+  struct MockValueStore: CanopyRecordValueGetting, @unchecked Sendable {
+    let values: [String: CKRecordValueProtocol]
+    
+    init(values: [String : CKRecordValueProtocol]) {
+      self.values = values
+    }
+    
+    subscript(_ key: String) -> (any CKRecordValueProtocol)? {
+      values[key]
+    }
   }
 }
 
-extension MockValueStore: Codable {
+extension MockCanopyResultRecord.MockValueStore: Codable {
   private enum CodingKeys: String, CodingKey {
     case key
     case type
@@ -367,7 +369,7 @@ extension MockValueStore: Codable {
     while !container.isAtEnd {
       var nestedContainer = try container.nestedContainer(keyedBy: CodingKeys.self)
       let key = try nestedContainer.decode(String.self, forKey: .key)
-      let value = try MockValueStore.decodeOneValue(container: &nestedContainer)
+      let value = try MockCanopyResultRecord.MockValueStore.decodeOneValue(container: &nestedContainer)
       _values[key] = value
     }
     values = _values
