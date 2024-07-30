@@ -60,8 +60,6 @@ final class CanopyResultRecordTests: XCTestCase {
     ckRecord.encryptedValues["encryptedTextValue"] = "someEncryptedTextValue"
     let canopyResultRecord = CanopyResultRecord(ckRecord: ckRecord)
     let coded = try JSONEncoder().encode(canopyResultRecord)
-    let string = String(data: coded, encoding: .utf8)!
-    print("JSON: \(string)")
     let decodedRecord = try JSONDecoder().decode(CanopyResultRecord.self, from: coded)
     XCTAssertEqual(decodedRecord.recordType, "SomeRecordType")
     XCTAssertEqual(decodedRecord.recordID.recordName, "someRecordName")
@@ -71,8 +69,6 @@ final class CanopyResultRecordTests: XCTestCase {
     let mock = MockCanopyResultRecord(recordType: "MockRecordType")
     let canopyResultRecord = CanopyResultRecord(mock: mock)
     let coded = try JSONEncoder().encode(canopyResultRecord)
-    let string = String(data: coded, encoding: .utf8)!
-    print("JSON: \(string)")
     let decodedRecord = try JSONDecoder().decode(CanopyResultRecord.self, from: coded)
     XCTAssertEqual(decodedRecord.recordType, "MockRecordType")
   }

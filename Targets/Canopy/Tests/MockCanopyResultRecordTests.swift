@@ -41,8 +41,6 @@ final class MockCanopyResultRecordTests: XCTestCase {
   func test_codes_minimal_record() throws {
     let record = MockCanopyResultRecord(recordType: "MinimalType")
     let data = try JSONEncoder().encode(record)
-    let jsonString = String(data: data, encoding: .utf8)!
-    print("JSON: \(jsonString)")
     let decodedRecord = try JSONDecoder().decode(MockCanopyResultRecord.self, from: data)
     XCTAssertEqual(decodedRecord.recordType, "MinimalType")
   }
