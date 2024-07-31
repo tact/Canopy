@@ -1,11 +1,12 @@
 import CanopyTypes
 import CloudKit
 
-public actor ReplayingMockDatabase {
+public actor ReplayingMockDatabase: Codable, Sendable {
   public enum OperationResult: Codable, Sendable {
     case queryRecords(QueryRecordsOperationResult)
     case modifyRecords(ModifyRecordsOperationResult)
     case deleteRecords(ModifyRecordsOperationResult)
+    case fetchRecords(FetchRecordsOperationResult)
   }
   
   private var operationResults: [OperationResult]
@@ -83,7 +84,17 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     perRecordIDProgressBlock: PerRecordIDProgressBlock?,
     qos: QualityOfService
   ) async -> Result<FetchRecordsResult, CKRecordError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .fetchRecords(result) = operationResult else {
+      fatalError("Asked to fetch records without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let fetchResult):
+      return .success(fetchResult)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func modifyZones(

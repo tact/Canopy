@@ -1,7 +1,7 @@
 import CanopyTypes
 import CloudKit
 
-public actor ReplayingMockContainer {
+public actor ReplayingMockContainer: Codable, Sendable {
   public enum OperationResult: Codable, Sendable {
     case userRecordID(UserRecordIDResult)
     case accountStatus(AccountStatusResult)

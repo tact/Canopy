@@ -21,4 +21,14 @@ public extension ReplayingMockDatabase {
       }
     }
   }
+  
+  struct FetchRecordsOperationResult: Codable, Sendable {
+    let result: CodableResult<FetchRecordsResult, CKRecordError>
+    public init(result: Result<FetchRecordsResult, CKRecordError>) {
+      switch result {
+      case .success(let fetchResult): self.result = .success(fetchResult)
+      case .failure(let error): self.result = .failure(error)
+      }
+    }
+  }
 }
