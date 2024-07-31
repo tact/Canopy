@@ -10,4 +10,8 @@ public extension CanopyResultRecord {
       recordType == record.recordType &&
       record.recordChangeTag == record.recordChangeTag
   }
+  
+  static func mock(_ mock: MockCanopyResultRecord) -> CanopyResultRecord {
+    CanopyResultRecord(mock: mock)
+  }
 }

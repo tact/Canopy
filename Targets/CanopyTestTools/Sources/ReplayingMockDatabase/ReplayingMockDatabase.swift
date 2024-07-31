@@ -2,7 +2,20 @@ import CanopyTypes
 import CloudKit
 
 public actor ReplayingMockDatabase {
+  public enum OperationResult: Codable, Sendable {
+    case queryRecords(QueryRecordsOperationResult)
+  }
   
+  private var operationResults: [OperationResult]
+  
+  /// How many operations were tun in this container.
+  public private(set) var operationsRun = 0
+  
+  public init(
+    operationResults: [OperationResult] = []
+  ) {
+    self.operationResults = operationResults
+  }
 }
 
 extension ReplayingMockDatabase: CKDatabaseAPIType {
@@ -12,7 +25,17 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     resultsLimit: Int?,
     qos: QualityOfService
   ) async -> Result<[CanopyResultRecord], CKRecordError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .queryRecords(result) = operationResult else {
+      fatalError("Asked to query records without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let records):
+      return .success(records)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func modifyRecords(
