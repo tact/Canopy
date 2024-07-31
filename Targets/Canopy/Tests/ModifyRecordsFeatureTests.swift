@@ -39,8 +39,10 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         database: db,
         qualityOfService: .default
       ).get()
+    } catch let recordError as CKRecordError {
+      XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.internalError)))
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.internalError)))
+      XCTFail("Unexpected error: \(error)")
     }
   }
   

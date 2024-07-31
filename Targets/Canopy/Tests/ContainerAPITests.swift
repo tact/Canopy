@@ -33,8 +33,10 @@ final class ContainerAPITests: XCTestCase {
     let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     do {
       let _ = try await containerAPI.userRecordID.get()
+    } catch let recordError as CKRecordError {
+      XCTAssertEqual(recordError, CKRecordError(from: ckError))
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: ckError))
+      XCTFail("Unexpected error: \(error)")
     }
   }
   

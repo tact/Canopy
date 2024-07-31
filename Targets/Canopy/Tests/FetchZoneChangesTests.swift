@@ -123,10 +123,12 @@ final class FetchZoneChangesTests: XCTestCase {
         recordZoneIDs: [zoneID],
         fetchMethod: .changeTokenAndSpecificKeys(["key1", "key2"])
       ).get()
-    } catch {
-      XCTAssertEqual(error as! CanopyError, .ckRecordError(.init(from: CKError(CKError.Code.networkUnavailable))))
+    } catch CanopyError.ckRecordError(let recordError) {
+      XCTAssertEqual(recordError, .init(from: CKError(CKError.Code.networkUnavailable)))
       let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
       XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
+    } catch {
+      XCTFail("Unexpected error: \(error)")
     }
   }
   
