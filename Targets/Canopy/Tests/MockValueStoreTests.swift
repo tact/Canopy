@@ -5,7 +5,7 @@ import XCTest
 
 typealias ValueStore = MockCanopyResultRecord.MockValueStore
 
-final class ValueStoreTests: XCTestCase {
+final class MockValueStoreTests: XCTestCase {
   
   // MARK: - Invididual data types
   
