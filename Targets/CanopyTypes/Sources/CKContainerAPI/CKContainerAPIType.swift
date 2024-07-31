@@ -1,6 +1,6 @@
 import CloudKit
 
-public enum CKContainerAPIError: Error {
+public enum CKContainerAPIError: Int, Error, Codable, Sendable {
   /// There can only be one listener to the account status stream.
   case onlyOneAccountStatusStreamSupported
 }
