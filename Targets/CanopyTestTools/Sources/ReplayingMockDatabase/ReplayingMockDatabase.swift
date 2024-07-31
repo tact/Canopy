@@ -4,6 +4,8 @@ import CloudKit
 public actor ReplayingMockDatabase {
   public enum OperationResult: Codable, Sendable {
     case queryRecords(QueryRecordsOperationResult)
+    case modifyRecords(ModifyRecordsOperationResult)
+    case deleteRecords(ModifyRecordsOperationResult)
   }
   
   private var operationResults: [OperationResult]
@@ -44,7 +46,17 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     perRecordProgressBlock: PerRecordProgressBlock?,
     qos: QualityOfService
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .modifyRecords(result) = operationResult else {
+      fatalError("Asked to modify records without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let records):
+      return .success(records)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func deleteRecords(
@@ -52,7 +64,17 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     in zoneID: CKRecordZone.ID?,
     qos: QualityOfService
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .deleteRecords(result) = operationResult else {
+      fatalError("Asked to delete records without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let records):
+      return .success(records)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func fetchRecords(

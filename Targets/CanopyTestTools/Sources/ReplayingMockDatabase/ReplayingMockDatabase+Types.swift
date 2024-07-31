@@ -12,13 +12,13 @@ public extension ReplayingMockDatabase {
     }
   }
   
-//  struct ModifyRecordsOperationResult: Codable, Sendable {
-//    let result: CodableResult<[ModifyRecordsResult], CKRecordError>
-//    public init(result: Result<[ModifyRecordsResult], CKRecordError>) {
-//      switch result {
-//      case .success(let modifyResult): self.result = .success(modifyResult)
-//      case .failure(let error): self.result = .failure(error)
-//      }
-//    }
-//  }
+  struct ModifyRecordsOperationResult: Codable, Sendable {
+    let result: CodableResult<ModifyRecordsResult, CKRecordError>
+    public init(result: Result<ModifyRecordsResult, CKRecordError>) {
+      switch result {
+      case .success(let modifyResult): self.result = .success(modifyResult)
+      case .failure(let error): self.result = .failure(error)
+      }
+    }
+  }
 }
