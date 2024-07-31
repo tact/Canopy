@@ -14,3 +14,33 @@ public struct ModifyRecordsResult: Equatable, Sendable {
     self.deletedRecordIDs = deletedRecordIDs
   }
 }
+
+extension ModifyRecordsResult: Codable {
+  enum CodingKeys: CodingKey {
+    case savedRecords
+    case deletedRecordIDs
+  }
+  
+  public init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    savedRecords = try container.decode([CanopyResultRecord].self, forKey: .savedRecords)
+    let deletedRecordIDsData = try container.decode(Data.self, forKey: .deletedRecordIDs)
+    if let deletedRecordIDs = try? NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: CKRecord.ID.self, from: deletedRecordIDsData) {
+      self.deletedRecordIDs = deletedRecordIDs
+    } else {
+      throw DecodingError.dataCorrupted(
+        DecodingError.Context(
+          codingPath: [CodingKeys.deletedRecordIDs],
+          debugDescription: "Invalid deleted record IDs value in source data"
+        )
+      )
+    }
+  }
+  
+  public func encode(to encoder: any Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(savedRecords, forKey: .savedRecords)
+    let deletedRecordIDsData = try NSKeyedArchiver.archivedData(withRootObject: deletedRecordIDs, requiringSecureCoding: true)
+    try container.encode(deletedRecordIDsData, forKey: .deletedRecordIDs)
+  }
+}
