@@ -11,7 +11,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     in zoneID: CKRecordZone.ID?,
     resultsLimit: Int?,
     qos: QualityOfService
-  ) async -> Result<[CKRecord], CKRecordError> {
+  ) async -> Result<[CanopyResultRecord], CKRecordError> {
     fatalError("Not implemented")
   }
   

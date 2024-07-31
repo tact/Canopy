@@ -19,7 +19,7 @@ struct ModifyRecords {
     autoBatchToSmallerWhenLimitExceeded: Bool = true,
     autoRetryForRetriableErrors: Bool = true
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
-    var savedRecords: [CKRecord] = []
+    var savedRecords: [CanopyResultRecord] = []
     var deletedRecordIDs: [CKRecord.ID] = []
     var currentBatchSize = customBatchSize ?? CKBatchSize
     
@@ -68,7 +68,7 @@ struct ModifyRecords {
             
       switch result {
       case let .success(result):
-        savedRecords += result.savedRecords
+        savedRecords.append(contentsOf: result.savedRecords)
         deletedRecordIDs += result.deletedRecordIDs
       case let .failure(error):
         if error == CKRecordError(from: CKError(CKError.Code.limitExceeded)), autoBatchToSmallerWhenLimitExceeded {
@@ -197,7 +197,7 @@ struct ModifyRecords {
             continuation.resume(
               returning: .success(
                 ModifyRecordsResult(
-                  savedRecords: savedRecords,
+                  savedRecords: savedRecords.map(\.canopyResultRecord),
                   deletedRecordIDs: deletedRecordIDs
                 )
               )

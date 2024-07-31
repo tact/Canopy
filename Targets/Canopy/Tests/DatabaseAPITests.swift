@@ -43,7 +43,7 @@ final class DatabaseAPITests: XCTestCase {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let result = try! await api.queryRecords(with: query, in: nil).get()
     
-    XCTAssertTrue(result.first!.isEqualToRecord(record))
+    XCTAssertTrue(result.first!.isEqualToRecord(record.canopyResultRecord))
   }
   
   func test_delete_records_success() async {
@@ -143,7 +143,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     let result = try! await api.fetchRecords(with: [recordID]).get()
-    XCTAssertTrue(result.foundRecords.first!.isEqualToRecord(record))
+    XCTAssertTrue(result.foundRecords.first!.isEqualToRecord(record.canopyResultRecord))
   }
   
   func test_fetch_records_record_failure() async {
@@ -204,7 +204,7 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     let fetchResult = try! await api.fetchRecords(with: [recordID]).get()
-    XCTAssertTrue(fetchResult.foundRecords.first!.isEqualToRecord(record))
+    XCTAssertTrue(fetchResult.foundRecords.first!.isEqualToRecord(record.canopyResultRecord))
     XCTAssertEqual(fetchResult.notFoundRecordIDs, [recordID2])
   }
   

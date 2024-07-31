@@ -24,6 +24,16 @@ public struct CanopyResultRecord: Sendable {
   }
 }
 
+extension CanopyResultRecord: Equatable {
+  public static func == (lhs: CanopyResultRecord, rhs: CanopyResultRecord) -> Bool {
+    switch (lhs.kind, rhs.kind) {
+    case (.ckRecord(let lhsRecord, _), .ckRecord(let rhsRecord, _)): lhsRecord == rhsRecord
+    case (.mock(let lhsMock), .mock(let rhsMock)): lhsMock == rhsMock
+    default: false
+    }
+  }
+}
+
 extension CanopyResultRecord: Codable {
   enum CodingKeys: CodingKey {
     case type

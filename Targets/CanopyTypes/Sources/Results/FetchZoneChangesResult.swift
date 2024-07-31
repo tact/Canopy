@@ -2,10 +2,10 @@ import CloudKit
 import Foundation
 
 public struct FetchZoneChangesResult: Sendable {
-  public let changedRecords: [CKRecord]
+  public let changedRecords: [CanopyResultRecord]
   public let deletedRecords: [DeletedCKRecord]
   
-  public init(records: [CKRecord], deletedRecords: [DeletedCKRecord]) {
+  public init(records: [CanopyResultRecord], deletedRecords: [DeletedCKRecord]) {
     self.changedRecords = records
     self.deletedRecords = deletedRecords
   }

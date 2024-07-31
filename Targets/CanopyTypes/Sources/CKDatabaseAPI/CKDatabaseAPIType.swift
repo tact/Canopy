@@ -20,7 +20,7 @@ public protocol CKDatabaseAPIType: Sendable {
     in zoneID: CKRecordZone.ID?,
     resultsLimit: Int?,
     qos: QualityOfService
-  ) async -> Result<[CKRecord], CKRecordError>
+  ) async -> Result<[CanopyResultRecord], CKRecordError>
 
   /// See ``CKDatabaseAPIType/modifyRecords(saving:deleting:perRecordProgressBlock:qualityOfService:)`` for preferred way of calling this API.
   func modifyRecords(

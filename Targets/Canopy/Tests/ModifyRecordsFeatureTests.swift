@@ -439,7 +439,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
 
     XCTAssertEqual(result.savedRecords.count, 9)
     for index in 0 ..< result.savedRecords.count {
-      XCTAssertTrue(result.savedRecords[index].isEqualToRecord(recordsToSave[index]))
+      XCTAssertTrue(result.savedRecords[index].isEqualToRecord(recordsToSave[index].canopyResultRecord))
     }
     XCTAssertEqual(result.deletedRecordIDs.count, 1)
 
@@ -505,7 +505,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default,
       autoRetryForRetriableErrors: true
     ).get()
-    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0]))
+    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord))
     XCTAssertEqual(result.savedRecords.count, 1)
     let operationsRun = await db.operationsRun
     XCTAssertEqual(operationsRun, 1)
@@ -530,7 +530,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default,
       autoRetryForRetriableErrors: true
     ).get()
-    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0]))
+    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord))
     XCTAssertEqual(result.savedRecords.count, 1)
     let operationsRun = await db.operationsRun
     XCTAssertEqual(operationsRun, 2)
@@ -556,7 +556,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default,
       autoRetryForRetriableErrors: true
     ).get()
-    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0]))
+    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord))
     XCTAssertEqual(result.savedRecords.count, 1)
     let operationsRun = await db.operationsRun
     XCTAssertEqual(operationsRun, 3)

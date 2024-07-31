@@ -49,6 +49,23 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
   }
 }
 
+extension MockCanopyResultRecord: Equatable {
+  public static func == (lhs: MockCanopyResultRecord, rhs: MockCanopyResultRecord) -> Bool {
+    lhs.recordID == rhs.recordID &&
+    lhs.recordType == rhs.recordType &&
+    lhs.creationDate == rhs.creationDate &&
+    lhs.creatorUserRecordID == rhs.creatorUserRecordID &&
+    lhs.modificationDate == rhs.modificationDate &&
+    lhs.lastModifiedUserRecordID == rhs.lastModifiedUserRecordID &&
+    lhs.recordChangeTag == rhs.recordChangeTag &&
+    lhs.parent == rhs.parent &&
+    lhs.share == rhs.share
+    // Note: not comparing values stores here.
+    // So two mocks with different value stores but everything else matching above
+    // will be considered equal.
+  }
+}
+
 extension MockCanopyResultRecord: Codable {
   enum CodingKeys: String, CodingKey {
     case recordID

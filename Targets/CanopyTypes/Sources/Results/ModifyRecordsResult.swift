@@ -4,12 +4,12 @@ import CloudKit
 public struct ModifyRecordsResult: Equatable, Sendable {
   /// An array of saved records. The records likely have different metadata from the records that you gave to the modification function
   /// as input, because CloudKit updates the record modification timestamp and change tag on the server side when saving records.
-  public let savedRecords: [CKRecord]
+  public let savedRecords: [CanopyResultRecord]
   
   /// Array of deleted record ID-s. This matches the array record ID-s that you gave to the function as input.
   public let deletedRecordIDs: [CKRecord.ID]
   
-  public init(savedRecords: [CKRecord], deletedRecordIDs: [CKRecord.ID]) {
+  public init(savedRecords: [CanopyResultRecord], deletedRecordIDs: [CKRecord.ID]) {
     self.savedRecords = savedRecords
     self.deletedRecordIDs = deletedRecordIDs
   }

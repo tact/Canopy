@@ -39,7 +39,7 @@ final class FetchZoneChangesTests: XCTestCase {
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
     ).get()
-    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
+    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord))
     XCTAssertEqual(result.deletedRecords, [])
     let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
     let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
@@ -247,7 +247,7 @@ final class FetchZoneChangesTests: XCTestCase {
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
     ).get()
-    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
+    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord))
     XCTAssertEqual(result.deletedRecords, [])
     let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
     let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls

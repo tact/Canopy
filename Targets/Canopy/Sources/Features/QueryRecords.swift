@@ -32,7 +32,7 @@ struct QueryRecords {
     desiredKeys: [CKRecord.FieldKey]? = nil,
     resultsLimit: Int? = nil,
     qualityOfService: QualityOfService = .default
-  ) async -> Result<[CKRecord], CKRecordError> {
+  ) async -> Result<[CanopyResultRecord], CKRecordError> {
     var startingPoint = QueryOperationStartingPoint.query(query)
     var records: [CKRecord] = []
     
@@ -50,14 +50,16 @@ struct QueryRecords {
       case let .error(error):
         return .failure(error)
       case let .records(newRecords):
-        return .success(records + newRecords)
+        let ckRecords = records + newRecords
+        return .success(ckRecords.map(\.canopyResultRecord))
       case let .recordsAndCursor(newRecords, cursor):
         guard !Task.isCancelled else {
           return .failure(.init(from: CKError(CKError.Code.operationCancelled)))
         }
         // If there was a results limit, just return the result even if there was a cursor
         if resultsLimit != nil {
-          return .success(records + newRecords)
+          let ckRecords = records + newRecords
+          return .success(ckRecords.map(\.canopyResultRecord))
         }
         
         startingPoint = QueryOperationStartingPoint.cursor(cursor)
