@@ -1,7 +1,7 @@
 import CanopyTypes
 import CloudKit
 
-public actor ReplayingMockDatabase: Codable, Sendable {
+public actor ReplayingMockDatabase: Sendable {
   public enum OperationResult: Codable, Sendable {
     case queryRecords(QueryRecordsOperationResult)
     case modifyRecords(ModifyRecordsOperationResult)
