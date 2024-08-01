@@ -2,11 +2,18 @@ import CanopyTypes
 import CloudKit
 
 public actor ReplayingMockDatabase: Sendable {
+  #warning("build tests for uncovered cases")
   public enum OperationResult: Codable, Sendable {
     case queryRecords(QueryRecordsOperationResult)
     case modifyRecords(ModifyRecordsOperationResult)
     case deleteRecords(ModifyRecordsOperationResult)
     case fetchRecords(FetchRecordsOperationResult)
+    case modifyZones(ModifyZonesOperationResult)
+    case fetchZones(FetchZonesOperationResult)
+    case fetchAllZones(FetchZonesOperationResult)
+    case modifySubscriptions(ModifySubscriptionsOperationResult)
+    case fetchDatabaseChanges(FetchDatabaseChangesOperationResult)
+    case fetchZoneChanges(FetchZoneChangesOperationResult)
   }
   
   private var operationResults: [OperationResult]
@@ -102,20 +109,50 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     deleting recordZoneIDsToDelete: [CKRecordZone.ID]?,
     qos: QualityOfService
   ) async -> Result<ModifyZonesResult, CKRecordZoneError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .modifyZones(result) = operationResult else {
+      fatalError("Asked to modify zones without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let fetchResult):
+      return .success(fetchResult)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func fetchZones(
     with recordZoneIDs: [CKRecordZone.ID],
     qos: QualityOfService
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .fetchZones(result) = operationResult else {
+      fatalError("Asked to fetch zones without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let zonesArchive):
+      return .success(zonesArchive.zones)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func fetchAllZones(
     qos: QualityOfService
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .fetchAllZones(result) = operationResult else {
+      fatalError("Asked to fetch all zones without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let zonesArchive):
+      return .success(zonesArchive.zones)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func modifySubscriptions(
@@ -123,13 +160,33 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     deleting subscriptionIDsToDelete: [CKSubscription.ID]?,
     qos: QualityOfService
   ) async -> Result<ModifySubscriptionsResult, CKSubscriptionError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .modifySubscriptions(result) = operationResult else {
+      fatalError("Asked to modify subscriptions without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let fetchResult):
+      return .success(fetchResult)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func fetchDatabaseChanges(
     qos: QualityOfService
   ) async -> Result<FetchDatabaseChangesResult, CanopyError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .fetchDatabaseChanges(result) = operationResult else {
+      fatalError("Asked to fetch databse changes without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let changes):
+      return .success(changes)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
   
   public func fetchZoneChanges(
@@ -137,6 +194,16 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     fetchMethod: FetchZoneChangesMethod,
     qos: QualityOfService
   ) async -> Result<FetchZoneChangesResult, CanopyError> {
-    fatalError("Not implemented")
+    let operationResult = operationResults.removeFirst()
+    guard case let .fetchZoneChanges(result) = operationResult else {
+      fatalError("Asked to fetch zone changes without an available result or invalid result type. Likely a logic error on caller side")
+    }
+    operationsRun += 1
+    switch result.result {
+    case .success(let changes):
+      return .success(changes)
+    case .failure(let e):
+      return .failure(e)
+    }
   }
 }

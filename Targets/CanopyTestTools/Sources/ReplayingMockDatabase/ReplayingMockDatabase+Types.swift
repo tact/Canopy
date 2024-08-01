@@ -31,4 +31,54 @@ public extension ReplayingMockDatabase {
       }
     }
   }
+  
+  struct ModifyZonesOperationResult: Codable, Sendable {
+    let result: CodableResult<ModifyZonesResult, CKRecordZoneError>
+    public init(result: Result<ModifyZonesResult, CKRecordZoneError>) {
+      switch result {
+      case .success(let modifyResult): self.result = .success(modifyResult)
+      case .failure(let error): self.result = .failure(error)
+      }
+    }
+  }
+  
+  struct FetchZonesOperationResult: Codable, Sendable {
+    let result: CodableResult<CloudKitRecordZoneArchive, CKRecordZoneError>
+    public init(result: Result<[CKRecordZone], CKRecordZoneError>) {
+      switch result {
+      case .success(let zones): self.result = .success(.init(zones: zones))
+      case .failure(let recordZoneError): self.result = .failure(recordZoneError)
+      }
+    }
+  }
+  
+  struct ModifySubscriptionsOperationResult: Codable, Sendable {
+    let result: CodableResult<ModifySubscriptionsResult, CKSubscriptionError>
+    public init(result: Result<ModifySubscriptionsResult, CKSubscriptionError>) {
+      switch result {
+      case .success(let modifyResult): self.result = .success(modifyResult)
+      case .failure(let error): self.result = .failure(error)
+      }
+    }
+  }
+  
+  struct FetchDatabaseChangesOperationResult: Codable, Sendable {
+    let result: CodableResult<FetchDatabaseChangesResult, CanopyError>
+    public init(result: Result<FetchDatabaseChangesResult, CanopyError>) {
+      switch result {
+      case .success(let fetchResult): self.result = .success(fetchResult)
+      case .failure(let error): self.result = .failure(error)
+      }
+    }
+  }
+  
+  struct FetchZoneChangesOperationResult: Codable, Sendable {
+    let result: CodableResult<FetchZoneChangesResult, CanopyError>
+    public init(result: Result<FetchZoneChangesResult, CanopyError>) {
+      switch result {
+      case .success(let fetchResult): self.result = .success(fetchResult)
+      case .failure(let error): self.result = .failure(error)
+      }
+    }
+  }
 }
