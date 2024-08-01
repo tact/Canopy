@@ -2,7 +2,6 @@ import CanopyTypes
 import CloudKit
 
 public actor ReplayingMockDatabase: Sendable {
-  #warning("build tests for uncovered cases")
   public enum OperationResult: Codable, Sendable {
     case queryRecords(QueryRecordsOperationResult)
     case modifyRecords(ModifyRecordsOperationResult)

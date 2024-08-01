@@ -18,8 +18,6 @@ final class ModifyZonesResultTests: XCTestCase {
       deletedZoneIDs: deletedZoneIDs
     )
     let coded = try JSONEncoder().encode(modifyZonesResult)
-    let data = String(data: coded, encoding: .utf8)!
-    print("Coded: \(data)")
     let decoded = try JSONDecoder().decode(ModifyZonesResult.self, from: coded)
     XCTAssertEqual(decoded.savedZones[1].zoneID.zoneName, "someZone2")
     XCTAssertEqual(decoded.deletedZoneIDs[1].zoneName, "deletedId2")

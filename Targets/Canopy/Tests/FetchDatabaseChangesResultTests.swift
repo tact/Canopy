@@ -10,7 +10,6 @@ final class FetchDatabaseChangesResultTests: XCTestCase {
       purgedRecordZoneIDs: [.init(zoneName: "purgedZone", ownerName: "owner3")]
     )
     let coded = try JSONEncoder().encode(result)
-    print("Coded: \(String(data: coded, encoding: .utf8)!)")
     let decoded = try JSONDecoder().decode(FetchDatabaseChangesResult.self, from: coded)
     XCTAssertEqual(decoded.changedRecordZoneIDs[0].zoneName, "changedZone")
     XCTAssertEqual(decoded.deletedRecordZoneIDs[0].zoneName, "deletedZone")
