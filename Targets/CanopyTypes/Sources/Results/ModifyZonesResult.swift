@@ -21,7 +21,7 @@ extension ModifyZonesResult: Codable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     let savedZonesData = try container.decode(Data.self, forKey: .savedZones)
-    if let savedZones = try? NSKeyedUnarchiver.unarchivedArrayOfObjects(ofClass: CKRecordZone.self, from: savedZonesData) {
+    if let savedZones = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [CKRecordZone.self, NSArray.self], from: savedZonesData) as? [CKRecordZone] {
       self.savedZones = savedZones
     } else {
       throw DecodingError.dataCorrupted(
