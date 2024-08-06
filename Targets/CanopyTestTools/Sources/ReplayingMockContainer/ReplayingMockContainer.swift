@@ -10,7 +10,9 @@ public actor ReplayingMockContainer: Sendable {
     case acceptShares(AcceptSharesResult)
   }
     
-  private var operationResults: [OperationResult]
+  private var operationResults: [OperationResult] = []
+  private var userRecordIDOperationResults: [OperationResult] = []
+  private var accountStatusOperationResults: [OperationResult] = []
   
   /// How many operations were tun in this container.
   public private(set) var operationsRun = 0
@@ -18,14 +20,20 @@ public actor ReplayingMockContainer: Sendable {
   public init(
     operationResults: [OperationResult] = []
   ) {
-    self.operationResults = operationResults
+    for operation in operationResults {
+      switch operation {
+      case .userRecordID: userRecordIDOperationResults.append(operation)
+      case .accountStatus: accountStatusOperationResults.append(operation)
+      default: self.operationResults.append(operation)
+      }
+    }
   }
 }
 
 extension ReplayingMockContainer: CKContainerAPIType {
   public var userRecordID: Result<CKRecord.ID?, CKRecordError> {
     get async {
-      let operationResult = operationResults.removeFirst()
+      let operationResult = userRecordIDOperationResults.removeFirst()
       guard case let .userRecordID(result) = operationResult else {
         fatalError("Asked to fetch user record ID without an available result or invalid result type. Likely a logic error on caller side")
       }
@@ -40,7 +48,7 @@ extension ReplayingMockContainer: CKContainerAPIType {
   
   public var accountStatus: Result<CKAccountStatus, CanopyError> {
     get async {
-      let operationResult = operationResults.removeFirst()
+      let operationResult = accountStatusOperationResults.removeFirst()
       guard case let .accountStatus(result) = operationResult else {
         fatalError("Asked for account status without an available result or invalid result type. Likely a logic error on caller side")
       }
