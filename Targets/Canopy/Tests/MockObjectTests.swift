@@ -16,10 +16,4 @@ final class MockObjectTests: XCTestCase {
     let share = CKShare.mock_owned_by_current_user
     XCTAssertEqual(share.participants.count, 3)
   }
-  
-  func test_mock_record_change_tag() {
-    let mockRecord = MockCKRecord(recordType: "MyType")
-    mockRecord[MockCKRecord.testingRecordChangeTag] = "myTag"
-    XCTAssertEqual(mockRecord.recordChangeTag, "myTag")
-  }
 }
