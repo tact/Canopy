@@ -70,6 +70,17 @@ public extension ReplayingMockDatabase {
       case .failure(let error): self.result = .failure(error)
       }
     }
+    
+    /// Useful to use in tests and previews where you don’t need to inject any results, to save some typing.
+    public static let blank = FetchDatabaseChangesOperationResult(
+      result: .success(
+        FetchDatabaseChangesResult(
+          changedRecordZoneIDs: [],
+          deletedRecordZoneIDs: [],
+          purgedRecordZoneIDs: []
+        )
+      )
+    )
   }
   
   struct FetchZoneChangesOperationResult: Codable, Sendable {
