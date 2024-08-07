@@ -9,14 +9,14 @@ import CloudKit
 /// then plays back their static content in response to Canopy API calls.
 public struct MockCanopy {
   private let container: CKContainerAPIType
-  private let privateDatabase: CKDatabaseAPIType
   private let publicDatabase: CKDatabaseAPIType
+  private let privateDatabase: CKDatabaseAPIType
   private let sharedDatabase: CKDatabaseAPIType
   
   public init(
     container: CKContainerAPIType = ReplayingMockContainer(),
-    privateDatabase: CKDatabaseAPIType = ReplayingMockDatabase(),
     publicDatabase: CKDatabaseAPIType = ReplayingMockDatabase(),
+    privateDatabase: CKDatabaseAPIType = ReplayingMockDatabase(),
     sharedDatabase: CKDatabaseAPIType = ReplayingMockDatabase()
   ) {
     self.container = container

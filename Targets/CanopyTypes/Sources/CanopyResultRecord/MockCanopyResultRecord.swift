@@ -4,8 +4,8 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
   let encryptedValuesStore: MockValueStore
   let valuesStore: MockValueStore
   
-  let recordID: CKRecord.ID
-  let recordType: CKRecord.RecordType
+  public let recordID: CKRecord.ID
+  public let recordType: CKRecord.RecordType
   let creationDate: Date?
   let creatorUserRecordID: CKRecord.ID?
   let modificationDate: Date?
@@ -24,8 +24,8 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
     recordChangeTag: String? = nil,
     parent: CKRecord.Reference? = nil,
     share: CKRecord.Reference? = nil,
-    values: [String: CKRecordValueProtocol] = [:],
-    encryptedValues: [String: CKRecordValueProtocol] = [:]
+    values: [String: CKRecordValueProtocol?] = [:],
+    encryptedValues: [String: CKRecordValueProtocol?] = [:]
   ) {
     self.recordID = recordID
     self.recordType = recordType
@@ -36,8 +36,39 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
     self.recordChangeTag = recordChangeTag
     self.parent = parent
     self.share = share
-    valuesStore = MockValueStore(values: values)
-    encryptedValuesStore = MockValueStore(values: encryptedValues)
+    #warning("unit test compact map values and add comment")
+    valuesStore = MockValueStore(values: values.compactMapValues { $0 })
+    encryptedValuesStore = MockValueStore(values: encryptedValues.compactMapValues { $0 })
+  }
+  
+  public static func from(ckRecord: CKRecord) -> MockCanopyResultRecord {
+    #warning("Unit test this")
+    var values: [String: CKRecordValueProtocol] = [:]
+    var encryptedValues: [String: CKRecordValueProtocol] = [:]
+    for valueKey in ckRecord.allKeys() {
+      if let value = ckRecord[valueKey] as? CKRecordValueProtocol {
+        values[valueKey] = value
+      }
+    }
+    for encryptedValueKey in ckRecord.encryptedValues.allKeys() {
+      if let value = ckRecord.encryptedValues[encryptedValueKey] as? CKRecordValueProtocol {
+        encryptedValues[encryptedValueKey] = value
+      }
+    }
+    
+    return MockCanopyResultRecord(
+      recordID: ckRecord.recordID,
+      recordType: ckRecord.recordType,
+      creationDate: ckRecord.creationDate,
+      creatorUserRecordID: ckRecord.creatorUserRecordID,
+      modificationDate: ckRecord.modificationDate,
+      lastModifiedUserRecordID: ckRecord.lastModifiedUserRecordID,
+      recordChangeTag: ckRecord.recordChangeTag,
+      parent: ckRecord.parent,
+      share: ckRecord.share,
+      values: values,
+      encryptedValues: encryptedValues
+    )
   }
   
   public subscript(_ key: String) -> (any CKRecordValueProtocol)? {
