@@ -1,4 +1,5 @@
 @testable import Canopy
+import CanopyTestTools
 import CloudKit
 import XCTest
 
@@ -103,5 +104,43 @@ final class CanopyResultRecordTests: XCTestCase {
         XCTFail("Unexpected error: \(dataCorruptedError)")
       }
     }
+  }
+  
+  func test_returns_real_ckshare() {
+    let record = CanopyResultRecord(ckRecord: CKShare.mock_owned_by_current_user)
+    let share = record.asCKShare!
+    XCTAssertEqual(share.participants.count, 3)
+  }
+  
+  func test_does_not_return_ckshare_for_mock() {
+    let record = CanopyResultRecord(mock: .init(recordType: "SomeType"))
+    XCTAssertNil(record.asCKShare)
+  }
+  
+  func test_does_not_return_ckshare_for_ckrecord() {
+    let ckRecord = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    let record = CanopyResultRecord(ckRecord: ckRecord)
+    XCTAssertNil(record.asCKShare)
+  }
+  
+  func test_equatable() {
+    let ckRecord1 = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    let record1 = CanopyResultRecord(ckRecord: ckRecord1)
+    let record2 = CanopyResultRecord(ckRecord: ckRecord1)
+    let mockRecord1 = CanopyResultRecord(
+      mock: .init(
+        recordID: .init(recordName: "name"),
+        recordType: "Type1"
+      )
+    )
+    let mockRecord2 = CanopyResultRecord(
+      mock: .init(
+        recordID: .init(recordName: "name"),
+        recordType: "Type1"
+      )
+    )
+    XCTAssertEqual(record1, record2)
+    XCTAssertEqual(mockRecord1, mockRecord2)
+    XCTAssertNotEqual(record1, mockRecord1)
   }
 }

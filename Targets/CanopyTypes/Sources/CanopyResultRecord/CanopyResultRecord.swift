@@ -38,6 +38,9 @@ public struct CanopyResultRecord: Sendable {
 
 extension CanopyResultRecord: Equatable {
   public static func == (lhs: CanopyResultRecord, rhs: CanopyResultRecord) -> Bool {
+    // Note that CKRecord equality is by reference, not value
+    // CKRecords are equal only if they are the same object reference
+    // MockCanopyResultRecord equality, though, is by values
     switch (lhs.kind, rhs.kind) {
     case (.ckRecord(let lhsRecord, _), .ckRecord(let rhsRecord, _)): lhsRecord == rhsRecord
     case (.mock(let lhsMock), .mock(let rhsMock)): lhsMock == rhsMock
