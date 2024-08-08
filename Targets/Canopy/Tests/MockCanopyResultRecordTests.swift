@@ -129,4 +129,78 @@ final class MockCanopyResultRecordTests: XCTestCase {
       }
     }
   }
+  
+  func test_compact_map_values() throws {
+    let mock = MockCanopyResultRecord(
+      recordType: "MockRecord",
+      values: [
+        "key1": "value1",
+        "nullKey": nil
+      ],
+      encryptedValues: [
+        "encryptedKey1": "encryptedValue1",
+        "nullEncryptedKey": nil
+      ]
+    )
+      
+    XCTAssertEqual(mock["key1"] as! String, "value1")
+    XCTAssertNil(mock["nullKey"])
+    
+    XCTAssertEqual(mock.encryptedValuesView["encryptedKey1"] as! String, "encryptedValue1")
+    XCTAssertNil(mock["nullEncryptedKey"])
+  }
+  
+  func test_equatable() {
+    let creationDate = Date().advanced(by: -10)
+    let modificationDate = Date()
+    
+    let record1 = MockCanopyResultRecord(
+      recordID: .init(recordName: "myRecord"),
+      recordType: "MockRecord",
+      creationDate: creationDate,
+      creatorUserRecordID: .init(recordName: "creatorId"),
+      modificationDate: modificationDate,
+      lastModifiedUserRecordID: .init(recordName: "modifierId"),
+      recordChangeTag: "changeTag",
+      parent: .init(recordID: .init(recordName: "parentId"), action: .none),
+      share: .init(recordID: .init(recordName: "shareId"), action: .none)
+    )
+    
+    let record2 = MockCanopyResultRecord(
+      recordID: .init(recordName: "myRecord"),
+      recordType: "MockRecord",
+      creationDate: creationDate,
+      creatorUserRecordID: .init(recordName: "creatorId"),
+      modificationDate: modificationDate,
+      lastModifiedUserRecordID: .init(recordName: "modifierId"),
+      recordChangeTag: "changeTag",
+      parent: .init(recordID: .init(recordName: "parentId"), action: .none),
+      share: .init(recordID: .init(recordName: "shareId"), action: .none)
+    )
+    
+    let record3 = MockCanopyResultRecord(
+      recordID: .init(recordName: "anotherId"),
+      recordType: "MockRecord",
+      creationDate: creationDate,
+      creatorUserRecordID: .init(recordName: "creatorId"),
+      modificationDate: modificationDate,
+      lastModifiedUserRecordID: .init(recordName: "modifierId"),
+      recordChangeTag: "changeTag",
+      parent: .init(recordID: .init(recordName: "parentId"), action: .none),
+      share: .init(recordID: .init(recordName: "shareId"), action: .none)
+    )
+    
+    XCTAssertEqual(record1, record2)
+    XCTAssertNotEqual(record1, record3)
+  }
+  
+  func test_from_ckrecord() {
+    let ckRecord = CKRecord(recordType: "MyType", recordID: .init(recordName: "myRecordName"))
+    ckRecord["key1"] = "value1"
+    ckRecord.encryptedValues["encryptedKey1"] = "encryptedValue1"
+    let mock = MockCanopyResultRecord.from(ckRecord: ckRecord)
+    XCTAssertEqual(mock.recordID.recordName, "myRecordName")
+    XCTAssertEqual(mock["key1"] as! String, "value1")
+    XCTAssertEqual(mock.encryptedValuesView["encryptedKey1"] as! String, "encryptedValue1")
+  }
 }

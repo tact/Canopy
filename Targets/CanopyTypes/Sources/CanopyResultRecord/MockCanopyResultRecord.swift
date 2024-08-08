@@ -36,13 +36,11 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
     self.recordChangeTag = recordChangeTag
     self.parent = parent
     self.share = share
-    #warning("unit test compact map values and add comment")
     valuesStore = MockValueStore(values: values.compactMapValues { $0 })
     encryptedValuesStore = MockValueStore(values: encryptedValues.compactMapValues { $0 })
   }
   
   public static func from(ckRecord: CKRecord) -> MockCanopyResultRecord {
-    #warning("Unit test this")
     var values: [String: CKRecordValueProtocol] = [:]
     var encryptedValues: [String: CKRecordValueProtocol] = [:]
     for valueKey in ckRecord.allKeys() {

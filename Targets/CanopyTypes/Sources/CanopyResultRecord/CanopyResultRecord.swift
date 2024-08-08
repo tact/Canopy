@@ -22,6 +22,18 @@ public struct CanopyResultRecord: Sendable {
   public init(mock: MockCanopyResultRecord) {
     kind = .mock(mock)
   }
+  
+  /// Return this record as a CKShare, if it looks like a CKShare.
+  ///
+  /// CKShare is an important CKRecord subclass that handles sharing and permissions. CanopyResultRecord
+  /// does currently not yet implement strong support for CKShares, but it lets you unpack and cast a real share
+  /// like this.
+  public var asCKShare: CKShare? {
+    switch kind {
+    case .ckRecord(let record, _): record as? CKShare
+    case .mock: nil
+    }
+  }
 }
 
 extension CanopyResultRecord: Equatable {
