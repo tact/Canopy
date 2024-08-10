@@ -9,7 +9,7 @@ public struct CanopyResultRecord: Sendable {
   struct CKRecordEncryptedValuesReader: CanopyRecordValueGetting {
     let record: CKRecord
     subscript(key: String) -> CKRecordValueProtocol? {
-      record.encryptedValues[key]
+      return record.encryptedValues[key]
     }
   }
   
