@@ -9,7 +9,10 @@ public struct ModifyRecordsResult: Equatable, Sendable {
   /// Array of deleted record ID-s. This matches the array record ID-s that you gave to the function as input.
   public let deletedRecordIDs: [CKRecord.ID]
   
-  public init(savedRecords: [CanopyResultRecord], deletedRecordIDs: [CKRecord.ID]) {
+  public init(
+    savedRecords: [CanopyResultRecord] = [],
+    deletedRecordIDs: [CKRecord.ID] = []
+  ) {
     self.savedRecords = savedRecords
     self.deletedRecordIDs = deletedRecordIDs
   }

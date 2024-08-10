@@ -8,7 +8,7 @@ public struct FetchRecordsResult: Equatable, Sendable {
   /// Records that were not found based on the ID, but the operation was otherwise successful.
   public let notFoundRecordIDs: [CKRecord.ID]
   
-  public init(foundRecords: [CanopyResultRecord], notFoundRecordIDs: [CKRecord.ID]) {
+  public init(foundRecords: [CanopyResultRecord] = [], notFoundRecordIDs: [CKRecord.ID] = []) {
     self.foundRecords = foundRecords
     self.notFoundRecordIDs = notFoundRecordIDs
   }
