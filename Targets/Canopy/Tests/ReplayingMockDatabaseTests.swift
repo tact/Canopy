@@ -395,4 +395,21 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     let result2 = try! await db.fetchRecords(with: []).get()
     XCTAssertEqual(result2.notFoundRecordIDs[0].recordName, "notFound1")
   }
+  
+  func test_sleep_if_needed() async {
+    let db = ReplayingMockDatabase(
+      operationResults: [
+        .queryRecords(
+          .init(
+            result: .success([
+              .mock(.init(recordID: .init(recordName: "mockName"), recordType: "MockType"))
+            ])
+          )
+        )
+      ],
+      sleepBeforeEachOperation: 0.01
+    )
+    let result = try! await db.queryRecords(with: .init(recordType: "MockType", predicate: NSPredicate(value: true)), in: nil).get()
+    XCTAssertEqual(result.first!.recordID.recordName, "mockName")
+  }
 }
