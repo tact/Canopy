@@ -17,13 +17,24 @@ public actor ReplayingMockDatabase: Sendable {
   
   private var operationResults: [OperationResult]
   
+  /// Whether to sleep before each operation.
+  private let sleepBeforeEachOperation: Float?
+  
   /// How many operations were tun in this container.
   public private(set) var operationsRun = 0
   
   public init(
-    operationResults: [OperationResult] = []
+    operationResults: [OperationResult] = [],
+    sleepBeforeEachOperation: Float? = nil
   ) {
     self.operationResults = operationResults
+    self.sleepBeforeEachOperation = sleepBeforeEachOperation
+  }
+  
+  private func sleepIfNeeded() async {
+    if let sleepBeforeEachOperation {
+      try? await Task.sleep(nanoseconds: UInt64(sleepBeforeEachOperation * Float(NSEC_PER_SEC)))
+    }
   }
 }
 
@@ -34,6 +45,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     resultsLimit: Int?,
     qos: QualityOfService
   ) async -> Result<[CanopyResultRecord], CKRecordError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .queryRecords(result) = operationResult else {
       fatalError("Asked to query records without an available result or invalid result type. Likely a logic error on caller side")
@@ -53,6 +65,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     perRecordProgressBlock: PerRecordProgressBlock?,
     qos: QualityOfService
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .modifyRecords(result) = operationResult else {
       fatalError("Asked to modify records without an available result or invalid result type. Likely a logic error on caller side")
@@ -71,6 +84,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     in zoneID: CKRecordZone.ID?,
     qos: QualityOfService
   ) async -> Result<ModifyRecordsResult, CKRecordError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .deleteRecords(result) = operationResult else {
       fatalError("Asked to delete records without an available result or invalid result type. Likely a logic error on caller side")
@@ -90,6 +104,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     perRecordIDProgressBlock: PerRecordIDProgressBlock?,
     qos: QualityOfService
   ) async -> Result<FetchRecordsResult, CKRecordError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .fetchRecords(result) = operationResult else {
       fatalError("Asked to fetch records without an available result or invalid result type. Likely a logic error on caller side")
@@ -108,6 +123,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     deleting recordZoneIDsToDelete: [CKRecordZone.ID]?,
     qos: QualityOfService
   ) async -> Result<ModifyZonesResult, CKRecordZoneError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .modifyZones(result) = operationResult else {
       fatalError("Asked to modify zones without an available result or invalid result type. Likely a logic error on caller side")
@@ -125,6 +141,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     with recordZoneIDs: [CKRecordZone.ID],
     qos: QualityOfService
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .fetchZones(result) = operationResult else {
       fatalError("Asked to fetch zones without an available result or invalid result type. Likely a logic error on caller side")
@@ -141,6 +158,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
   public func fetchAllZones(
     qos: QualityOfService
   ) async -> Result<[CKRecordZone], CKRecordZoneError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .fetchAllZones(result) = operationResult else {
       fatalError("Asked to fetch all zones without an available result or invalid result type. Likely a logic error on caller side")
@@ -159,6 +177,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     deleting subscriptionIDsToDelete: [CKSubscription.ID]?,
     qos: QualityOfService
   ) async -> Result<ModifySubscriptionsResult, CKSubscriptionError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .modifySubscriptions(result) = operationResult else {
       fatalError("Asked to modify subscriptions without an available result or invalid result type. Likely a logic error on caller side")
@@ -175,6 +194,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
   public func fetchDatabaseChanges(
     qos: QualityOfService
   ) async -> Result<FetchDatabaseChangesResult, CanopyError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .fetchDatabaseChanges(result) = operationResult else {
       fatalError("Asked to fetch databse changes without an available result or invalid result type. Likely a logic error on caller side")
@@ -193,6 +213,7 @@ extension ReplayingMockDatabase: CKDatabaseAPIType {
     fetchMethod: FetchZoneChangesMethod,
     qos: QualityOfService
   ) async -> Result<FetchZoneChangesResult, CanopyError> {
+    await sleepIfNeeded()
     let operationResult = operationResults.removeFirst()
     guard case let .fetchZoneChanges(result) = operationResult else {
       fatalError("Asked to fetch zone changes without an available result or invalid result type. Likely a logic error on caller side")
