@@ -8,15 +8,11 @@ jobs:
       xcode: 15.4.0
     steps:
       - checkout
-      - run:
-        name: Build
-        command: swift build -v
+      - run: swift build -v
 
   test:
     macos:
       xcode: 15.4.0
     steps:
       - checkout
-      - run:
-        name: Test
-        command: swift test -v
+      - run: swift test -v
