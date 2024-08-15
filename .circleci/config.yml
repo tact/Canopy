@@ -1,0 +1,23 @@
+# CircleCI configuration file
+
+version: 2.1
+jobs:
+  build:
+    macos:
+      xcode: "15.4.0"
+    steps:
+      - checkout
+      - run: swift build -v
+
+  test:
+    macos:
+      xcode: "15.4.0"
+    steps:
+      - checkout
+      - run: swift test -v
+
+workflows:
+  build-and-test:
+    jobs:
+      - build
+      - test
