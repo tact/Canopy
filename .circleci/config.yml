@@ -1,7 +1,6 @@
 # CircleCI configuration file
 
 version: 2.1
-
 jobs:
   build-and-test:
     macos:
