@@ -28,7 +28,7 @@ final class MockCanopyResultRecordTests: XCTestCase {
     XCTAssertEqual(decodedRecord.recordID.recordName, "someName")
     XCTAssertEqual(decodedRecord.recordType, "SomeRecordType")
     XCTAssertEqual(decodedRecord["key1"] as! String, "String 1")
-    XCTAssertEqual(decodedRecord.encryptedValuesView["encrypted1"] as! String, "Encrypted String 1")
+    XCTAssertEqual(decodedRecord.encryptedValues["encrypted1"] as! String, "Encrypted String 1")
     XCTAssertEqual(decodedRecord.creationDate, date)
     XCTAssertEqual(decodedRecord.modificationDate, date)
     XCTAssertEqual(decodedRecord.recordChangeTag, "changeTag")
@@ -146,7 +146,7 @@ final class MockCanopyResultRecordTests: XCTestCase {
     XCTAssertEqual(mock["key1"] as! String, "value1")
     XCTAssertNil(mock["nullKey"])
     
-    XCTAssertEqual(mock.encryptedValuesView["encryptedKey1"] as! String, "encryptedValue1")
+    XCTAssertEqual(mock.encryptedValues["encryptedKey1"] as! String, "encryptedValue1")
     XCTAssertNil(mock["nullEncryptedKey"])
   }
   
@@ -201,6 +201,6 @@ final class MockCanopyResultRecordTests: XCTestCase {
     let mock = MockCanopyResultRecord.from(ckRecord: ckRecord)
     XCTAssertEqual(mock.recordID.recordName, "myRecordName")
     XCTAssertEqual(mock["key1"] as! String, "value1")
-    XCTAssertEqual(mock.encryptedValuesView["encryptedKey1"] as! String, "encryptedValue1")
+    XCTAssertEqual(mock.encryptedValues["encryptedKey1"] as! String, "encryptedValue1")
   }
 }

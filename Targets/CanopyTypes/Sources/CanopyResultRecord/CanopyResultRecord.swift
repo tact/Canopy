@@ -180,9 +180,9 @@ extension CanopyResultRecord: CanopyResultRecordType {
     }
   }
   
-  public var encryptedValuesView: any CanopyRecordValueGetting {
+  public var encryptedValues: any CanopyRecordValueGetting {
     switch kind {
-    case .mock(let mock): mock.encryptedValuesView
+    case .mock(let mock): mock.encryptedValues
     case .ckRecord(_, let reader): reader
     }
   }

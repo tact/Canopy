@@ -5,7 +5,7 @@ public protocol CanopyRecordValueGetting {
 }
 
 protocol CanopyResultRecordType: CanopyRecordValueGetting {
-  var encryptedValuesView: CanopyRecordValueGetting { get }
+  var encryptedValues: CanopyRecordValueGetting { get }
   var recordID: CKRecord.ID { get }
   var recordType: CKRecord.RecordType { get }
   var creationDate: Date? { get }

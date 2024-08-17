@@ -73,7 +73,7 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
     valuesStore[key]
   }
   
-  var encryptedValuesView: CanopyRecordValueGetting {
+  var encryptedValues: CanopyRecordValueGetting {
     encryptedValuesStore
   }
 }
