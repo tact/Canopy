@@ -27,7 +27,7 @@ public enum FetchZoneChangesMethod: Sendable {
   /// for a longer discussion.
   case changeTokenOnly
 
-  var desiredKeys: [CKRecord.FieldKey]? {
+  public var desiredKeys: [CKRecord.FieldKey]? {
     switch self {
     case .changeTokenAndAllData:
       return nil

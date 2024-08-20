@@ -77,7 +77,7 @@ actor CKDatabaseAPI: CKDatabaseAPIType {
     in zoneID: CKRecordZone.ID?,
     resultsLimit: Int?,
     qos: QualityOfService
-  ) async -> Result<[CKRecord], CKRecordError> {
+  ) async -> Result<[CanopyResultRecord], CKRecordError> {
     await QueryRecords.with(
       query,
       recordZoneID: zoneID,
@@ -160,7 +160,7 @@ actor CKDatabaseAPI: CKDatabaseAPIType {
             continuation.resume(
               returning: .success(
                 .init(
-                  foundRecords: foundRecords,
+                  foundRecords: foundRecords.map(\.canopyResultRecord),
                   notFoundRecordIDs: notFoundRecordIDs
                 )
               )
@@ -567,7 +567,7 @@ actor CKDatabaseAPI: CKDatabaseAPIType {
                 continuation.resume(
                   returning: .success(
                     .init(
-                      records: records,
+                      records: records.map { $0.canopyResultRecord },
                       deletedRecords: deleted
                     )
                   )

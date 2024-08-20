@@ -1,9 +1,6 @@
 import CloudKit
 import Foundation
 
-// Re-export the types, so `import Canopy` also imports the types.
-@_exported import CanopyTypes
-
 /// The main Canopy entry point, providing you access to the container and database APIs
 /// for performing real or simulated CloudKit requests.
 ///

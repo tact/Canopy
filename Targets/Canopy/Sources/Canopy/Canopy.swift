@@ -2,6 +2,9 @@ import CanopyTypes
 import CloudKit
 import Foundation
 
+// Re-export the types, so `import Canopy` also imports the types.
+@_exported import CanopyTypes
+
 /// Main Canopy implementation.
 ///
 /// You construct Canopy with injected CloudKit container and databases, token store, and settings provider.

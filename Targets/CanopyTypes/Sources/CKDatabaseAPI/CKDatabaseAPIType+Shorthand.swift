@@ -59,7 +59,7 @@ public extension CKDatabaseAPIType {
     in zoneID: CKRecordZone.ID?,
     resultsLimit: Int? = nil,
     qualityOfService: QualityOfService = .default
-  ) async -> Result<[CKRecord], CKRecordError> {
+  ) async -> Result<[CanopyResultRecord], CKRecordError> {
     await queryRecords(
       with: query,
       in: zoneID,

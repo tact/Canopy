@@ -180,8 +180,10 @@ final class QueryRecordsFeatureTests: XCTestCase {
     
     do {
       let _ = try await task.result.get().get()
+    } catch let recordError as CKRecordError {
+      XCTAssertEqual(recordError, .init(from: CKError(CKError.Code.operationCancelled)))
     } catch {
-      XCTAssertEqual(error as! CKRecordError, .init(from: CKError(CKError.Code.operationCancelled)))
+      XCTFail("Unexpected error: \(error)")
     }
     
     let operationsRun = await db.operationsRun

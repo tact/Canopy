@@ -14,7 +14,7 @@ If you use SPM `Package.swift`, add this:
 dependencies: [
   .package(
     url: "https://github.com/Tact/Canopy",
-    from: "0.2.0"
+    from: "0.5.0"
   )
 ]
 ```

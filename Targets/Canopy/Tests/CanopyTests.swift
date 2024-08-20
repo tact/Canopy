@@ -66,7 +66,7 @@ final class CanopyTests: XCTestCase {
     // First request will succeed.
     let result1 = try! await api.modifyRecords(saving: [changedRecord]).get()
     XCTAssertTrue(result1.savedRecords.count == 1)
-    XCTAssertTrue(result1.savedRecords[0].isEqualToRecord(changedRecord))
+    XCTAssertTrue(result1.savedRecords[0].isEqualToRecord(changedRecord.canopyResultRecord))
     
     // Second request will fail after modifying the settings.
     await modifiableSettings.setModifyRecordsBehavior(behavior: .simulatedFail(nil))

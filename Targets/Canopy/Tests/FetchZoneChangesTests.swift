@@ -39,7 +39,7 @@ final class FetchZoneChangesTests: XCTestCase {
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
     ).get()
-    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
+    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord))
     XCTAssertEqual(result.deletedRecords, [])
     let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
     let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
@@ -123,10 +123,12 @@ final class FetchZoneChangesTests: XCTestCase {
         recordZoneIDs: [zoneID],
         fetchMethod: .changeTokenAndSpecificKeys(["key1", "key2"])
       ).get()
-    } catch {
-      XCTAssertEqual(error as! CanopyError, .ckRecordError(.init(from: CKError(CKError.Code.networkUnavailable))))
+    } catch CanopyError.ckRecordError(let recordError) {
+      XCTAssertEqual(recordError, .init(from: CKError(CKError.Code.networkUnavailable)))
       let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
       XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
+    } catch {
+      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -245,7 +247,7 @@ final class FetchZoneChangesTests: XCTestCase {
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
     ).get()
-    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord))
+    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord))
     XCTAssertEqual(result.deletedRecords, [])
     let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
     let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls

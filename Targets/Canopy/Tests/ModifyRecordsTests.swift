@@ -55,7 +55,7 @@ final class ModifyRecordsTests: XCTestCase {
     let api = databaseAPI(db)
     let result = try! await api.modifyRecords(saving: [record]).get()
     
-    XCTAssertTrue(result.savedRecords.first!.isEqualToRecord(record))
+    XCTAssertTrue(result.savedRecords.first!.isEqualToRecord(record.canopyResultRecord))
     XCTAssertEqual(result.deletedRecordIDs, [])
   }
   
@@ -82,7 +82,7 @@ final class ModifyRecordsTests: XCTestCase {
     let api = databaseAPI(db, settings: CanopySettings(modifyRecordsBehavior: .regular(0.01)))
     let result = try! await api.modifyRecords(saving: [record]).get()
     
-    XCTAssertTrue(result.savedRecords.first!.isEqualToRecord(record))
+    XCTAssertTrue(result.savedRecords.first!.isEqualToRecord(record.canopyResultRecord))
     XCTAssertEqual(result.deletedRecordIDs, [])
   }
   
@@ -224,7 +224,7 @@ final class ModifyRecordsTests: XCTestCase {
     
     XCTAssertEqual(result.savedRecords.count, 10)
     for index in 0 ..< result.savedRecords.count {
-      XCTAssertTrue(result.savedRecords[index].isEqualToRecord(recordsToSave[index]))
+      XCTAssertTrue(result.savedRecords[index].isEqualToRecord(recordsToSave[index].canopyResultRecord))
     }
     XCTAssertEqual(result.deletedRecordIDs.count, 1)
 
@@ -290,7 +290,7 @@ final class ModifyRecordsTests: XCTestCase {
       deleting: []
     ).get()
     
-    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0]))
+    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord))
     XCTAssertEqual(result.savedRecords.count, 1)
     let operationsRun = await db.operationsRun
     XCTAssertEqual(operationsRun, 2)

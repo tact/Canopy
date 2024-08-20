@@ -8,7 +8,7 @@ import XCTest
 final class DependencyTests: XCTestCase {
   struct Fetcher {
     @Dependency(\.cloudKit) private var canopy
-    func fetchRecord(recordID: CKRecord.ID) async -> CKRecord? {
+    func fetchRecord(recordID: CKRecord.ID) async -> CanopyResultRecord? {
       try! await canopy.databaseAPI(usingDatabaseScope: .private).fetchRecords(
         with: [recordID]
       ).get().foundRecords.first
@@ -20,8 +20,8 @@ final class DependencyTests: XCTestCase {
       let testRecordID = CKRecord.ID(recordName: "testRecordID")
       let testRecord = CKRecord(recordType: "TestRecord", recordID: testRecordID)
       testRecord["testKey"] = "testValue"
-      $0.cloudKit = MockCanopy(
-        mockPrivateDatabase: ReplayingMockCKDatabase(
+      $0.cloudKit = MockCanopyWithCKMocks(
+        mockPrivateCKDatabase: ReplayingMockCKDatabase(
           operationResults: [
             .fetch(
               .init(
@@ -43,6 +43,6 @@ final class DependencyTests: XCTestCase {
       Fetcher()
     }
     let record = await fetcher.fetchRecord(recordID: .init(recordName: "testRecordID"))!
-    XCTAssertEqual(record["testKey"], "testValue")
+    XCTAssertEqual(record["testKey"] as! String, "testValue")
   }
 }
