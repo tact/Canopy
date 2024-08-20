@@ -1,5 +1,11 @@
 import CloudKit
 
+/// Read-only representation of one CloudKit record.
+///
+/// May be constructed with either a CKRecord (coming from CloudKit or created locally),
+/// or ``MockCanopyResultRecord``.
+///
+/// Read the fields and metadata of the record with the getters defined in the ``CanopyResultRecordType`` protocol.
 public struct CanopyResultRecord: Sendable {
   enum Kind {
     case mock(MockCanopyResultRecord)
