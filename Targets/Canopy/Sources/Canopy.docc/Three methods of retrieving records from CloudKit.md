@@ -38,7 +38,7 @@ The API for this is [CKQueryOperation](https://developer.apple.com/documentation
 
 In principle, this is very similar to a traditional database query. You query for exactly one type of record, in exactly one record zone. You can filter your query and the web dashboard has a decent filter editor UI. (This would be the SQL WHERE clause.) You can sort your results. The field(s) that you want to filter by must have the QUERYABLE index set in CloudKit, and the sort field(s) must have the SORTABLE index set. If there is no needed index on a field and you still try to filter or query by it, CloudKit returns a pretty clear error about this in the web UI or to your API call, so do watch those errors during development.
 
-A query may result in many records, more than CloudKit can return in one batch. In this case, it uses cursors that you can pass to subsequent query operations to retrieve the next “page” of results. It works as you would expect. See the API documentation. Canopy API ``CKDatabaseAPIType/queryRecords(with:in:qualityOfService:)`` automatically handles the pages and cursors for you, and returns the final result.
+A query may result in many records, more than CloudKit can return in one batch. In this case, it uses cursors that you can pass to subsequent query operations to retrieve the next “page” of results. It works as you would expect. See the API documentation. Canopy API ``/CanopyTypes/CKDatabaseAPIType/queryRecords(with:in:qualityOfService:)`` automatically handles the pages and cursors for you, and returns the final result.
 
 Setting `desiredKeys` on the query limits the fields that the operation returns, and potentially reduces the download size and increases speed. Do query only for the fields that you actually need. If you later need to retrieve the other keys, consider using the fetch-based method discussed below.
 
@@ -46,7 +46,7 @@ This method, as you would expect, returns you the state of the records present i
 
 ## Fetch-based retrieving
 
-Fetch here means “fetch specific records”. The API is [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation), with the corresponding Canopy API ``CKDatabaseAPIType/fetchRecords(with:desiredKeys:perRecordIDProgressBlock:qualityOfService:)``. Here’s the web UI.
+Fetch here means “fetch specific records”. The API is [CKFetchRecordsOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordsoperation), with the corresponding Canopy API ``/CanopyTypes/CKDatabaseAPIType/fetchRecords(with:desiredKeys:perRecordIDProgressBlock:qualityOfService:)``. Here’s the web UI.
 
 ![Fetch-based record retrieving in CloudKit web dashboard](ckmethods02fetch)
 
@@ -68,7 +68,7 @@ The two APIs for this are [CKFetchDatabaseChangesOperation](https://developer.ap
 
 (For brevity, the text below will refer to them as _“CKFDCO”_ and _“CKFRZCO”_. Say _“See-Kay-Fedco”_ and _“See-Kay-Ferzco”_ and listen to them rolling off your tongue.)
 
-The corresponding Canopy APIs are ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)``.
+The corresponding Canopy APIs are ``/CanopyTypes/CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``/CanopyTypes/CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)``.
 
 On the reference page of CKFDCO, Apple has one of the most useful bits of CloudKit documentation, hidden in the obscurity of one specific operation, that describes the pattern for using these APIs together to most efficiently fetch changes of your app’s data in CloudKit.
 
@@ -84,7 +84,7 @@ Armed with this knowledge, we can start exploring the relevant parts of the web 
 
 This would simply fetch the current list of zones in the indicated database, as you can yourself do with [CKFetchRecordZonesOperation](https://developer.apple.com/documentation/cloudkit/ckfetchrecordzonesoperation). In the private database, you sort of know what the zones are based on your app’s architecture, so it’s not that interesting. It’s much more interesting in the shared database, where the list of zones changes over time based on what other users have shared records with you. You would possibly see several zones with similar names, but different owner IDs.
 
-The Canopy API to fetch the list of record zones would be ``CKDatabaseAPIType/fetchAllZones(qualityOfService:)`` for all zones, and ``CKDatabaseAPIType/fetchZones(with:qualityOfService:)`` for specific zones.
+The Canopy API to fetch the list of record zones would be ``/CanopyTypes/CKDatabaseAPIType/fetchAllZones(qualityOfService:)`` for all zones, and ``/CanopyTypes/CKDatabaseAPIType/fetchZones(with:qualityOfService:)`` for specific zones.
 
 Another way to fetch zones is to ask for a list of zones that have changed since a point in time represented by a **database change token**. This is what the CKFDCO API does. There used to be a way to do this also in the CloudKit web dashboard, but it appears to no longer be there. So the CKFDCO API (or its Canopy equivalent) is the only way to fetch a list of zones that have changed since the time represented by the token.
 

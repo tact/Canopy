@@ -33,7 +33,7 @@ public actor Canopy: CanopyType {
   ///   Canopy requests settings from the closure every time that it runs a request whose behavior might be altered by the settings.
   ///   This is designed as a closure because the settings may change during application runtime.
   ///   - tokenStore: an object that stores and returns zone and database tokens for the requests that work with the tokens.
-  ///   Canopy only interacts with the token store when using the ``CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)`` APIs. If you don’t use these APIs, you can ignore this parameter.
+  ///   Canopy only interacts with the token store when using the ``/CanopyTypes/CKDatabaseAPIType/fetchDatabaseChanges(qualityOfService:)`` and ``/CanopyTypes/CKDatabaseAPIType/fetchZoneChanges(recordZoneIDs:fetchMethod:qualityOfService:)`` APIs. If you don’t use these APIs, you can ignore this parameter.
   public init(
     container: @escaping @autoclosure @Sendable () -> CKContainerType = CKContainer.default(),
     publicCloudDatabase: @escaping @autoclosure @Sendable () -> CKDatabaseType = CKContainer.default().publicCloudDatabase,

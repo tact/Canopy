@@ -24,7 +24,7 @@ var dependencies: [PackageDescription.Package.Dependency] = [
 //
 // This approach was lifted from GRDB Package.swift.
 if ProcessInfo.processInfo.environment["SPI_BUILDER"] == "1" {
-  dependencies.append(.package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0"))
+  dependencies.append(.package(url: "https://github.com/apple/swift-docc-plugin", from: "1.4.0"))
 }
 
 let package = Package(
