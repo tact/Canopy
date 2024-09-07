@@ -6,13 +6,13 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
   
   public let recordID: CKRecord.ID
   public let recordType: CKRecord.RecordType
-  let creationDate: Date?
-  let creatorUserRecordID: CKRecord.ID?
-  let modificationDate: Date?
-  let lastModifiedUserRecordID: CKRecord.ID?
-  let recordChangeTag: String?
-  let parent: CKRecord.Reference?
-  let share: CKRecord.Reference?
+  public let creationDate: Date?
+  public let creatorUserRecordID: CKRecord.ID?
+  public let modificationDate: Date?
+  public let lastModifiedUserRecordID: CKRecord.ID?
+  public let recordChangeTag: String?
+  public let parent: CKRecord.Reference?
+  public let share: CKRecord.Reference?
   
   public init(
     recordID: CKRecord.ID = .init(recordName: "mockRecordName"),
@@ -73,7 +73,7 @@ public struct MockCanopyResultRecord: CanopyResultRecordType, Sendable {
     valuesStore[key]
   }
   
-  var encryptedValues: CanopyRecordValueGetting {
+  public var encryptedValues: CanopyRecordValueGetting {
     encryptedValuesStore
   }
 }

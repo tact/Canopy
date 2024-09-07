@@ -22,6 +22,7 @@ public protocol TokenStoreType: Sendable {
   ///
   /// - Parameter token: token to be stored. May be nil if it needs to be removed from storage for whatever reason.
   /// If receiving a nil token, the store should remove the known token for this scope.
+  /// - Parameter scope: the CKDatabase scope you are storing the token for.
   func storeToken(_ token: CKServerChangeToken?, forDatabaseScope scope: CKDatabase.Scope) async
 
   /// Return the token for the requested scope, if there is one.
@@ -31,6 +32,7 @@ public protocol TokenStoreType: Sendable {
   ///
   /// - Parameter token: token to be stored. May be nil if it needs to be removed from storage for whatever reason.
   /// If receiving a nil token, the store should remove the known token for this record zone ID.
+  /// - Parameter zoneID: the CloudKit record zone ID that you are storing the token for.
   func storeToken(_ token: CKServerChangeToken?, forRecordZoneID zoneID: CKRecordZone.ID) async
   
   /// Return the token for the requested record zone ID, if there is one.
