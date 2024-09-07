@@ -8,7 +8,7 @@ public extension CKDatabaseAPIType {
   /// from the same CloudKit database (you cannot fetch records across databases with the same API request).
   ///
   /// - Parameters:
-  ///   - with: One or more record ID-s whose corresponding records you wish to fetch.
+  ///   - recordIDs: One or more record ID-s whose corresponding records you wish to fetch.
   ///   - desiredKeys: List of keys that should be populated for each fetched record. Limiting the keys
   ///   may decrease the download size and make it faster, especially if you exclude any `CKAsset` fields. Default value is `nil`,
   ///   instructing the system to fetch all keys. Specify an empty array to not populate any keys with values.
@@ -42,9 +42,9 @@ public extension CKDatabaseAPIType {
   /// Canopy implements this internally for you and returns a single full array of records in the end, even if CloudKit internally returned multiple pages.
   ///
   /// - Parameters:
-  ///   - with: The `CKQuery` specifying your query. See [CloudKit documentation for CKQuery](https://developer.apple.com/documentation/cloudkit/ckquery)
+  ///   - query: The `CKQuery` specifying your query. See [CloudKit documentation for CKQuery](https://developer.apple.com/documentation/cloudkit/ckquery)
   ///   about how to construct your query.
-  ///   - in: The record zone ID to query the records from. or `nil` to use the default zone.
+  ///   - zoneID: The record zone ID to query the records from. or `nil` to use the default zone.
   ///   - resultsLimit: An optional number of results to return. By default (if this is `nil`),
   ///   this function returns all matching results, which may be retrieved across several queries. Specify a results limit
   ///   to set a cap. Note that this should be equal or lower to the CloudKit limit of maximum results per query, which
@@ -73,8 +73,8 @@ public extension CKDatabaseAPIType {
   /// This is the single method that you use for both record modification and deletion.
   ///
   /// - Parameters:
-  ///   - saving: Array of `CKRecord` objects to save, or `nil` if you are not saving any records (you are only deleting).
-  ///   - deleting: Array of record ID-s to delete, or `nil` if you are not deleting any records (you are only saving).
+  ///   - recordsToSave: Array of `CKRecord` objects to save, or `nil` if you are not saving any records (you are only deleting).
+  ///   - recordIDsToDelete: Array of record ID-s to delete, or `nil` if you are not deleting any records (you are only saving).
   ///   - perRecordProgressBlock: A closure that gets called with the upload progress for each record being saved.
   ///   May be useful to report upload progress to the user, especially if you are uploading records with large assets.
   ///   Default is `nil`, meaning that upload progress isn’t reported to you.
@@ -106,7 +106,7 @@ public extension CKDatabaseAPIType {
   ///
   /// - Parameters:
   ///   - query: Query for the records that you want to delete.
-  ///   - in: record zone ID where you want to perform the query and deletion.
+  ///   - zoneID: record zone ID where you want to perform the query and deletion.
   ///   - qualityOfService: The desired quality of service of the request. Defaults to `.default` if not provided.
   ///
   /// - Returns:
@@ -134,8 +134,8 @@ public extension CKDatabaseAPIType {
   /// If the zone already exists, this operation does nothing. If there are already records in the zone, those records are not affected.
   ///
   /// - Parameters:
-  ///   - saving: an array of record zones to create or modify.
-  ///   - deleting: an array of record zone ID-s to delete.
+  ///   - recordZonesToSave: an array of record zones to create or modify.
+  ///   - recordZoneIDsToDelete: an array of record zone ID-s to delete.
   ///   - qualityOfService: The desired quality of service of the request. Defaults to `.default` if not provided.
   ///
   /// - Returns:
@@ -157,7 +157,7 @@ public extension CKDatabaseAPIType {
   /// You may need to do this if you are interested in the zone capabilities.
   ///
   /// - Parameters:
-  ///   - with: List of record zone ID-s whose zones you are interested in.
+  ///   - recordZoneIDs: List of record zone ID-s whose zones you are interested in.
   ///   - qualityOfService: The desired quality of service of the request. Defaults to `.default` if not provided.
   ///
   /// - Returns:
@@ -207,8 +207,8 @@ public extension CKDatabaseAPIType {
   /// [CKQuerySubscription.](https://developer.apple.com/documentation/cloudkit/ckquerysubscription)
   ///
   /// - Parameters:
-  ///   - saving: Array of subscriptions to save.
-  ///   - deleting: Array of subscription ID-s to delete.
+  ///   - subscriptionsToSave: Array of subscriptions to save.
+  ///   - subscriptionIDsToDelete: Array of subscription ID-s to delete.
   ///   - qualityOfService: The desired quality of service of the request. Defaults to `.default` if not provided.
   ///
   /// - Returns:

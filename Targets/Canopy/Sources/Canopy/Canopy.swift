@@ -28,7 +28,7 @@ public actor Canopy: CanopyType {
   ///   - container: A real or mock `CKContainer`.
   ///   - publicCloudDatabase: a real or mock `CKDatabase` instance representing the public CloudKit database.
   ///   - privateCloudDatabase: a real or mock `CKDatabase` instance representing the private CloudKit database.
-  ///   - privateCloudDatabase: a real or mock `CKDatabase` instance representing the shared CloudKit database.
+  ///   - sharedCloudDatabase: a real or mock `CKDatabase` instance representing the shared CloudKit database.
   ///   - settings: a closure that returns Canopy settings.
   ///   Canopy requests settings from the closure every time that it runs a request whose behavior might be altered by the settings.
   ///   This is designed as a closure because the settings may change during application runtime.

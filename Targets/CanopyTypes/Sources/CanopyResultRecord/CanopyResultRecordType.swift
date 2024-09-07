@@ -8,7 +8,7 @@ public protocol CanopyRecordValueGetting {
 ///
 /// The API is equivalent to `CKRecord`, except that this is a read-only
 /// immutable view, without any setters.
-protocol CanopyResultRecordType: CanopyRecordValueGetting {
+public protocol CanopyResultRecordType: CanopyRecordValueGetting {
   var encryptedValues: CanopyRecordValueGetting { get }
   var recordID: CKRecord.ID { get }
   var recordType: CKRecord.RecordType { get }

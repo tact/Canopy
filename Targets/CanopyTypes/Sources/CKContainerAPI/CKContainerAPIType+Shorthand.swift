@@ -34,7 +34,7 @@ public extension CKContainerAPIType {
   /// Canopy internally calls this operation to execute this function.
   ///
   /// - Parameters:
-  ///   - with: An array of `CKShare.Metadata` that you received e.g from the underlying system, which to convert into shares.
+  ///   - metadatas: An array of `CKShare.Metadata` that you received e.g from the underlying system, which to convert into shares.
   ///   - qualityOfService: The desired quality of service of the request. Defaults to `.default` if not provided.
   ///
   /// - Returns:
