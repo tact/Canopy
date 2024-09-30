@@ -40,6 +40,17 @@ public struct CanopyResultRecord: Sendable {
     case .mock: nil
     }
   }
+  
+  public func boolForKey(_ key: String) -> Bool? {
+    let boolCandidate = self[key]
+    if let boolValue = boolCandidate as? Bool {
+      return boolValue
+    } else if let binaryIntegerValue = boolCandidate as? any BinaryInteger {
+      return binaryIntegerValue == 0 ? false : true
+    } else {
+      return nil
+    }
+  }
 }
 
 extension CanopyResultRecord: Equatable {

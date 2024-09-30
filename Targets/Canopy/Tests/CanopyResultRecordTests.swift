@@ -143,4 +143,11 @@ final class CanopyResultRecordTests: XCTestCase {
     XCTAssertEqual(mockRecord1, mockRecord2)
     XCTAssertNotEqual(record1, mockRecord1)
   }
+  
+  func test_boolforkey_int() {
+    let ckRecord = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    ckRecord["myBoolBackend"] = Int64(1)
+    let record = CanopyResultRecord(ckRecord: ckRecord)
+    XCTAssertTrue(record.boolForKey)
+  }
 }
