@@ -41,15 +41,39 @@ public struct CanopyResultRecord: Sendable {
     }
   }
   
+  /// Return a Boolean value if the record property value for a given key can be represented as a bool,
+  /// otherwise return nil.
+  ///
+  /// CloudKit does not have a boolean data type. Booleans can be stored as integers in CloudKit. When you
+  /// store a bool value using a CKRecord, it gets stored as Int64 on the CloudKit side. Ohter integer data types
+  /// may be similarly used as bools, with the common convention that 0 maps to false and any other integer value
+  /// maps to true.
+  ///
+  /// This function lets you retrieve the bool value if you are treating a given record property value as a bool in your own
+  /// data model, regardless of which exact Integer type was used on the CloudKit side.
+  ///
+  /// If the record property value does not exist, or is backed by some other type that is neither a Boolean or Integer
+  /// and can’t be cast to a Boolean value, this function returns nil.
+  ///
+  /// You commonly should not see native Boolean values returned from CloudKit, but it is fine to use them as part of
+  /// MockCanopyResultRecord values. So if you use a boolean in your mock record, while it is backed by an integer type
+  /// on the CloudKit side in real use, this function will behave predictably and consistently for both cases.
   public func boolForKey(_ key: String) -> Bool? {
     let boolCandidate = self[key]
     if let boolValue = boolCandidate as? Bool {
       return boolValue
     } else if let binaryIntegerValue = boolCandidate as? any BinaryInteger {
-      return binaryIntegerValue == 0 ? false : true
+      return binaryIntegerValue.boolValue
     } else {
       return nil
     }
+  }
+}
+
+extension BinaryInteger {
+  var boolValue: Bool {
+    // https://forums.swift.org/t/how-would-you-test-an-arbitrary-value-for-boolness/75045
+    self == Self.zero ? false : true
   }
 }
 
