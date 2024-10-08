@@ -110,7 +110,8 @@ final class ModifyRecordsTests: XCTestCase {
     do {
       let _ = try await api.modifyRecords(saving: [record]).get()
     } catch {
-      XCTAssertTrue(error is CKRecordError)
+      XCTAssertNotNil(error)
+      XCTAssertEqual(error.batchErrors, [:])
     }
   }
   
@@ -138,7 +139,8 @@ final class ModifyRecordsTests: XCTestCase {
     do {
       let _ = try await api.modifyRecords(saving: [record]).get()
     } catch {
-      XCTAssertTrue(error is CKRecordError)
+      XCTAssertNotNil(error)
+      XCTAssertEqual(error.batchErrors, [:])
     }
   }
   
@@ -175,9 +177,7 @@ final class ModifyRecordsTests: XCTestCase {
         deleting: [recordIDToDelete]
       ).get()
     } catch {
-      XCTAssertTrue(error is CKRecordError)
-      let ckRecordError = error as! CKRecordError
-      XCTAssertEqual(ckRecordError.batchErrors.count, 2)
+      XCTAssertEqual(error.batchErrors.count, 2)
     }
   }
   
@@ -260,7 +260,7 @@ final class ModifyRecordsTests: XCTestCase {
         deleting: [recordIDToDelete]
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.limitExceeded)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.limitExceeded)))
       let operationsRun = await db.operationsRun
       XCTAssertEqual(operationsRun, 1)
     }
@@ -321,7 +321,7 @@ final class ModifyRecordsTests: XCTestCase {
         deleting: []
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.zoneBusy, userInfo: [CKErrorRetryAfterKey: 0.2])))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.zoneBusy, userInfo: [CKErrorRetryAfterKey: 0.2])))
       let operationsRun = await db.operationsRun
       XCTAssertEqual(operationsRun, 1)
     }

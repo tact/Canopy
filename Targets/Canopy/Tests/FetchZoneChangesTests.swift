@@ -170,7 +170,7 @@ final class FetchZoneChangesTests: XCTestCase {
       XCTAssertEqual(getTokenForRecordZoneCalls, 2)
       // Stored only one nil token
       XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
-      XCTAssertEqual(error as! CanopyError, .ckRecordZoneError(.init(from: CKError(CKError.Code.changeTokenExpired))))
+      XCTAssertEqual(error, .ckRecordZoneError(.init(from: CKError(CKError.Code.changeTokenExpired))))
     }
   }
   
@@ -211,7 +211,7 @@ final class FetchZoneChangesTests: XCTestCase {
       XCTAssertEqual(getTokenForRecordZoneCalls, 1)
       XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
       
-      XCTAssertEqual(error as! CanopyError, .ckRequestError(.init(from: CKError(CKError.Code.accountTemporarilyUnavailable))))
+      XCTAssertEqual(error, .ckRequestError(.init(from: CKError(CKError.Code.accountTemporarilyUnavailable))))
     }
   }
   
@@ -290,7 +290,7 @@ final class FetchZoneChangesTests: XCTestCase {
         fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
-      switch error as! CanopyError {
+      switch error {
       case .ckRequestError:
         break
       default:
@@ -338,7 +338,7 @@ final class FetchZoneChangesTests: XCTestCase {
         fetchMethod: .changeTokenAndAllData
       ).get()
     } catch {
-      switch error as! CanopyError {
+      switch error {
       case .ckRequestError:
         break
       default:

@@ -24,10 +24,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.queryRecords(with: .init(recordType: "MockType", predicate: NSPredicate(value: true)), in: nil).get()
-    } catch let recordError as CKRecordError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.badDatabase)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -64,10 +62,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.modifyRecords(saving: [], deleting: []).get()
-    } catch let recordError as CKRecordError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -98,10 +94,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.deleteRecords(with: CKQuery(recordType: "SomeType", predicate: NSPredicate(value: true)), in: nil).get()
-    } catch let recordError as CKRecordError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -139,10 +133,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.fetchRecords(with: []).get()
-    } catch let recordError as CKRecordError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -174,10 +166,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.modifyZones(saving: [], deleting: []).get()
-    } catch let recordError as CKRecordZoneError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -203,10 +193,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.fetchZones(with: []).get()
-    } catch let recordError as CKRecordZoneError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -232,10 +220,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.fetchAllZones().get()
-    } catch let recordError as CKRecordZoneError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -270,10 +256,8 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     ])
     do {
       let _ = try await db.modifySubscriptions(saving: [], deleting: []).get()
-    } catch let recordError as CKSubscriptionError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   

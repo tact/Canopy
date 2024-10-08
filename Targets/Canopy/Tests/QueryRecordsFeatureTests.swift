@@ -180,10 +180,8 @@ final class QueryRecordsFeatureTests: XCTestCase {
     
     do {
       let _ = try await task.result.get().get()
-    } catch let recordError as CKRecordError {
+    } catch let recordError {
       XCTAssertEqual(recordError, .init(from: CKError(CKError.Code.operationCancelled)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
     
     let operationsRun = await db.operationsRun
@@ -212,7 +210,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         database: db
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.requestRateLimited)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.requestRateLimited)))
     }
   }
   
@@ -246,7 +244,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         database: db
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
 }
