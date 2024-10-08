@@ -74,7 +74,9 @@ final class CanopyTests: XCTestCase {
     do {
       let _ = try await api.modifyRecords(saving: [changedRecord]).get()
     } catch {
-      XCTAssertTrue(error is CKRecordError)
+      XCTAssertNotNil(error)
+      // Error is CKRecordError, so we use a CKRecordError API to test it
+      XCTAssertEqual(error.batchErrors, [:])
     }
   }
   

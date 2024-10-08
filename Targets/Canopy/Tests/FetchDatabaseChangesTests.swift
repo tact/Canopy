@@ -54,7 +54,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
-      XCTAssertEqual(error as! CanopyError, CanopyError.ckChangeTokenExpired)
+      XCTAssertEqual(error, CanopyError.ckChangeTokenExpired)
       let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
       XCTAssertEqual(storeTokenForDatabaseScopeCalls, 1) // nil token was stored
     }
@@ -76,7 +76,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
-      XCTAssertEqual(error as! CanopyError, CanopyError.ckRequestError(CKRequestError(from: CKError(CKError.Code.networkFailure))))
+      XCTAssertEqual(error, CanopyError.ckRequestError(CKRequestError(from: CKError(CKError.Code.networkFailure))))
       let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
       XCTAssertEqual(storeTokenForDatabaseScopeCalls, 0) // nothing should have been stored
     }
@@ -139,7 +139,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
-      switch error as! CanopyError {
+      switch error {
       case .ckRequestError:
         break
       default:
@@ -177,7 +177,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
-      switch error as! CanopyError {
+      switch error {
       case .ckRequestError:
         break
       default:

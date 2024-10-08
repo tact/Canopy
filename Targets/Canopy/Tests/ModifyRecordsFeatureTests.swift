@@ -39,10 +39,8 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         database: db,
         qualityOfService: .default
       ).get()
-    } catch let recordError as CKRecordError {
+    } catch let recordError {
       XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.internalError)))
-    } catch {
-      XCTFail("Unexpected error: \(error)")
     }
   }
   
@@ -270,7 +268,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       // Second get gets the operation result, and this will throw because the operation resulted with error.
       let _ = try await task.result.get().get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.operationCancelled)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.operationCancelled)))
     }
     
     let operationsRun = await db.operationsRun
@@ -305,7 +303,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         qualityOfService: .default
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.internalError)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.internalError)))
     }
     
     let operationsRun = await db.operationsRun
@@ -339,7 +337,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         qualityOfService: .default
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.internalError)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.internalError)))
     }
 
     let operationsRun = await db.operationsRun
@@ -374,7 +372,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         qualityOfService: .default
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
     
     let operationsRun = await db.operationsRun
@@ -473,7 +471,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         autoBatchToSmallerWhenLimitExceeded: false
       ).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.limitExceeded)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.limitExceeded)))
       let operationsRun = await db.operationsRun
       XCTAssertEqual(operationsRun, 1)
     }
@@ -581,7 +579,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         autoRetryForRetriableErrors: true
       ).get()
     } catch {
-      XCTAssertTrue((error as! CKRecordError).code == CKError.Code.zoneBusy.rawValue)
+      XCTAssertTrue(error.code == CKError.Code.zoneBusy.rawValue)
       let operationsRun = await db.operationsRun
       XCTAssertEqual(operationsRun, 3)
     }

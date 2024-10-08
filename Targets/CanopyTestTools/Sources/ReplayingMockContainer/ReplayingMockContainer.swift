@@ -66,6 +66,15 @@ extension ReplayingMockContainer: CKContainerAPIType {
   
   public var accountStatusStream: Result<AsyncStream<CKAccountStatus>, CKContainerAPIError> {
     get async {
+      actor StatusesEmitter {
+        var statusValues: [Int]
+        init(statusValues: [Int]) {
+          self.statusValues = statusValues
+        }
+        
+        func next() -> Int? { statusValues.removeFirst() }
+      }
+      
       let operationResult = operationResults.removeFirst()
       guard case let .accountStatusStream(result) = operationResult else {
         fatalError("Asked for account status stream without an available result or invalid result type. Likely a logic error on caller side")
@@ -74,9 +83,9 @@ extension ReplayingMockContainer: CKContainerAPIType {
       if let error = result.error {
         return .failure(error)
       } else {
-        var statusesIterator = result.statusValues.makeIterator()
+        let statusesEmitter = StatusesEmitter(statusValues: result.statusValues)
         return .success(AsyncStream(unfolding: {
-          guard let next = statusesIterator.next() else { return nil }
+          guard let next = await statusesEmitter.next() else { return nil }
           return CKAccountStatus(rawValue: next)!
         }))
       }
