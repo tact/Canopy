@@ -1,4 +1,4 @@
-@testable import CanopyTypes
+@testable import Canopy
 import CloudKit
 import Foundation
 import XCTest

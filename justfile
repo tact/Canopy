@@ -1,13 +1,13 @@
 doc-preview:
   SPI_BUILDER=1 swift package --disable-sandbox preview-documentation \
   --enable-experimental-combined-documentation \
-  --target Canopy --target CanopyTypes --target CanopyTestTools
+  --target Canopy --target CanopyTestTools
 
 doc-build:
   SPI_BUILDER=1 swift package \
     generate-documentation \
     --enable-experimental-combined-documentation \
-    --target Canopy --target CanopyTypes --target CanopyTestTools \
+    --target Canopy --target CanopyTestTools \
     --disable-indexing \
     --transform-for-static-hosting
   

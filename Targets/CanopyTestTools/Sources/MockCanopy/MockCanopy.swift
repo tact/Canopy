@@ -1,4 +1,4 @@
-import CanopyTypes
+import Canopy
 import CloudKit
 
 /// MockCanopy lets you use Canopy with deterministic responses without any external

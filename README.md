@@ -92,7 +92,7 @@ The Canopy package has three parts.
 
 ### Libraries
 
-Libraries provide the main Canopy functionality and value. `Canopy` is the main library, `CanopyTestTools` helps you build tests, and `CanopyTypes` provides some shared types used by both.
+Libraries provide the main Canopy functionality and value. `Canopy` is the main library, and `CanopyTestTools` helps you build tests.
 
 ### Documentation
 

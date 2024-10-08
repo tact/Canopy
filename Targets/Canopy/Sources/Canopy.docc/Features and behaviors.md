@@ -14,7 +14,7 @@ This article describes the behaviors that Canopy implements.
 
 The maximum number of records returned per page isn’t specified and may change over time. It has previously been around a few hundred records per response. You shouldn’t rely on this being any specific number.
 
-Canopy’s corresponding API ``/CanopyTypes/CKDatabaseAPIType/queryRecords(with:in:qualityOfService:)`` handles all of the above for you, so you never need to implement cursors. You run the query, and in the end, you get back a single set of results, no matter how many CloudKit queries it actually took to get them. Canopy internally handles all the cursors and paging. There is currently no behavior in Canopy to just return one page.
+Canopy’s corresponding API ``CKDatabaseAPIType/queryRecords(with:in:resultsLimit:qualityOfService:)`` handles all of the above for you, so you never need to implement cursors. You run the query, and in the end, you get back a single set of results, no matter how many CloudKit queries it actually took to get them. Canopy internally handles all the cursors and paging. There is currently no behavior in Canopy to just return one page.
 
 With queries that return multiple pages, it would be nice to know how many pages in total will be returned, and inform the user of the progress for a better user experience. Unfortunately, this is currently not possible due to how CloudKit and its cloud service is internally built. In an Ask Apple session in December 2022, I asked whether it is possible to receive a count of the entire result set in this scenario, and got this comment from Apple staff:
 
@@ -58,7 +58,7 @@ If you’d like, you can turn this behavior off by setting ``CanopySettingsType/
 
 Canopy implements automatic retry and keeps trying up to 3 times. With retriable errors, CloudKit also indicates the appropriate timeout after which to retry, by setting the [retryAfterSeconds](https://developer.apple.com/documentation/cloudkit/ckerror/2299866-retryafterseconds) property of the CKError. Canopy uses this timeout value and retries after the indicated number of seconds. If the request still doesn’t go through after 3 tries, Canopy gives up and returns the error.
 
-You can turn off the auto-retry by setting ``/CanopySettings/CanopySettingsType/autoRetryForRetriableErrors`` to `false` in Canopy settings. Canopy then returns the error immediately after the first failed attempt.
+You can turn off the auto-retry by setting ``CanopySettingsType/autoRetryForRetriableErrors`` to `false` in Canopy settings. Canopy then returns the error immediately after the first failed attempt.
 
 ## Serializing database and zone change fetches
 
@@ -72,4 +72,4 @@ Canopy serializes the database and zone fetches and makes sure only one request 
 
 Observing account status changes for the current user is a multi-step process with the system CloudKit API. You must listen to [CKAccountChanged](https://developer.apple.com/documentation/foundation/nsnotification/name/1399172-ckaccountchanged) notifications. Whenever you get one, you need to use the [accountStatus](https://developer.apple.com/documentation/cloudkit/ckcontainer/1399180-accountstatus) API of `CKContainer` to find out what the actual status is.
 
-Canopy does all of this work internally, and provides you a simple stream of the account statuses. See ``/CanopyTypes/CKContainerAPIType/accountStatusStream``.
+Canopy does all of this work internally, and provides you a simple stream of the account statuses. See ``CKContainerAPIType/accountStatusStream``.

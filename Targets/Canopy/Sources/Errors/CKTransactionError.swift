@@ -1,11 +1,3 @@
-//
-//  CKTransactionError.swift
-//  CKTransactionError
-//
-//  Created by Andrew Tetlaw on 2/9/21.
-//  Copyright © 2021 Jaanus Kase. All rights reserved.
-//
-
 import CloudKit
 import Foundation
 

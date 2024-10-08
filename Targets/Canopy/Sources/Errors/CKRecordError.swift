@@ -1,22 +1,16 @@
-//
-//  CKSubscriptionError.swift
-//  Tact
-//
-//  Created by Andrew Tetlaw on 6/1/2022.
-//  Copyright © 2022 Jaanus Kase. All rights reserved.
-//
-
 import CloudKit
 import Foundation
 
-// CKSubscriptionError for CKSubscriptions.
-// In this type, the keys are expected to be CKSubscription.ID,
-public struct CKSubscriptionError: CKTransactionError, Codable, Equatable, Sendable {
+// CKRecordError for CKRecords, more error types in the future for other CK types.
+// Reason is that the partial errors dictionary will be using different keys for different operations
+// In this type, the keys are expected to be CKRecord.ID,
+
+public struct CKRecordError: CKTransactionError, Codable, Equatable, Sendable {
   public let code: Int
   public let localizedDescription: String
   public let retryAfterSeconds: Double
   public let errorDump: String
-  public let batchErrors: [String: CKSubscriptionError]
+  public let batchErrors: [String: CKRecordError]
 
   public var hasMultipleErrors: Bool {
     !batchErrors.isEmpty
@@ -25,27 +19,27 @@ public struct CKSubscriptionError: CKTransactionError, Codable, Equatable, Senda
   public init(from error: Error) {
     self.errorDump = String(describing: error)
     self.localizedDescription = error.localizedDescription
-
+    
     if let ckError = error as? CKError {
       self.code = ckError.errorCode
       self.retryAfterSeconds = ckError.retryAfterSeconds ?? 0
-      self.batchErrors = CKSubscriptionError.parseBatchErrors(dict: ckError.partialErrorsByItemID ?? [:])
+      self.batchErrors = CKRecordError.parseBatchErrors(dict: ckError.partialErrorsByItemID ?? [:])
     } else {
       // Probably no need for this, just being complete about it
       let nsError = error as NSError
       self.code = nsError.code
       self.retryAfterSeconds = (nsError.userInfo[CKErrorRetryAfterKey] as? NSNumber)?.doubleValue ?? 0
-      self.batchErrors = CKSubscriptionError.parseBatchErrors(dict: (nsError.userInfo[CKPartialErrorsByItemIDKey] as? [AnyHashable: Error]) ?? [:])
+      self.batchErrors = CKRecordError.parseBatchErrors(dict: (nsError.userInfo[CKPartialErrorsByItemIDKey] as? [AnyHashable: Error]) ?? [:])
     }
   }
 
-  private static func parseBatchErrors(dict: [AnyHashable: Error]) -> [String: CKSubscriptionError] {
+  private static func parseBatchErrors(dict: [AnyHashable: Error]) -> [String: CKRecordError] {
     dict.reduce(into: [:]) { partial, element in
-      guard let subID = element.key as? CKSubscription.ID, let zoneError = element.value as? CKError else {
+      guard let recordID = element.key as? CKRecord.ID, let recordError = element.value as? CKError else {
         return
       }
 
-      partial[subID] = CKSubscriptionError(from: zoneError)
+      partial[recordID.recordName] = CKRecordError(from: recordError)
     }
   }
   
@@ -60,8 +54,9 @@ public struct CKSubscriptionError: CKTransactionError, Codable, Equatable, Senda
       : CKError(ckErrorCode!)
   }
   
-  public static func == (lhs: CKSubscriptionError, rhs: CKSubscriptionError) -> Bool {
+  public static func == (lhs: CKRecordError, rhs: CKRecordError) -> Bool {
     lhs.code == rhs.code &&
-      lhs.retryAfterSeconds == rhs.retryAfterSeconds
+      lhs.retryAfterSeconds == rhs.retryAfterSeconds &&
+      lhs.batchErrors == rhs.batchErrors
   }
 }

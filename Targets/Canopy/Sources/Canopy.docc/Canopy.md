@@ -25,14 +25,13 @@ Canopy is built as part of [Tact](https://justtact.com). The Canopy source code 
 
 ### Main Canopy API
 
-- ``/CanopyTypes/CanopyType``
+- ``CanopyType``
 - ``Canopy/Canopy``
-- ``/CanopyTestTools/MockCanopy``
 
 ### Settings
 
-- ``/CanopyTypes/CanopySettingsType``
-- ``/CanopyTypes/CanopySettings``
+- ``CanopySettingsType``
+- ``CanopySettings``
 - ``RequestBehavior``
 
 ### Token store
@@ -45,20 +44,21 @@ Token store manages client-side storage of database and zone change tokens. You 
 
 ### CKContainer API
 
-- ``/CanopyTypes/CKContainerAPIType``
-- ``/CanopyTypes/CKContainerAPIError``
+- ``CKContainerAPIType``
+- ``CKContainerAPIError``
 
 ### CKDatabase API
 
-- ``/CanopyTypes/CKDatabaseAPIType``
-- ``/CanopyTypes/FetchZoneChangesMethod``
+- ``CKDatabaseAPIType``
+- ``FetchZoneChangesMethod``
 
 ### Request results
 
-- ``/CanopyTypes/ModifyRecordsResult``
-- ``/CanopyTypes/FetchDatabaseChangesResult``
-- ``/CanopyTypes/FetchRecordsResult``
-- ``/CanopyTypes/ModifyZonesResult``
-- ``/CanopyTypes/ModifySubscriptionsResult``
-- ``/CanopyTypes/FetchZoneChangesResult``
-- ``/CanopyTypes/DeletedCKRecord``
+- ``CanopyResultRecordType``
+- ``ModifyRecordsResult``
+- ``FetchDatabaseChangesResult``
+- ``FetchRecordsResult``
+- ``ModifyZonesResult``
+- ``ModifySubscriptionsResult``
+- ``FetchZoneChangesResult``
+- ``DeletedCKRecord``

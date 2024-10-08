@@ -1,9 +1,18 @@
 import CloudKit
 
-/// Read-only representation of one CloudKit record.
+/// Read-only representation of one CloudKit record, returned from Canopy query and fetch API-s.
 ///
-/// May be constructed with either a CKRecord (coming from CloudKit or created locally),
-/// or ``MockCanopyResultRecord``.
+/// Canopy returns records with this type whenever you retrieve content from CloudKit. Returning
+/// records in a read-only fashion represents the viewpoint that Canopy takes, that representations
+/// of records are ephemeral and should be transformed into your local storage as soon as you
+/// retrieve them.
+///
+/// This is why Canopy doesn’t give you CKRecords that you could manipulate
+/// and put straight back into CloudKit. If you want to do this, the best way is to reconstruct
+/// CKRecords from state in your local storage, and then manipulate and store them to the cloud.
+///
+/// `CanopyResultRecord` may be constructed with either a CKRecord (coming from CloudKit or created locally),
+/// or ``MockCanopyResultRecord``. The latter is appropriate to use in tests and SwiftUI previews.
 ///
 /// Read the fields and metadata of the record with the getters defined in the ``CanopyResultRecordType`` protocol.
 public struct CanopyResultRecord: Sendable {

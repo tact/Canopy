@@ -33,7 +33,7 @@ let package = Package(
   platforms: [.iOS(.v15), .macOS(.v12)],
   products: [
     // Products define the executables and libraries a package produces, and make them visible to other packages.
-    .library(name: "Canopy", targets: ["Canopy", "CanopyTypes"]),
+    .library(name: "Canopy", targets: ["Canopy"]),
     .library(name: "CanopyTestTools", targets: ["CanopyTestTools"])
   ],
   dependencies: dependencies,
@@ -44,7 +44,6 @@ let package = Package(
       name: "Canopy",
       dependencies: [
         "Semaphore",
-        "CanopyTypes",
         .product(name: "Dependencies", package: "swift-dependencies")
       ],
       path: "Targets/Canopy/Sources"
@@ -58,7 +57,7 @@ let package = Package(
     ),
     .target(
       name: "CanopyTestTools",
-      dependencies: ["CanopyTypes"],
+      dependencies: ["Canopy"],
       path: "Targets/CanopyTestTools/Sources"
     ),
     .testTarget(
@@ -68,11 +67,6 @@ let package = Package(
       resources: [
         .process("Fixtures")
       ]
-    ),
-    .target(
-      name: "CanopyTypes",
-      dependencies: [],
-      path: "Targets/CanopyTypes/Sources"
     )
   ]
 )
