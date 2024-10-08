@@ -143,4 +143,50 @@ final class CanopyResultRecordTests: XCTestCase {
     XCTAssertEqual(mockRecord1, mockRecord2)
     XCTAssertNotEqual(record1, mockRecord1)
   }
+  
+  func test_boolforkey_bool_ckrecord() throws {
+    let ckRecord = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    ckRecord["myBool"] = true
+    let record = CanopyResultRecord(ckRecord: ckRecord)
+    let boolValue = try XCTUnwrap(record.boolForKey("myBool"))
+    XCTAssertTrue(boolValue)
+  }
+  
+  func test_boolforkey_bool_mock() throws {
+    let mock = MockCanopyResultRecord(recordType: "SomeType", values: ["myBool": true])
+    let record = CanopyResultRecord(mock: mock)
+    let boolValue = try XCTUnwrap(record.boolForKey("myBool"))
+    XCTAssertTrue(boolValue)
+  }
+  
+  func test_boolforkey_int() throws {
+    let ckRecord = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    ckRecord["myInt64"] = Int64(1)
+    let record = CanopyResultRecord(ckRecord: ckRecord)
+    let boolValue = try XCTUnwrap(record.boolForKey("myInt64"))
+    XCTAssertTrue(boolValue)
+  }
+  
+  func test_boolforkey_int_false() throws {
+    let ckRecord = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    ckRecord["myInt"] = Int(0)
+    let record = CanopyResultRecord(ckRecord: ckRecord)
+    let boolValue = try XCTUnwrap(record.boolForKey("myInt"))
+    XCTAssertFalse(boolValue)
+  }
+
+  func test_boolforkey_missing() throws {
+    let ckRecord = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    ckRecord["myInt"] = Int(0)
+    let record = CanopyResultRecord(ckRecord: ckRecord)
+    XCTAssertNil(record.boolForKey("nonexistentValue"))
+  }
+
+  
+  func test_boolforkey_string() {
+    let ckRecord = CKRecord(recordType: "SomeType", recordID: .init(recordName: "recordName"))
+    ckRecord["stringValue"] = "Hello"
+    let record = CanopyResultRecord(ckRecord: ckRecord)
+    XCTAssertNil(record.boolForKey("stringValue"))
+  }
 }
