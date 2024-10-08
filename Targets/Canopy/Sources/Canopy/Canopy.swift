@@ -1,9 +1,5 @@
-import CanopyTypes
 import CloudKit
 import Foundation
-
-// Re-export the types, so `import Canopy` also imports the types.
-@_exported import CanopyTypes
 
 /// Main Canopy implementation.
 ///

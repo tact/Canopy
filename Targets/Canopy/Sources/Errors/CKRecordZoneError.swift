@@ -1,11 +1,3 @@
-//
-//  CKRecordZoneError.swift
-//  Tact
-//
-//  Created by Andrew Tetlaw on 5/1/2022.
-//  Copyright © 2022 Jaanus Kase. All rights reserved.
-//
-
 import CloudKit
 import Foundation
 

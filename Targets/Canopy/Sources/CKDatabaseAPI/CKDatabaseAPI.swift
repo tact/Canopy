@@ -1,4 +1,3 @@
-import CanopyTypes
 import CloudKit
 import Foundation
 import os.log

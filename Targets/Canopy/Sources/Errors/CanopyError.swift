@@ -1,11 +1,3 @@
-//
-//  SyncTransactionError.swift
-//  SyncTransactionError
-//
-//  Created by Andrew Tetlaw on 27/8/21.
-//  Copyright © 2021 Jaanus Kase. All rights reserved.
-//
-
 import CloudKit
 import Foundation
 

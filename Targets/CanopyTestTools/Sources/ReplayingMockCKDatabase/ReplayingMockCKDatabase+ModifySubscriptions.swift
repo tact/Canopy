@@ -1,4 +1,4 @@
-import CanopyTypes
+import Canopy
 import CloudKit
 
 public extension ReplayingMockCKDatabase {

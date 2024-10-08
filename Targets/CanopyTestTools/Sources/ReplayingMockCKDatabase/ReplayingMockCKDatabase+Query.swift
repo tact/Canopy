@@ -1,4 +1,4 @@
-import CanopyTypes
+import Canopy
 import CloudKit
 
 // Types and functionality for CKQueryOperation results.

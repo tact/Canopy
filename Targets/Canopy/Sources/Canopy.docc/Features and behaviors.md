@@ -14,7 +14,7 @@ This article describes the behaviors that Canopy implements.
 
 The maximum number of records returned per page isn’t specified and may change over time. It has previously been around a few hundred records per response. You shouldn’t rely on this being any specific number.
 
-Canopy’s corresponding API ``CKDatabaseAPIType/queryRecords(with:in:qualityOfService:)`` handles all of the above for you, so you never need to implement cursors. You run the query, and in the end, you get back a single set of results, no matter how many CloudKit queries it actually took to get them. Canopy internally handles all the cursors and paging. There is currently no behavior in Canopy to just return one page.
+Canopy’s corresponding API ``CKDatabaseAPIType/queryRecords(with:in:resultsLimit:qualityOfService:)`` handles all of the above for you, so you never need to implement cursors. You run the query, and in the end, you get back a single set of results, no matter how many CloudKit queries it actually took to get them. Canopy internally handles all the cursors and paging. There is currently no behavior in Canopy to just return one page.
 
 With queries that return multiple pages, it would be nice to know how many pages in total will be returned, and inform the user of the progress for a better user experience. Unfortunately, this is currently not possible due to how CloudKit and its cloud service is internally built. In an Ask Apple session in December 2022, I asked whether it is possible to receive a count of the entire result set in this scenario, and got this comment from Apple staff:
 

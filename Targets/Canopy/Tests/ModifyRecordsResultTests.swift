@@ -1,5 +1,5 @@
+import Canopy
 import CanopyTestTools
-import CanopyTypes
 import CloudKit
 import XCTest
 

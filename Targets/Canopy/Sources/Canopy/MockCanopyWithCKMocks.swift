@@ -1,4 +1,3 @@
-import CanopyTypes
 import CloudKit
 
 /// A static mock version of Canopy, appropriate for using in tests or other contexts

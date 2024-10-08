@@ -2,8 +2,6 @@
 
 Write better, testable CloudKit apps.
 
-_⚠️ This documentation site is currently half-broken, and does not include documentation for several Canopy types. Conceptual documentation works fine. Canopy types and code are spread across several Swift Package Manager modules, and DocC does not easily support this scenario out of the box, for generating a documentation site. [Work is in progress](https://forums.swift.org/t/are-there-updates-on-using-swift-docc-with-multiple-targets/73072) to address this._
-
 Canopy helps you write better, more testable CloudKit apps. It isolates the CloudKit dependency so you can write fast and reliable tests for your CloudKit-related features, and implements standard CloudKit-related behaviors.
 
 Canopy is built as part of [Tact](https://justtact.com). The Canopy source code and installation instructions (including the source for this site) are available on [GitHub](https://github.com/Tact/Canopy).
@@ -27,7 +25,6 @@ Canopy is built as part of [Tact](https://justtact.com). The Canopy source code 
 
 - ``CanopyType``
 - ``Canopy/Canopy``
-- ``MockCanopy``
 
 ### Settings
 
@@ -55,6 +52,7 @@ Token store manages client-side storage of database and zone change tokens. You 
 
 ### Request results
 
+- ``CanopyResultRecordType``
 - ``ModifyRecordsResult``
 - ``FetchDatabaseChangesResult``
 - ``FetchRecordsResult``

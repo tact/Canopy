@@ -1,4 +1,3 @@
-import CanopyTypes
 import CloudKit
 
 struct ModifyRecords {
