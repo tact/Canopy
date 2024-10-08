@@ -33,7 +33,7 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.userRecordID.get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
   
@@ -63,7 +63,7 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.accountStatus.get()
     } catch {
-      XCTAssertEqual((error as! CanopyError).code, CKError.Code.badContainer.rawValue)
+      XCTAssertEqual(error.code, CKError.Code.badContainer.rawValue)
     }
   }
   
@@ -91,7 +91,7 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.accountStatusStream.get()
     } catch {
-      XCTAssertEqual((error as! CKContainerAPIError), .onlyOneAccountStatusStreamSupported)
+      XCTAssertEqual(error, .onlyOneAccountStatusStreamSupported)
     }
   }
   
@@ -114,7 +114,7 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.acceptShares(with: []).get()
     } catch {
-      XCTAssertEqual((error as! CKRecordError).code, CKError.Code.networkFailure.rawValue)
+      XCTAssertEqual(error.code, CKError.Code.networkFailure.rawValue)
     }
   }
   
@@ -137,7 +137,7 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.fetchShareParticipants(with: []).get()
     } catch {
-      XCTAssertEqual((error as! CKRecordError).code, CKError.Code.networkFailure.rawValue)
+      XCTAssertEqual(error.code, CKError.Code.networkFailure.rawValue)
     }
   }
 }

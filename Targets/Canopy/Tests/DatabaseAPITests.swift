@@ -104,7 +104,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.deleteRecords(with: query, in: nil).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
+      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
     }
   }
   
@@ -162,7 +162,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchRecords(with: [recordID]).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
+      XCTAssertEqual(error , CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
     }
   }
   
@@ -183,7 +183,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchRecords(with: [recordID]).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordError, CKRecordError(from: CKError(CKError.Code.managedAccountRestricted)))
+      XCTAssertEqual(error , CKRecordError(from: CKError(CKError.Code.managedAccountRestricted)))
     }
   }
   
@@ -250,7 +250,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.networkUnavailable)))
+      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.networkUnavailable)))
     }
   }
   
@@ -274,7 +274,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.accountTemporarilyUnavailable)))
+      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.accountTemporarilyUnavailable)))
     }
   }
   
@@ -298,7 +298,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.invalidArguments)))
+      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.invalidArguments)))
     }
   }
   
@@ -352,7 +352,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchZones(with: [mockZone.zoneID]).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
+      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
@@ -372,7 +372,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchZones(with: [mockZone.zoneID]).get()
     } catch {
-      XCTAssertEqual(error as! CKRecordZoneError, CKRecordZoneError(from: CKError(CKError.Code.zoneNotFound)))
+      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.zoneNotFound)))
     }
   }
   
@@ -423,7 +423,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
-      XCTAssertEqual(error as! CKSubscriptionError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
+      XCTAssertEqual(error , CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
@@ -450,7 +450,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
-      XCTAssertEqual(error as! CKSubscriptionError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
+      XCTAssertEqual(error , CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
@@ -477,7 +477,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
-      XCTAssertEqual(error as! CKSubscriptionError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
+      XCTAssertEqual(error , CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
   }
 }
