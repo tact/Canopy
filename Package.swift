@@ -7,11 +7,11 @@ import PackageDescription
 var dependencies: [PackageDescription.Package.Dependency] = [
   .package(
     url: "https://github.com/groue/Semaphore",
-    from: "0.0.8"
+    from: "0.1.0"
   ),
   .package(
     url: "https://github.com/pointfreeco/swift-dependencies",
-    from: "1.0.0"
+    from: "1.10.0"
   )
 ]
 
