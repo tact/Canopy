@@ -7,7 +7,7 @@ import Semaphore
 actor CKDatabaseAPI: CKDatabaseAPIType {
   private let database: CKDatabaseType
   private let databaseScope: CKDatabase.Scope
-  internal let settingsProvider: () async -> CanopySettingsType
+  internal let settingsProvider: @Sendable () async -> CanopySettingsType
   private let tokenStore: TokenStoreType
   private let fetchDatabaseChangesSemaphore = AsyncSemaphore(value: 1)
   private let fetchZoneChangesSemaphore = AsyncSemaphore(value: 1)

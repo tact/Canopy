@@ -22,14 +22,14 @@ extension CKDatabaseAPI {
 
       var partialErrors: [AnyHashable: Error] = [:]
       if let saved = recordsToSave {
-        saved.forEach {
-          partialErrors[$0.recordID] = randomCKRecordError(codes: otherCodes).ckError
+        for oneSaved in saved {
+          partialErrors[oneSaved.recordID] = randomCKRecordError(codes: otherCodes).ckError
         }
       }
 
       if let deleted = recordIDsToDelete {
-        deleted.forEach {
-          partialErrors[$0] = randomCKRecordError(codes: otherCodes).ckError
+        for oneDeleted in deleted {
+          partialErrors[oneDeleted] = randomCKRecordError(codes: otherCodes).ckError
         }
       }
 
