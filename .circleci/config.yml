@@ -5,6 +5,7 @@ jobs:
   build:
     macos:
       xcode: "26.0.1"
+      resource_class: m4pro.medium
     steps:
       - checkout
       - run: swift build -v
@@ -12,6 +13,7 @@ jobs:
   test:
     macos:
       xcode: "26.0.1"
+      resource_class: m4pro.medium
     steps:
       - checkout
       - run: swift test -v
