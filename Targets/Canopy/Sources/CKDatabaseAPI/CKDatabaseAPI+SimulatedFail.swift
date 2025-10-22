@@ -1,6 +1,5 @@
 import CloudKit
 
-@available(iOS 16.4, macOS 13.3, *)
 extension CKDatabaseAPI {
   func randomCKRecordError(
     codes: Set<CKError.Code>,

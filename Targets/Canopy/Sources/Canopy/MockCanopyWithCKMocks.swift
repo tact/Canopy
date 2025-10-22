@@ -15,7 +15,6 @@ import CloudKit
 /// MockCanopyWithCKMocks is mostly appropriate to use as a testing tool for Canopy’s
 /// own logic, or when you need to inject your own Canopy settings for various behaviors.
 /// For using in your own tests, `MockCanopy` is more appropriate and simpler to use.
-@available(iOS 16.4, macOS 13.3, *)
 public struct MockCanopyWithCKMocks: CanopyType {
   private let mockPrivateCKDatabase: CKDatabaseType?
   private let mockSharedCKDatabase: CKDatabaseType?
