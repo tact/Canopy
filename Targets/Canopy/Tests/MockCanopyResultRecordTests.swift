@@ -1,11 +1,11 @@
 @testable import Canopy
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
-final class MockCanopyResultRecordTests: XCTestCase {
+@Suite struct MockCanopyResultRecordTests {
   let date = Date()
-  func test_codes_complete_record() throws {
+  @Test func test_codes_complete_record() throws {
     let record = MockCanopyResultRecord(
       recordID: CKRecord.ID(recordName: "someName"),
       recordType: "SomeRecordType",
@@ -25,27 +25,27 @@ final class MockCanopyResultRecordTests: XCTestCase {
     )
     let data = try JSONEncoder().encode(record)
     let decodedRecord = try JSONDecoder().decode(MockCanopyResultRecord.self, from: data)
-    XCTAssertEqual(decodedRecord.recordID.recordName, "someName")
-    XCTAssertEqual(decodedRecord.recordType, "SomeRecordType")
-    XCTAssertEqual(decodedRecord["key1"] as! String, "String 1")
-    XCTAssertEqual(decodedRecord.encryptedValues["encrypted1"] as! String, "Encrypted String 1")
-    XCTAssertEqual(decodedRecord.creationDate, date)
-    XCTAssertEqual(decodedRecord.modificationDate, date)
-    XCTAssertEqual(decodedRecord.recordChangeTag, "changeTag")
-    XCTAssertEqual(decodedRecord.creatorUserRecordID?.recordName, "creator")
-    XCTAssertEqual(decodedRecord.lastModifiedUserRecordID!.recordName, "last modifier")
-    XCTAssertEqual(decodedRecord.parent?.recordID.recordName, "parentRecordName")
-    XCTAssertEqual(decodedRecord.share?.recordID.recordName, "shareRecordName")
+    #expect(decodedRecord.recordID.recordName == "someName")
+    #expect(decodedRecord.recordType == "SomeRecordType")
+    #expect(decodedRecord["key1"] as! String == "String 1")
+    #expect(decodedRecord.encryptedValues["encrypted1"] as! String == "Encrypted String 1")
+    #expect(decodedRecord.creationDate == date)
+    #expect(decodedRecord.modificationDate == date)
+    #expect(decodedRecord.recordChangeTag == "changeTag")
+    #expect(decodedRecord.creatorUserRecordID?.recordName == "creator")
+    #expect(decodedRecord.lastModifiedUserRecordID!.recordName == "last modifier")
+    #expect(decodedRecord.parent?.recordID.recordName == "parentRecordName")
+    #expect(decodedRecord.share?.recordID.recordName == "shareRecordName")
   }
   
-  func test_codes_minimal_record() throws {
+  @Test func test_codes_minimal_record() throws {
     let record = MockCanopyResultRecord(recordType: "MinimalType")
     let data = try JSONEncoder().encode(record)
     let decodedRecord = try JSONDecoder().decode(MockCanopyResultRecord.self, from: data)
-    XCTAssertEqual(decodedRecord.recordType, "MinimalType")
+    #expect(decodedRecord.recordType == "MinimalType")
   }
   
-  func test_invalid_record_id_throws() {
+  @Test func test_invalid_record_id_throws() {
     let brokenJson = "{\"recordType\":\"MinimalType\",\"valuesStore\":[],\"recordID\":\"deadbeef\",\"encryptedValuesStore\":[]}"
     
     do {
@@ -55,14 +55,14 @@ final class MockCanopyResultRecordTests: XCTestCase {
       let decodingError = error as! DecodingError
       switch (decodingError) {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid record ID")
+        #expect(context.debugDescription == "Invalid record ID")
       default:
-        XCTFail("Unexpected error: \(error)")
+        Issue.record("Unexpected error: \(error)")
       }
     }
   }
   
-  func test_invalid_creator_user_record_id_throws() {
+  @Test func test_invalid_creator_user_record_id_throws() {
     let brokenJson = "{\"recordType\":\"MinimalType\",\"valuesStore\":[],\"recordID\":\"YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGoCwwTFB4fICZVJG51bGzTDQ4PEBESViRjbGFzc1pSZWNvcmROYW1lVlpvbmVJRIAHgAKAA15tb2NrUmVjb3JkTmFtZdUVFhcYDRkaGxwdXxAQZGF0YWJhc2VTY29wZUtleV8QEWFub255bW91c0NLVXNlcklEWW93bmVyTmFtZVhab25lTmFtZRAAgACABYAEgAZcX2RlZmF1bHRab25lXxAQX19kZWZhdWx0T3duZXJfX9IhIiMkWiRjbGFzc25hbWVYJGNsYXNzZXNeQ0tSZWNvcmRab25lSUSiIyVYTlNPYmplY3TSISInKFpDS1JlY29yZElEoiclAAgAEQAaACQAKQAyADcASQBMAFEAUwBcAGIAaQBwAHsAggCEAIYAiACXAKIAtQDJANMA3ADeAOAA4gDkAOYA8wEGAQsBFgEfAS4BMQE6AT8BSgAAAAAAAAIBAAAAAAAAACkAAAAAAAAAAAAAAAAAAAFN\",\"encryptedValuesStore\":[],\"creatorUserRecordID\":\"deadbeef\"}"
     
     do {
@@ -72,14 +72,14 @@ final class MockCanopyResultRecordTests: XCTestCase {
       let decodingError = error as! DecodingError
       switch (decodingError) {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid creator user record ID")
+        #expect(context.debugDescription == "Invalid creator user record ID")
       default:
-        XCTFail("Unexpected error: \(error)")
+        Issue.record("Unexpected error: \(error)")
       }
     }
   }
   
-  func test_invalid_last_modified_user_record_id_throws() {
+  @Test func test_invalid_last_modified_user_record_id_throws() {
     let brokenJson = "{\"recordType\":\"MinimalType\",\"valuesStore\":[],\"recordID\":\"YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGoCwwTFB4fICZVJG51bGzTDQ4PEBESViRjbGFzc1pSZWNvcmROYW1lVlpvbmVJRIAHgAKAA15tb2NrUmVjb3JkTmFtZdUVFhcYDRkaGxwdXxAQZGF0YWJhc2VTY29wZUtleV8QEWFub255bW91c0NLVXNlcklEWW93bmVyTmFtZVhab25lTmFtZRAAgACABYAEgAZcX2RlZmF1bHRab25lXxAQX19kZWZhdWx0T3duZXJfX9IhIiMkWiRjbGFzc25hbWVYJGNsYXNzZXNeQ0tSZWNvcmRab25lSUSiIyVYTlNPYmplY3TSISInKFpDS1JlY29yZElEoiclAAgAEQAaACQAKQAyADcASQBMAFEAUwBcAGIAaQBwAHsAggCEAIYAiACXAKIAtQDJANMA3ADeAOAA4gDkAOYA8wEGAQsBFgEfAS4BMQE6AT8BSgAAAAAAAAIBAAAAAAAAACkAAAAAAAAAAAAAAAAAAAFN\",\"encryptedValuesStore\":[],\"lastModifiedUserRecordID\":\"deadbeef\"}"
     
     do {
@@ -89,14 +89,14 @@ final class MockCanopyResultRecordTests: XCTestCase {
       let decodingError = error as! DecodingError
       switch (decodingError) {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid last modified user record ID")
+        #expect(context.debugDescription == "Invalid last modified user record ID")
       default:
-        XCTFail("Unexpected error: \(error)")
+        Issue.record("Unexpected error: \(error)")
       }
     }
   }
   
-  func test_invalid_parent_throws() {
+  @Test func test_invalid_parent_throws() {
     let brokenJson = "{\"recordType\":\"MinimalType\",\"valuesStore\":[],\"recordID\":\"YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGoCwwTFB4fICZVJG51bGzTDQ4PEBESViRjbGFzc1pSZWNvcmROYW1lVlpvbmVJRIAHgAKAA15tb2NrUmVjb3JkTmFtZdUVFhcYDRkaGxwdXxAQZGF0YWJhc2VTY29wZUtleV8QEWFub255bW91c0NLVXNlcklEWW93bmVyTmFtZVhab25lTmFtZRAAgACABYAEgAZcX2RlZmF1bHRab25lXxAQX19kZWZhdWx0T3duZXJfX9IhIiMkWiRjbGFzc25hbWVYJGNsYXNzZXNeQ0tSZWNvcmRab25lSUSiIyVYTlNPYmplY3TSISInKFpDS1JlY29yZElEoiclAAgAEQAaACQAKQAyADcASQBMAFEAUwBcAGIAaQBwAHsAggCEAIYAiACXAKIAtQDJANMA3ADeAOAA4gDkAOYA8wEGAQsBFgEfAS4BMQE6AT8BSgAAAAAAAAIBAAAAAAAAACkAAAAAAAAAAAAAAAAAAAFN\",\"encryptedValuesStore\":[],\"parent\":\"deadbeef\"}"
     
     do {
@@ -106,14 +106,14 @@ final class MockCanopyResultRecordTests: XCTestCase {
       let decodingError = error as! DecodingError
       switch (decodingError) {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid parent")
+        #expect(context.debugDescription == "Invalid parent")
       default:
-        XCTFail("Unexpected error: \(error)")
+        Issue.record("Unexpected error: \(error)")
       }
     }
   }
   
-  func test_invalid_share_throws() {
+  @Test func test_invalid_share_throws() {
     let brokenJson = "{\"recordType\":\"MinimalType\",\"valuesStore\":[],\"recordID\":\"YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGoCwwTFB4fICZVJG51bGzTDQ4PEBESViRjbGFzc1pSZWNvcmROYW1lVlpvbmVJRIAHgAKAA15tb2NrUmVjb3JkTmFtZdUVFhcYDRkaGxwdXxAQZGF0YWJhc2VTY29wZUtleV8QEWFub255bW91c0NLVXNlcklEWW93bmVyTmFtZVhab25lTmFtZRAAgACABYAEgAZcX2RlZmF1bHRab25lXxAQX19kZWZhdWx0T3duZXJfX9IhIiMkWiRjbGFzc25hbWVYJGNsYXNzZXNeQ0tSZWNvcmRab25lSUSiIyVYTlNPYmplY3TSISInKFpDS1JlY29yZElEoiclAAgAEQAaACQAKQAyADcASQBMAFEAUwBcAGIAaQBwAHsAggCEAIYAiACXAKIAtQDJANMA3ADeAOAA4gDkAOYA8wEGAQsBFgEfAS4BMQE6AT8BSgAAAAAAAAIBAAAAAAAAACkAAAAAAAAAAAAAAAAAAAFN\",\"encryptedValuesStore\":[],\"share\":\"deadbeef\"}"
     
     do {
@@ -123,14 +123,14 @@ final class MockCanopyResultRecordTests: XCTestCase {
       let decodingError = error as! DecodingError
       switch (decodingError) {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid share")
+        #expect(context.debugDescription == "Invalid share")
       default:
-        XCTFail("Unexpected error: \(error)")
+        Issue.record("Unexpected error: \(error)")
       }
     }
   }
   
-  func test_compact_map_values() throws {
+  @Test func test_compact_map_values() throws {
     let mock = MockCanopyResultRecord(
       recordType: "MockRecord",
       values: [
@@ -143,14 +143,14 @@ final class MockCanopyResultRecordTests: XCTestCase {
       ]
     )
       
-    XCTAssertEqual(mock["key1"] as! String, "value1")
-    XCTAssertNil(mock["nullKey"])
+    #expect(mock["key1"] as! String == "value1")
+    #expect(mock["nullKey"] == nil)
     
-    XCTAssertEqual(mock.encryptedValues["encryptedKey1"] as! String, "encryptedValue1")
-    XCTAssertNil(mock["nullEncryptedKey"])
+    #expect(mock.encryptedValues["encryptedKey1"] as! String == "encryptedValue1")
+    #expect(mock["nullEncryptedKey"] == nil)
   }
   
-  func test_equatable() {
+  @Test func test_equatable() {
     let creationDate = Date().advanced(by: -10)
     let modificationDate = Date()
     
@@ -190,17 +190,17 @@ final class MockCanopyResultRecordTests: XCTestCase {
       share: .init(recordID: .init(recordName: "shareId"), action: .none)
     )
     
-    XCTAssertEqual(record1, record2)
-    XCTAssertNotEqual(record1, record3)
+    #expect(record1 == record2)
+    #expect(record1 != record3)
   }
   
-  func test_from_ckrecord() {
+  @Test func test_from_ckrecord() {
     let ckRecord = CKRecord(recordType: "MyType", recordID: .init(recordName: "myRecordName"))
     ckRecord["key1"] = "value1"
     ckRecord.encryptedValues["encryptedKey1"] = "encryptedValue1"
     let mock = MockCanopyResultRecord.from(ckRecord: ckRecord)
-    XCTAssertEqual(mock.recordID.recordName, "myRecordName")
-    XCTAssertEqual(mock["key1"] as! String, "value1")
-    XCTAssertEqual(mock.encryptedValues["encryptedKey1"] as! String, "encryptedValue1")
+    #expect(mock.recordID.recordName == "myRecordName")
+    #expect(mock["key1"] as! String == "value1")
+    #expect(mock.encryptedValues["encryptedKey1"] as! String == "encryptedValue1")
   }
 }

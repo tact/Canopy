@@ -34,7 +34,8 @@ public actor ReplayingMockCKContainer {
     }
   }
   
-  func privateFetchUserRecordID(completionHandler: @escaping (CKRecord.ID?, Error?) -> Void) {
+  // Private helpers now return Sendable results rather than invoking closures.
+  private func privateFetchUserRecordID() -> (CKRecord.ID?, Error?) {
     guard let operationResult = userRecordIDResults.first, case let .userRecordID(result) = operationResult else {
       fatalError("Asked to fetch user record ID without an available result. Likely a logic error on caller side")
     }
@@ -42,13 +43,13 @@ public actor ReplayingMockCKContainer {
     operationsRun += 1
     
     if let error = result.recordError {
-      completionHandler(nil, error.ckError)
+      return (nil, error.ckError)
     } else {
-      completionHandler(result.userRecordIDArchive!.recordIDs.first!, nil)
+      return (result.userRecordIDArchive!.recordIDs.first!, nil)
     }
   }
   
-  func privateAccountStatus(completionHandler: @escaping (CKAccountStatus, Error?) -> Void) {
+  private func privateAccountStatus() -> (CKAccountStatus, Error?) {
     guard let operationResult = accountStatusResults.first, case let .accountStatus(result) = operationResult else {
       fatalError("Asked for account status without an available result. Likely a logic error on caller side")
     }
@@ -62,10 +63,10 @@ public actor ReplayingMockCKContainer {
     operationsRun += 1
 
     if let error = result.canopyError {
-      completionHandler(.couldNotDetermine, error.ckError)
+      return (.couldNotDetermine, error.ckError)
     } else {
       if let accountStatus = CKAccountStatus(rawValue: result.statusValue) {
-        completionHandler(accountStatus, nil)
+        return (accountStatus, nil)
       } else {
         fatalError("Could not recreate CKAccountStatus from value \(result.statusValue)")
       }
@@ -94,15 +95,21 @@ public actor ReplayingMockCKContainer {
 }
 
 extension ReplayingMockCKContainer: CKContainerType {
-  public nonisolated func accountStatus(completionHandler: @escaping (CKAccountStatus, Error?) -> Void) {
+  public nonisolated func accountStatus(completionHandler: @escaping @Sendable (CKAccountStatus, Error?) -> Void) {
     Task {
-      await privateAccountStatus(completionHandler: completionHandler)
+      // Enter the actor to compute the result without sending the closure across domains.
+      let (status, error) = await self.privateAccountStatus()
+      // Call the completion handler from the current task context (non-actor).
+      completionHandler(status, error)
     }
   }
   
-  public nonisolated func fetchUserRecordID(completionHandler: @escaping (CKRecord.ID?, Error?) -> Void) {
+  public nonisolated func fetchUserRecordID(completionHandler: @escaping @Sendable (CKRecord.ID?, Error?) -> Void) {
     Task {
-      await privateFetchUserRecordID(completionHandler: completionHandler)
+      // Enter the actor to compute the result without sending the closure across domains.
+      let (recordID, error) = await self.privateFetchUserRecordID()
+      // Call the completion handler from the current task context (non-actor).
+      completionHandler(recordID, error)
     }
   }
   

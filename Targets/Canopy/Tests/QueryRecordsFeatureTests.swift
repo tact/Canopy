@@ -2,17 +2,16 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
-@available(iOS 17, macOS 14, *)
-final class QueryRecordsFeatureTests: XCTestCase {
-  func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
+@Suite struct QueryRecordsFeatureTests {
+  private func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
     stride(from: startIndex, to: endIndex + 1, by: 1).map { i in
       CKRecord(recordType: "TestRecord", recordID: .init(recordName: "id\(i)"))
     }
   }
   
-  func test_simple_query() async {
+  @Test func test_simple_query() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -33,12 +32,12 @@ final class QueryRecordsFeatureTests: XCTestCase {
       database: db
     ).get()
     
-    XCTAssertEqual(results.count, 10)
+    #expect(results.count == 10)
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_simple_nested_query() async {
+  @Test func test_simple_nested_query() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -65,14 +64,14 @@ final class QueryRecordsFeatureTests: XCTestCase {
       recordZoneID: nil,
       database: db
     ).get()
-    XCTAssertEqual(records.count, 20)
+    #expect(records.count == 20)
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 2)
-    XCTAssertEqual(records[0].recordID.recordName, "id1")
-    XCTAssertEqual(records[19].recordID.recordName, "id20")
+    #expect(operationsRun == 2)
+    #expect(records[0].recordID.recordName == "id1")
+    #expect(records[19].recordID.recordName == "id20")
   }
   
-  func test_results_limit_query() async {
+  @Test func test_results_limit_query() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -93,14 +92,14 @@ final class QueryRecordsFeatureTests: XCTestCase {
       database: db,
       resultsLimit: 10
     ).get()
-    XCTAssertEqual(records.count, 10)
+    #expect(records.count == 10)
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
-    XCTAssertEqual(records[0].recordID.recordName, "id1")
-    XCTAssertEqual(records[9].recordID.recordName, "id10")
+    #expect(operationsRun == 1)
+    #expect(records[0].recordID.recordName == "id1")
+    #expect(records[9].recordID.recordName == "id10")
   }
   
-  func test_depth3_query() async {
+  @Test func test_depth3_query() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -137,14 +136,14 @@ final class QueryRecordsFeatureTests: XCTestCase {
       database: db
     ).get()
     
-    XCTAssertEqual(records.count, 9)
+    #expect(records.count == 9)
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 3)
-    XCTAssertEqual(records[0].recordID.recordName, "id1")
-    XCTAssertEqual(records[8].recordID.recordName, "id9")
+    #expect(operationsRun == 3)
+    #expect(records[0].recordID.recordName == "id1")
+    #expect(records[8].recordID.recordName == "id9")
   }
   
-  func test_task_cancellation_query() async {
+  @Test func test_task_cancellation_query() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -180,14 +179,14 @@ final class QueryRecordsFeatureTests: XCTestCase {
     do {
       let _ = try await task.result.get().get()
     } catch let recordError {
-      XCTAssertEqual(recordError, .init(from: CKError(CKError.Code.operationCancelled)))
+      #expect(recordError == .init(from: CKError(CKError.Code.operationCancelled)))
     }
     
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_record_error() async {
+  @Test func test_record_error() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -209,11 +208,11 @@ final class QueryRecordsFeatureTests: XCTestCase {
         database: db
       ).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.requestRateLimited)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.requestRateLimited)))
     }
   }
   
-  func test_nested_request_error() async {
+  @Test func test_nested_request_error() async {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -243,7 +242,7 @@ final class QueryRecordsFeatureTests: XCTestCase {
         database: db
       ).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
 }

@@ -1,17 +1,17 @@
 @testable import Canopy
 import CloudKit
-import XCTest
+import Testing
 
-final class CKDatabaseScopeExtensionTests: XCTestCase {
-  func test_private_scope() {
-    XCTAssertEqual(CKDatabase.Scope.private.asString, "private")
+@Suite struct CKDatabaseScopeExtensionTests {
+  @Test func test_private_scope() {
+    #expect(CKDatabase.Scope.private.asString == "private")
   }
   
-  func test_shared_scope() {
-    XCTAssertEqual(CKDatabase.Scope.shared.asString, "shared")
+  @Test func test_shared_scope() {
+    #expect(CKDatabase.Scope.shared.asString == "shared")
   }
 
-  func test_public_scope() {
-    XCTAssertEqual(CKDatabase.Scope.public.asString, "public")
+  @Test func test_public_scope() {
+    #expect(CKDatabase.Scope.public.asString == "public")
   }
 }

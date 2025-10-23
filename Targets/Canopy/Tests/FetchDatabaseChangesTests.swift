@@ -2,11 +2,10 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
-@available(iOS 16.4, macOS 13.3, *)
-final class FetchDatabaseChangesTests: XCTestCase {
-  func test_success() async {
+@Suite struct FetchDatabaseChangesTests {
+  @Test func test_success() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
     let changedRecordZoneID2 = CKRecordZone.ID(zoneName: "changedZone2", ownerName: CKCurrentUserDefaultName)
     let deletedRecordZoneID = CKRecordZone.ID(zoneName: "deletedZone", ownerName: CKCurrentUserDefaultName)
@@ -24,7 +23,7 @@ final class FetchDatabaseChangesTests: XCTestCase {
     let testTokenStore = TestTokenStore()
     let api = CKDatabaseAPI(database: db, databaseScope: .private, tokenStore: testTokenStore)
     let result = try? await api.fetchDatabaseChanges().get()
-    XCTAssertEqual(result, FetchDatabaseChangesResult(
+    #expect(result == FetchDatabaseChangesResult(
       changedRecordZoneIDs: [changedRecordZoneID1, changedRecordZoneID2],
       deletedRecordZoneIDs: [deletedRecordZoneID],
       purgedRecordZoneIDs: [purgedRecordZoneID]
@@ -33,11 +32,11 @@ final class FetchDatabaseChangesTests: XCTestCase {
     let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
     let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
     
-    XCTAssertEqual(getTokenForDatabaseScopeCalls, 1)
-    XCTAssertEqual(storeTokenForDatabaseScopeCalls, 1)
+    #expect(getTokenForDatabaseScopeCalls == 1)
+    #expect(storeTokenForDatabaseScopeCalls == 1)
   }
   
-  func test_token_expired_error() async {
+  @Test func test_token_expired_error() async {
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
@@ -53,13 +52,13 @@ final class FetchDatabaseChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
-      XCTAssertEqual(error, CanopyError.ckChangeTokenExpired)
+      #expect(error == CanopyError.ckChangeTokenExpired)
       let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
-      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 1) // nil token was stored
+      #expect(storeTokenForDatabaseScopeCalls == 1) // nil token was stored
     }
   }
   
-  func test_other_error() async {
+  @Test func test_other_error() async {
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
@@ -75,13 +74,13 @@ final class FetchDatabaseChangesTests: XCTestCase {
     do {
       let _ = try await api.fetchDatabaseChanges().get()
     } catch {
-      XCTAssertEqual(error, CanopyError.ckRequestError(CKRequestError(from: CKError(CKError.Code.networkFailure))))
+      #expect(error == CanopyError.ckRequestError(CKRequestError(from: CKError(CKError.Code.networkFailure))))
       let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
-      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 0) // nothing should have been stored
+      #expect(storeTokenForDatabaseScopeCalls == 0) // nothing should have been stored
     }
   }
   
-  func test_success_with_delay() async {
+  @Test func test_success_with_delay() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
@@ -103,18 +102,18 @@ final class FetchDatabaseChangesTests: XCTestCase {
       tokenStore: testTokenStore
     )
     let result = try? await api.fetchDatabaseChanges().get()
-    XCTAssertEqual(result, FetchDatabaseChangesResult(
+    #expect(result == FetchDatabaseChangesResult(
       changedRecordZoneIDs: [changedRecordZoneID1],
       deletedRecordZoneIDs: [],
       purgedRecordZoneIDs: []
     ))
     let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
     let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
-    XCTAssertEqual(getTokenForDatabaseScopeCalls, 1)
-    XCTAssertEqual(storeTokenForDatabaseScopeCalls, 1)
+    #expect(getTokenForDatabaseScopeCalls == 1)
+    #expect(storeTokenForDatabaseScopeCalls == 1)
   }
   
-  func test_simulated_fail() async {
+  @Test func test_simulated_fail() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
@@ -142,17 +141,17 @@ final class FetchDatabaseChangesTests: XCTestCase {
       case .ckRequestError:
         break
       default:
-        XCTFail("Unexpected error type: \(error)")
+        Issue.record("Unexpected error type: \(error)")
       }
       let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
       let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
 
-      XCTAssertEqual(getTokenForDatabaseScopeCalls, 0)
-      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 0)
+      #expect(getTokenForDatabaseScopeCalls == 0)
+      #expect(storeTokenForDatabaseScopeCalls == 0)
     }
   }
   
-  func test_simulated_fail_with_delay() async {
+  @Test func test_simulated_fail_with_delay() async {
     let changedRecordZoneID1 = CKRecordZone.ID(zoneName: "changedZone1", ownerName: CKCurrentUserDefaultName)
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchDatabaseChanges(
@@ -180,14 +179,14 @@ final class FetchDatabaseChangesTests: XCTestCase {
       case .ckRequestError:
         break
       default:
-        XCTFail("Unexpected error type: \(error)")
+        Issue.record("Unexpected error type: \(error)")
       }
       
       let getTokenForDatabaseScopeCalls = await testTokenStore.getTokenForDatabaseScopeCalls
       let storeTokenForDatabaseScopeCalls = await testTokenStore.storeTokenForDatabaseScopeCalls
 
-      XCTAssertEqual(getTokenForDatabaseScopeCalls, 0)
-      XCTAssertEqual(storeTokenForDatabaseScopeCalls, 0)
+      #expect(getTokenForDatabaseScopeCalls == 0)
+      #expect(storeTokenForDatabaseScopeCalls == 0)
     }
   }
 }

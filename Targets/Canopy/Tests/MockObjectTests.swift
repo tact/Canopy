@@ -2,17 +2,17 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
 /// Test the validity mock objects provided as part of the test tools.
-final class MockObjectTests: XCTestCase {
-  func test_mock_share_owned_by_another_user() {
+@Suite struct MockObjectTests {
+  @Test func test_mock_share_owned_by_another_user() {
     let share = CKShare.mock
-    XCTAssertEqual(share.participants.count, 2)
+    #expect(share.participants.count == 2)
   }
   
-  func test_mock_share_owned_by_current_user() {
+  @Test func test_mock_share_owned_by_current_user() {
     let share = CKShare.mock_owned_by_current_user
-    XCTAssertEqual(share.participants.count, 3)
+    #expect(share.participants.count == 3)
   }
 }

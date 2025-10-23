@@ -2,7 +2,7 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
 /// Tests to make sure that fetching database and zone changes operates in a serial fashion.
 ///
@@ -18,8 +18,7 @@ import XCTest
 /// fetches. Next fetches wait for previous ones to finish.
 ///
 /// These tests make sure that this behavior is correct.
-@available(iOS 16.4, macOS 13.3, *)
-final class SerialFetchChangesTests: XCTestCase {
+@Suite struct SerialFetchChangesTests {
   /// A token store that balances calls to getting and storing tokens.
   ///
   /// The store makes sure that only one token of a given type is ever in use,
@@ -68,7 +67,7 @@ final class SerialFetchChangesTests: XCTestCase {
     func clear() {}
   }
     
-  func test_two_database_fetches_work() async {
+  @Test func test_two_database_fetches_work() async {
     // Two simultaneous change fetch requests for the same database should get queued up.
 
     let privateZoneID1 = CKRecordZone.ID(zoneName: "SomePrivateZone1", ownerName: CKCurrentUserDefaultName)
@@ -100,7 +99,7 @@ final class SerialFetchChangesTests: XCTestCase {
       databaseScope: .private,
       tokenStore: BalancingTokenStore(
         databaseViolationReporter: { scope in
-          XCTFail("Token balance error for database scope: \(scope)")
+          Issue.record("Token balance error for database scope: \(scope)")
         },
         zoneViolationReporter: { _ in }
       )
@@ -112,7 +111,7 @@ final class SerialFetchChangesTests: XCTestCase {
     let _ = await [results1, results2]
   }
   
-  func test_two_zone_fetches_work() async {
+  @Test func test_two_zone_fetches_work() async {
     // Two simultaneous change fetch requests for the same record zone should get queued up.
     
     let privateZoneID1 = CKRecordZone.ID(zoneName: "SomePrivateZone1", ownerName: CKCurrentUserDefaultName)
@@ -167,7 +166,7 @@ final class SerialFetchChangesTests: XCTestCase {
       tokenStore: BalancingTokenStore(
         databaseViolationReporter: { _ in },
         zoneViolationReporter: { zoneID in
-          XCTFail("Token balance error for zone: \(zoneID)")
+          Issue.record("Token balance error for zone: \(zoneID)")
         }
       )
     )
