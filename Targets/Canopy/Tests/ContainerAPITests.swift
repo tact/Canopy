@@ -2,10 +2,10 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
-final class ContainerAPITests: XCTestCase {
-  func test_userRecordID_success() async {
+@Suite struct ContainerAPITests {
+  @Test func test_userRecordID_success() async {
     let recordID = CKRecord.ID(recordName: "SomeUserID")
     let container = ReplayingMockCKContainer(
       operationResults: [
@@ -19,10 +19,10 @@ final class ContainerAPITests: XCTestCase {
     )
     let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     let result = try? await containerAPI.userRecordID.get()
-    XCTAssertEqual(result, recordID)
+    #expect(result == recordID)
   }
   
-  func test_userRecordID_failure() async {
+  @Test func test_userRecordID_failure() async {
     let ckError = CKError(CKError.Code.networkUnavailable)
     let container = ReplayingMockCKContainer(
       operationResults: [
@@ -33,11 +33,11 @@ final class ContainerAPITests: XCTestCase {
     do {
       let _ = try await containerAPI.userRecordID.get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: ckError))
+      #expect(error == CKRecordError(from: ckError))
     }
   }
   
-  func test_accountStatus_success() async {
+  @Test func test_accountStatus_success() async {
     let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil))
@@ -45,10 +45,10 @@ final class ContainerAPITests: XCTestCase {
     )
     let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     let result = try? await containerAPI.accountStatus.get()
-    XCTAssertEqual(result, .available)
+    #expect(result == .available)
   }
   
-  func test_accountStatus_success_multiple_requests() async {
+  @Test func test_accountStatus_success_multiple_requests() async {
     let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil))
@@ -56,17 +56,17 @@ final class ContainerAPITests: XCTestCase {
     )
     let containerAPI = CKContainerAPI(container: container, accountChangedSequence: .mock(elementsToProduce: 0))
     let result = try! await containerAPI.accountStatus.get()
-    XCTAssertEqual(result, .available)
+    #expect(result == .available)
     
     // Try more requests, so there are more requests than inputs.
     // mock accountStatus API returns the last status without dequeueing it.
     let result2 = try! await containerAPI.accountStatus.get()
     let result3 = try! await containerAPI.accountStatus.get()
-    XCTAssertEqual(result2, .available)
-    XCTAssertEqual(result3, .available)
+    #expect(result2 == .available)
+    #expect(result3 == .available)
   }
   
-  func test_accountStatus_failure() async {
+  @Test func test_accountStatus_failure() async {
     let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(
@@ -81,11 +81,11 @@ final class ContainerAPITests: XCTestCase {
     do {
       let _ = try await containerAPI.accountStatus.get()
     } catch {
-      XCTAssertEqual(error, .ckAccountError("The operation couldn’t be completed. (CKErrorDomain error 36.)", CKError.Code.accountTemporarilyUnavailable.rawValue))
+      #expect(error == .ckAccountError("The operation couldn’t be completed. (CKErrorDomain error 36.)", CKError.Code.accountTemporarilyUnavailable.rawValue))
     }
   }
   
-  func test_accountStatus_stream() async {
+  @Test func test_accountStatus_stream() async {
     // This test was sometimes failing. The cause was that the account statuses were sometimes delivered out of order.
     // https://github.com/tact/Canopy/issues/6
     // Got a repeatable scenario by running this as a stress test with many iterations.
@@ -109,10 +109,10 @@ final class ContainerAPITests: XCTestCase {
       if statuses.count == 3 { break }
     }
     let expectedStatuses: [CKAccountStatus] = [.available, .noAccount, .restricted]
-    XCTAssertEqual(statuses, expectedStatuses)
+    #expect(statuses == expectedStatuses)
   }
   
-  func test_accountStatus_twoStreams() async {
+  @Test func test_accountStatus_twoStreams() async {
     let container = ReplayingMockCKContainer(
       operationResults: [
         .accountStatus(.init(status: .available, error: nil)),
@@ -129,7 +129,7 @@ final class ContainerAPITests: XCTestCase {
     do {
       let _ = try await containerAPI.accountStatusStream.get()
     } catch {
-      XCTAssertEqual(error, .onlyOneAccountStatusStreamSupported)
+      #expect(error == .onlyOneAccountStatusStreamSupported)
     }
     
     for await status in stream1 {
@@ -138,10 +138,10 @@ final class ContainerAPITests: XCTestCase {
     }
     
     let expected: [CKAccountStatus] = [.available, .noAccount, .restricted]
-    XCTAssertEqual(statuses1, expected)
+    #expect(statuses1 == expected)
   }
   
-  func test_fetch_share_participants_success() async {
+  @Test func test_fetch_share_participants_success() async {
     let lookupInfo1 = CKUserIdentity.LookupInfo(emailAddress: "email@example.com")
     let lookupInfo2 = CKUserIdentity.LookupInfo(emailAddress: "email2@example.com")
 
@@ -167,10 +167,10 @@ final class ContainerAPITests: XCTestCase {
     
     let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     let participants = try? await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
-    XCTAssertEqual(participants, [CKShare.Participant.mock, CKShare.Participant.mock])
+    #expect(participants == [CKShare.Participant.mock, CKShare.Participant.mock])
   }
   
-  func test_fetch_share_participants_record_error() async {
+  @Test func test_fetch_share_participants_record_error() async {
     let lookupInfo1 = CKUserIdentity.LookupInfo(emailAddress: "email@example.com")
     let lookupInfo2 = CKUserIdentity.LookupInfo(emailAddress: "email2@example.com")
 
@@ -198,11 +198,11 @@ final class ContainerAPITests: XCTestCase {
     do {
       let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.badContainer)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.badContainer)))
     }
   }
   
-  func test_fetch_share_participants_result_error() async {
+  @Test func test_fetch_share_participants_result_error() async {
     let lookupInfo1 = CKUserIdentity.LookupInfo(emailAddress: "email@example.com")
     let lookupInfo2 = CKUserIdentity.LookupInfo(emailAddress: "email2@example.com")
 
@@ -230,11 +230,11 @@ final class ContainerAPITests: XCTestCase {
     do {
       let _ = try await containerAPI.fetchShareParticipants(with: [lookupInfo1, lookupInfo2]).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
   
-  func test_accept_shares_success() async {
+  @Test func test_accept_shares_success() async {
     let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .acceptShares(
@@ -253,10 +253,10 @@ final class ContainerAPITests: XCTestCase {
     
     let containerAPI = CKContainerAPI(container: mockContainer, accountChangedSequence: .mock(elementsToProduce: 0))
     let shares = try! await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
-    XCTAssertEqual(shares.count, 2)
+    #expect(shares.count == 2)
   }
   
-  func test_accept_shares_record_failure() async {
+  @Test func test_accept_shares_record_failure() async {
     let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .acceptShares(
@@ -277,11 +277,11 @@ final class ContainerAPITests: XCTestCase {
     do {
       let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkUnavailable)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.networkUnavailable)))
     }
   }
   
-  func test_accept_shares_result_failure() async {
+  @Test func test_accept_shares_result_failure() async {
     let mockContainer = ReplayingMockCKContainer(
       operationResults: [
         .acceptShares(
@@ -302,7 +302,7 @@ final class ContainerAPITests: XCTestCase {
     do {
       let _ = try await containerAPI.acceptShares(with: [CKShare.Metadata.mock, CKShare.Metadata.mock]).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.badContainer)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.badContainer)))
     }
   }
 }

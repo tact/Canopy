@@ -2,23 +2,23 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
 /// Contains most Canopy database API tests.
 ///
 /// Some tests are in individual test classes (fetch changes).
-final class DatabaseAPITests: XCTestCase {
+@Suite struct DatabaseAPITests {
   private func databaseAPI(_ db: CKDatabaseType, settings: CanopySettingsType = CanopySettings()) -> CKDatabaseAPIType {
     CKDatabaseAPI(database: db, databaseScope: .private, settingsProvider: { settings }, tokenStore: TestTokenStore())
   }
   
-  func test_init_with_default_settings() async {
+  @Test func test_init_with_default_settings() async {
     let databaseAPI = CKDatabaseAPI(database: ReplayingMockCKDatabase(), databaseScope: .private, tokenStore: TestTokenStore())
     let fetchDatabaseChangesBehavior = await databaseAPI.settingsProvider().fetchDatabaseChangesBehavior
-    XCTAssertEqual(fetchDatabaseChangesBehavior, .regular(nil))
+    #expect(fetchDatabaseChangesBehavior == .regular(nil))
   }
     
-  func test_query_records() async {
+  @Test func test_query_records() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
     let db = ReplayingMockCKDatabase(
@@ -41,10 +41,10 @@ final class DatabaseAPITests: XCTestCase {
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let result = try! await api.queryRecords(with: query, in: nil).get()
     
-    XCTAssertTrue(result.first!.isEqualToRecord(record.canopyResultRecord))
+    #expect(result.first!.isEqualToRecord(record.canopyResultRecord) == true)
   }
   
-  func test_delete_records_success() async {
+  @Test func test_delete_records_success() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
     let db = ReplayingMockCKDatabase(
@@ -75,10 +75,10 @@ final class DatabaseAPITests: XCTestCase {
     let api = databaseAPI(db)
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let result = try! await api.deleteRecords(with: query, in: nil).get()
-    XCTAssertEqual(result.deletedRecordIDs, [recordID])
+    #expect(result.deletedRecordIDs == [recordID])
   }
   
-  func test_delete_records_query_failure() async {
+  @Test func test_delete_records_query_failure() async {
     let recordID = CKRecord.ID(recordName: "TestRecordName")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
     let db = ReplayingMockCKDatabase(
@@ -102,11 +102,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.deleteRecords(with: query, in: nil).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
     }
   }
   
-  func test_delete_records_empty_success() async {
+  @Test func test_delete_records_empty_success() async {
     // When there are no records returned by query,
     // the deletion should still report a success, since there is no work to be done.
     let db = ReplayingMockCKDatabase(
@@ -123,10 +123,10 @@ final class DatabaseAPITests: XCTestCase {
     let api = databaseAPI(db)
     let query = CKQuery(recordType: "TestRecord", predicate: NSPredicate(value: true))
     let result = try! await api.deleteRecords(with: query, in: nil).get()
-    XCTAssertEqual(result.deletedRecordIDs, [])
+    #expect(result.deletedRecordIDs == [])
   }
   
-  func test_fetch_records_success() async {
+  @Test func test_fetch_records_success() async {
     let recordID = CKRecord.ID(recordName: "testRecord")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
     let db = ReplayingMockCKDatabase(operationResults: [
@@ -141,10 +141,10 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     let result = try! await api.fetchRecords(with: [recordID]).get()
-    XCTAssertTrue(result.foundRecords.first!.isEqualToRecord(record.canopyResultRecord))
+    #expect(result.foundRecords.first!.isEqualToRecord(record.canopyResultRecord) == true)
   }
   
-  func test_fetch_records_record_failure() async {
+  @Test func test_fetch_records_record_failure() async {
     let recordID = CKRecord.ID(recordName: "testRecord")
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetch(
@@ -160,11 +160,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchRecords(with: [recordID]).get()
     } catch {
-      XCTAssertEqual(error , CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.notAuthenticated)))
     }
   }
   
-  func test_fetch_records_result_failure() async {
+  @Test func test_fetch_records_result_failure() async {
     let recordID = CKRecord.ID(recordName: "testRecord")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
     let db = ReplayingMockCKDatabase(operationResults: [
@@ -181,11 +181,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchRecords(with: [recordID]).get()
     } catch {
-      XCTAssertEqual(error , CKRecordError(from: CKError(CKError.Code.managedAccountRestricted)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.managedAccountRestricted)))
     }
   }
   
-  func test_fetch_records_not_found() async {
+  @Test func test_fetch_records_not_found() async {
     let recordID = CKRecord.ID(recordName: "testRecord")
     let recordID2 = CKRecord.ID(recordName: "testRecord2")
     let record = CKRecord(recordType: "TestRecord", recordID: recordID)
@@ -202,11 +202,11 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     let fetchResult = try! await api.fetchRecords(with: [recordID]).get()
-    XCTAssertTrue(fetchResult.foundRecords.first!.isEqualToRecord(record.canopyResultRecord))
-    XCTAssertEqual(fetchResult.notFoundRecordIDs, [recordID2])
+    #expect(fetchResult.foundRecords.first!.isEqualToRecord(record.canopyResultRecord) == true)
+    #expect(fetchResult.notFoundRecordIDs == [recordID2])
   }
   
-  func test_modify_zones_success() async {
+  @Test func test_modify_zones_success() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
     let db = ReplayingMockCKDatabase(operationResults: [
@@ -224,11 +224,11 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     let result = try! await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
-    XCTAssertEqual(result.deletedZoneIDs.first!, zoneIDToDelete)
-    XCTAssertTrue(result.savedZones.first!.isEqualToZone(zoneToSave))
+    #expect(result.deletedZoneIDs.first == zoneIDToDelete)
+    #expect(result.savedZones.first!.isEqualToZone(zoneToSave) == true)
   }
   
-  func test_modify_zones_save_failure() async {
+  @Test func test_modify_zones_save_failure() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
     let db = ReplayingMockCKDatabase(operationResults: [
@@ -248,11 +248,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
-      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.networkUnavailable)))
+      #expect(error == CKRecordZoneError(from: CKError(CKError.Code.networkUnavailable)))
     }
   }
   
-  func test_modify_zones_delete_failure() async {
+  @Test func test_modify_zones_delete_failure() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
     let db = ReplayingMockCKDatabase(operationResults: [
@@ -272,11 +272,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
-      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.accountTemporarilyUnavailable)))
+      #expect(error == CKRecordZoneError(from: CKError(CKError.Code.accountTemporarilyUnavailable)))
     }
   }
   
-  func test_modify_zones_operation_failure() async {
+  @Test func test_modify_zones_operation_failure() async {
     let zoneToSave = CKRecordZone(zoneID: .init(zoneName: "SomeZone"))
     let zoneIDToDelete = CKRecordZone.ID(zoneName: "ZoneToDelete")
     let db = ReplayingMockCKDatabase(operationResults: [
@@ -296,11 +296,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifyZones(saving: [zoneToSave], deleting: [zoneIDToDelete]).get()
     } catch {
-      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.invalidArguments)))
+      #expect(error == CKRecordZoneError(from: CKError(CKError.Code.invalidArguments)))
     }
   }
   
-  func test_fetch_all_zones_success() async {
+  @Test func test_fetch_all_zones_success() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZones(
@@ -314,10 +314,10 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     let result = try! await api.fetchAllZones(qualityOfService: .default).get()
-    XCTAssertTrue(result.first!.isEqualToZone(mockZone))
+    #expect(result.first!.isEqualToZone(mockZone) == true)
   }
   
-  func test_fetch_zones_success() async {
+  @Test func test_fetch_zones_success() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZones(
@@ -331,10 +331,10 @@ final class DatabaseAPITests: XCTestCase {
     ])
     let api = databaseAPI(db)
     let result = try! await api.fetchAllZones(qualityOfService: .default).get()
-    XCTAssertTrue(result.first!.isEqualToZone(mockZone))
+    #expect(result.first!.isEqualToZone(mockZone) == true)
   }
   
-  func test_fetch_zones_one_failure() async {
+  @Test func test_fetch_zones_one_failure() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZones(
@@ -350,11 +350,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchZones(with: [mockZone.zoneID]).get()
     } catch {
-      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
+      #expect(error == CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_fetch_zones_result_failure() async {
+  @Test func test_fetch_zones_result_failure() async {
     let mockZone = CKRecordZone(zoneID: .init(zoneName: "MockZone", ownerName: CKCurrentUserDefaultName))
     let db = ReplayingMockCKDatabase(operationResults: [
       .fetchZones(
@@ -370,11 +370,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.fetchZones(with: [mockZone.zoneID]).get()
     } catch {
-      XCTAssertEqual(error , CKRecordZoneError(from: CKError(CKError.Code.zoneNotFound)))
+      #expect(error == CKRecordZoneError(from: CKError(CKError.Code.zoneNotFound)))
     }
   }
   
-  func test_modify_subscriptions_success() async {
+  @Test func test_modify_subscriptions_success() async {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
@@ -395,10 +395,10 @@ final class DatabaseAPITests: XCTestCase {
     )
     let api = databaseAPI(db)
     let result = try! await api.modifySubscriptions(saving: [subscription]).get()
-    XCTAssertEqual(result, .init(savedSubscriptions: [subscription], deletedSubscriptionIDs: [subscriptionIDToDelete]))
+    #expect(result == .init(savedSubscriptions: [subscription], deletedSubscriptionIDs: [subscriptionIDToDelete]))
   }
   
-  func test_modify_subscriptions_save_failure() async {
+  @Test func test_modify_subscriptions_save_failure() async {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
@@ -421,11 +421,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
-      XCTAssertEqual(error , CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
+      #expect(error == CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_modify_subscriptions_delete_failure() async {
+  @Test func test_modify_subscriptions_delete_failure() async {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
@@ -448,11 +448,11 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
-      XCTAssertEqual(error , CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
+      #expect(error == CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_modify_subscriptions_operation_failure() async {
+  @Test func test_modify_subscriptions_operation_failure() async {
     let subscriptionID = CKSubscription.ID("DBSubscription")
     let subscriptionIDToDelete = CKSubscription.ID("DBSubscriptionToDelete")
     let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
@@ -475,7 +475,7 @@ final class DatabaseAPITests: XCTestCase {
     do {
       let _ = try await api.modifySubscriptions(saving: [subscription]).get()
     } catch {
-      XCTAssertEqual(error , CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
+      #expect(error == CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
   }
 }
