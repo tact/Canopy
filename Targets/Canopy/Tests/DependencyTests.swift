@@ -2,9 +2,9 @@ import Canopy
 import CanopyTestTools
 import CloudKit
 import Dependencies
-import XCTest
+import Testing
 
-final class DependencyTests: XCTestCase {
+@Suite struct DependencyTests {
   struct Fetcher {
     @Dependency(\.cloudKit) private var canopy
     func fetchRecord(recordID: CKRecord.ID) async -> CanopyResultRecord? {
@@ -14,7 +14,7 @@ final class DependencyTests: XCTestCase {
     }
   }
   
-  func test_dependency() async {
+  @Test func test_dependency() async {
     let fetcher = withDependencies {
       let testRecordID = CKRecord.ID(recordName: "testRecordID")
       let testRecord = CKRecord(recordType: "TestRecord", recordID: testRecordID)
@@ -42,6 +42,6 @@ final class DependencyTests: XCTestCase {
       Fetcher()
     }
     let record = await fetcher.fetchRecord(recordID: .init(recordName: "testRecordID"))!
-    XCTAssertEqual(record["testKey"] as! String, "testValue")
+    #expect(record["testKey"] as! String == "testValue")
   }
 }
