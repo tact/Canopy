@@ -1,15 +1,15 @@
 @testable import Canopy
 import CloudKit
-import XCTest
+import Testing
 
-final class CKRecordZoneIDExtensionTests: XCTestCase {
-  func test_private_zone() {
+@Suite struct CKRecordZoneIDExtensionTests {
+  @Test func test_private_zone() {
     let privateZoneID = CKRecordZone.ID(zoneName: "someZone", ownerName: CKCurrentUserDefaultName)
-    XCTAssertEqual(privateZoneID.ckDatabaseScope, .private)
+    #expect(privateZoneID.ckDatabaseScope == .private)
   }
   
-  func test_shared_zone() {
+  @Test func test_shared_zone() {
     let sharedZoneID = CKRecordZone.ID(zoneName: "someSharedZone", ownerName: "someOtherPerson")
-    XCTAssertEqual(sharedZoneID.ckDatabaseScope, .shared)
+    #expect(sharedZoneID.ckDatabaseScope == .shared)
   }
 }

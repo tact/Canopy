@@ -3,7 +3,7 @@ import CanopyTestTools
 import CloudKit
 import Testing
 
-@Suite final class CanopyResultRecordTests {
+@Suite struct CanopyResultRecordTests {
   @Test func test_init_with_ckrecord() {
     let ckRecord = CKRecord(recordType: "SomeRecordType", recordID: .init(recordName: "someRecordName"))
     ckRecord["textValue"] = "someTextValue"

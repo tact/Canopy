@@ -1,10 +1,10 @@
 @testable import Canopy
 import CanopyTestTools
 import CloudKit
-import XCTest
+import Testing
 
-final class CanopyTests: XCTestCase {
-  func test_init_with_default_settings() async {
+@Suite struct CanopyTests {
+  @Test func test_init_with_default_settings() async {
     let _ = Canopy(
       container: ReplayingMockCKContainer(),
       publicCloudDatabase: ReplayingMockCKDatabase(),
@@ -14,7 +14,7 @@ final class CanopyTests: XCTestCase {
     )
   }
   
-  func test_settings_provider_uses_modified_value() async {
+  @Test func test_settings_provider_uses_modified_value() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     
@@ -64,8 +64,8 @@ final class CanopyTests: XCTestCase {
 
     // First request will succeed.
     let result1 = try! await api.modifyRecords(saving: [changedRecord]).get()
-    XCTAssertTrue(result1.savedRecords.count == 1)
-    XCTAssertTrue(result1.savedRecords[0].isEqualToRecord(changedRecord.canopyResultRecord))
+    #expect(result1.savedRecords.count == 1)
+    #expect(result1.savedRecords[0].isEqualToRecord(changedRecord.canopyResultRecord) == true)
     
     // Second request will fail after modifying the settings.
     await modifiableSettings.setModifyRecordsBehavior(behavior: .simulatedFail(nil))
@@ -73,13 +73,12 @@ final class CanopyTests: XCTestCase {
     do {
       let _ = try await api.modifyRecords(saving: [changedRecord]).get()
     } catch {
-      XCTAssertNotNil(error)
       // Error is CKRecordError, so we use a CKRecordError API to test it
-      XCTAssertEqual(error.batchErrors, [:])
+      #expect(error.batchErrors == [:])
     }
   }
   
-  func test_returns_same_api_instances() async {
+  @Test func test_returns_same_api_instances() async {
     let canopy = Canopy(
       container: ReplayingMockCKContainer(),
       publicCloudDatabase: ReplayingMockCKDatabase(),
@@ -89,19 +88,19 @@ final class CanopyTests: XCTestCase {
     
     let privateApi1 = await canopy.databaseAPI(usingDatabaseScope: .private) as! CKDatabaseAPI
     let privateApi2 = await canopy.databaseAPI(usingDatabaseScope: .private) as! CKDatabaseAPI
-    XCTAssertTrue(privateApi1 === privateApi2)
+    #expect(privateApi1 === privateApi2)
 
     let publicApi1 = await canopy.databaseAPI(usingDatabaseScope: .public) as! CKDatabaseAPI
     let publicApi2 = await canopy.databaseAPI(usingDatabaseScope: .public) as! CKDatabaseAPI
-    XCTAssertTrue(publicApi1 === publicApi2)
+    #expect(publicApi1 === publicApi2)
 
     let sharedApi1 = await canopy.databaseAPI(usingDatabaseScope: .shared) as! CKDatabaseAPI
     let sharedApi2 = await canopy.databaseAPI(usingDatabaseScope: .shared) as! CKDatabaseAPI
-    XCTAssertTrue(sharedApi1 === sharedApi2)
+    #expect(sharedApi1 === sharedApi2)
 
     let containerApi1 = await canopy.containerAPI() as! CKContainerAPI
     let containerApi2 = await canopy.containerAPI() as! CKContainerAPI
     
-    XCTAssertTrue(containerApi1 === containerApi2)
+    #expect(containerApi1 === containerApi2)
   }
 }
