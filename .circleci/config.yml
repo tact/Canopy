@@ -5,17 +5,19 @@ jobs:
   build:
     macos:
       xcode: "26.0.1"
-      resource_class: m2pro.medium
+      resource_class: m4pro.medium
     steps:
-      - checkout
+      - checkout:
+          method: blobless 
       - run: swift build -v
 
   test:
     macos:
       xcode: "26.0.1"
-      resource_class: m2pro.medium
+      resource_class: m4pro.medium
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - run: swift test -v
 
 workflows:
