@@ -1,27 +1,29 @@
 # CircleCI configuration file
+# Commented out, because currently Swift 6.2 isn’t available
+# on CircleCI free plan resources
 
-version: 2.1
-jobs:
-  build:
-    macos:
-      xcode: "26.0.1"
-      resource_class: macos.m1.medium.gen1
-    steps:
-      - checkout:
-          method: blobless 
-      - run: swift build -v
+# version: 2.1
+# jobs:
+#   build:
+#     macos:
+#       xcode: "26.0.1"
+#       resource_class: macos.m1.medium.gen1
+#     steps:
+#       - checkout:
+#           method: blobless 
+#       - run: swift build -v
 
-  test:
-    macos:
-      xcode: "26.0.1"
-      resource_class: macos.m1.medium.gen1
-    steps:
-      - checkout:
-          method: blobless
-      - run: swift test -v
+#   test:
+#     macos:
+#       xcode: "26.0.1"
+#       resource_class: macos.m1.medium.gen1
+#     steps:
+#       - checkout:
+#           method: blobless
+#       - run: swift test -v
 
-workflows:
-  build-and-test:
-    jobs:
-      - build
-      - test
+# workflows:
+#   build-and-test:
+#     jobs:
+#       - build
+#       - test
