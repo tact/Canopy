@@ -1,15 +1,15 @@
 @testable import Canopy
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
 typealias ValueStore = MockCanopyResultRecord.MockValueStore
 
-final class MockValueStoreTests: XCTestCase {
+@Suite struct MockValueStoreTests {
   
   // MARK: - Invididual data types
   
-  func test_codes_string() throws {
+  @Test func test_codes_string() throws {
     let sut = ValueStore(values: [
       "key1": "Hello world",
       "key2": "Another value",
@@ -19,11 +19,11 @@ final class MockValueStoreTests: XCTestCase {
     let key1Value = outcome["key1"] as? String
     let key2Value = outcome["key2"] as? String
 
-    XCTAssertEqual(key1Value, "Hello world")
-    XCTAssertEqual(key2Value, "Another value")
+    #expect(key1Value == "Hello world")
+    #expect(key2Value == "Another value")
   }
   
-  func test_codes_nsstring() throws {
+  @Test func test_codes_nsstring() throws {
     let sut = ValueStore(values: [
       "_force_nstype_key1": NSString(string: "Hello world"),
       "_force_nstype_key2": NSString(string: "Another value"),
@@ -33,11 +33,11 @@ final class MockValueStoreTests: XCTestCase {
     let key1Value = outcome["_force_nstype_key1"] as? NSString
     let key2Value = outcome["_force_nstype_key2"] as? NSString
 
-    XCTAssertEqual(key1Value, "Hello world")
-    XCTAssertEqual(key2Value, "Another value")
+    #expect(key1Value == "Hello world")
+    #expect(key2Value == "Another value")
   }
   
-  func test_codes_ints() throws {
+  @Test func test_codes_ints() throws {
     let sut = ValueStore(values: [
       "intKey": Int(42),
       "zeroKey": Int(0),
@@ -51,17 +51,17 @@ final class MockValueStoreTests: XCTestCase {
     let data = try JSONEncoder().encode(sut)
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     
-    XCTAssertEqual(outcome["intKey"] as! Int, 42)
-    XCTAssertEqual(outcome["zeroKey"] as! Int, 0)
-    XCTAssertEqual(outcome["oneKey"] as! Int, 1)
-    XCTAssertEqual(outcome["twoKey"] as! Int, 2)
-    XCTAssertEqual(outcome["int8Key"] as! Int8, 9)
-    XCTAssertEqual(outcome["int16Key"] as! Int16, 17)
-    XCTAssertEqual(outcome["int32Key"] as! Int32, 33)
-    XCTAssertEqual(outcome["int64Key"] as! Int64, 65)
+    #expect(outcome["intKey"] as! Int == 42)
+    #expect(outcome["zeroKey"] as! Int == 0)
+    #expect(outcome["oneKey"] as! Int == 1)
+    #expect(outcome["twoKey"] as! Int == 2)
+    #expect(outcome["int8Key"] as! Int8 == 9)
+    #expect(outcome["int16Key"] as! Int16 == 17)
+    #expect(outcome["int32Key"] as! Int32 == 33)
+    #expect(outcome["int64Key"] as! Int64 == 65)
   }
   
-  func test_codes_uints() throws {
+  @Test func test_codes_uints() throws {
     let sut = ValueStore(values: [
       "zeroKey": UInt(0),
       "oneKey": UInt(1),
@@ -74,16 +74,16 @@ final class MockValueStoreTests: XCTestCase {
     let data = try JSONEncoder().encode(sut)
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     
-    XCTAssertEqual(outcome["zeroKey"] as! UInt, 0)
-    XCTAssertEqual(outcome["oneKey"] as! UInt, 1)
-    XCTAssertEqual(outcome["twoKey"] as! UInt, 2)
-    XCTAssertEqual(outcome["uint8Key"] as! UInt8, 9)
-    XCTAssertEqual(outcome["uint16Key"] as! UInt16, 17)
-    XCTAssertEqual(outcome["uint32Key"] as! UInt32, 33)
-    XCTAssertEqual(outcome["uint64Key"] as! UInt64, 65)
+    #expect(outcome["zeroKey"] as! UInt == 0)
+    #expect(outcome["oneKey"] as! UInt == 1)
+    #expect(outcome["twoKey"] as! UInt == 2)
+    #expect(outcome["uint8Key"] as! UInt8 == 9)
+    #expect(outcome["uint16Key"] as! UInt16 == 17)
+    #expect(outcome["uint32Key"] as! UInt32 == 33)
+    #expect(outcome["uint64Key"] as! UInt64 == 65)
   }
   
-  func test_codes_double() throws {
+  @Test func test_codes_double() throws {
     let sut = ValueStore(values: [
       "doubleKey": Double(3.14)
     ])
@@ -91,10 +91,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let doubleValue = outcome["doubleKey"] as? Double
     
-    XCTAssertEqual(doubleValue, 3.14)
+    #expect(doubleValue == 3.14)
   }
   
-  func test_codes_float() throws {
+  @Test func test_codes_float() throws {
     let sut = ValueStore(values: [
       "floatKey": Float(3.14)
     ])
@@ -102,10 +102,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let floatValue = outcome["floatKey"] as? Float
     
-    XCTAssertEqual(floatValue, 3.14)
+    #expect(floatValue == 3.14)
   }
   
-  func test_codes_bool() throws {
+  @Test func test_codes_bool() throws {
     let sut = ValueStore(values: [
       "trueValue": true,
       "falseValue": false
@@ -115,11 +115,11 @@ final class MockValueStoreTests: XCTestCase {
     let trueValue = outcome["trueValue"] as! Bool
     let falseValue = outcome["falseValue"] as! Bool
     
-    XCTAssertTrue(trueValue)
-    XCTAssertFalse(falseValue)
+    #expect(trueValue == true)
+    #expect(falseValue == false)
   }
   
-  func test_codes_nsnumber() throws {
+  @Test func test_codes_nsnumber() throws {
     let sut = ValueStore(values: [
       "_force_nstype_numberKey": NSNumber(floatLiteral: 2.5)
     ])
@@ -128,10 +128,10 @@ final class MockValueStoreTests: XCTestCase {
     let numberValue = outcome["_force_nstype_numberKey"] as? NSNumber
     
     let expected = NSNumber(floatLiteral: 2.5)
-    XCTAssertEqual(numberValue, expected)
+    #expect(numberValue == expected)
   }
     
-  func test_codes_array() throws {
+  @Test func test_codes_array() throws {
     let sut = ValueStore(values: [
       "texts": ["one", "two", "three"]
     ])
@@ -140,10 +140,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let arrayValue = outcome["texts"] as? Array<String>
     
-    XCTAssertEqual(arrayValue, ["one", "two", "three"])
+    #expect(arrayValue == ["one", "two", "three"])
   }
   
-  func test_codes_nsArray() throws {
+  @Test func test_codes_nsArray() throws {
     let sut = ValueStore(values: [
       "texts": NSArray(array: ["one", "two", "three"])
     ])
@@ -152,10 +152,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let arrayValue = outcome["texts"] as? Array<String>
     
-    XCTAssertEqual(arrayValue, ["one", "two", "three"])
+    #expect(arrayValue == ["one", "two", "three"])
   }
   
-  func test_codes_date() throws {
+  @Test func test_codes_date() throws {
     let date = Date()
     let sut = ValueStore(values: [
       "dateKey": date
@@ -164,10 +164,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let dateValue = outcome["dateKey"] as? Date
     
-    XCTAssertEqual(dateValue, date)
+    #expect(dateValue == date)
   }
   
-  func test_codes_nsDate() throws {
+  @Test func test_codes_nsDate() throws {
     let nsDate = NSDate()
     let sut = ValueStore(values: [
       "_force_nstype_dateKey": nsDate
@@ -176,10 +176,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let nsDateValue = outcome["_force_nstype_dateKey"] as? NSDate
     
-    XCTAssertEqual(nsDateValue, nsDate)
+    #expect(nsDateValue == nsDate)
   }
   
-  func test_codes_data() throws {
+  @Test func test_codes_data() throws {
     let sut = ValueStore(values: [
       "dataKey": Data([2, 4, 7])
     ])
@@ -187,10 +187,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let dataValue = outcome["dataKey"] as? Data
     
-    XCTAssertEqual(dataValue, Data([2, 4, 7]))
+    #expect(dataValue == Data([2, 4, 7]))
   }
   
-  func test_codes_nsData() throws {
+  @Test func test_codes_nsData() throws {
     let nsData = NSData(bytes: [0x01, 0x02, 0x04] as [UInt8], length: 3)
     let sut = ValueStore(values: [
       "_force_nstype_dataKey": nsData
@@ -199,10 +199,10 @@ final class MockValueStoreTests: XCTestCase {
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let nsDataValue = outcome["_force_nstype_dataKey"] as? NSData
     
-    XCTAssertEqual(nsDataValue, NSData(bytes: [0x01, 0x02, 0x04] as [UInt8], length: 3))
+    #expect(nsDataValue == NSData(bytes: [0x01, 0x02, 0x04] as [UInt8], length: 3))
   }
   
-  func test_codes_ckAsset() throws {
+  @Test func test_codes_ckAsset() throws {
     let url = Bundle.module.url(forResource: "textFile", withExtension: "txt")!
     let ckAsset = CKAsset(fileURL: url)
     let sut = ValueStore(values: [
@@ -211,10 +211,10 @@ final class MockValueStoreTests: XCTestCase {
     let data = try JSONEncoder().encode(sut)
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let asset = outcome["assetKey"] as? CKAsset
-    XCTAssertEqual(asset!.fileURL!.lastPathComponent, "textFile.txt")
+    #expect(asset!.fileURL!.lastPathComponent == "textFile.txt")
   }
   
-  func test_codes_clLocation() throws {
+  @Test func test_codes_clLocation() throws {
     let location = CLLocation(latitude: 37.332939350106514, longitude: -122.00488014474543)
     let sut = ValueStore(values: [
       "locationKey": location
@@ -223,10 +223,10 @@ final class MockValueStoreTests: XCTestCase {
     let data = try JSONEncoder().encode(sut)
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let locationValue = outcome["locationKey"] as? CLLocation
-    XCTAssertEqual(locationValue!.distance(from: location), 0)
+    #expect(locationValue!.distance(from: location) == 0)
   }
   
-  func test_codes_ckRecordReference() throws {
+  @Test func test_codes_ckRecordReference() throws {
     let reference = CKRecord.Reference(recordID: .init(recordName: "demoRecord"), action: .none)
     let sut = ValueStore(values: [
       "recordReferenceKey": reference
@@ -234,10 +234,10 @@ final class MockValueStoreTests: XCTestCase {
     let data = try JSONEncoder().encode(sut)
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let referenceValue = outcome["recordReferenceKey"] as? CKRecord.Reference
-    XCTAssertEqual(referenceValue?.recordID.recordName, "demoRecord")
+    #expect(referenceValue?.recordID.recordName == "demoRecord")
   }
   
-  func test_codes_ckRecordReference_array() throws {
+  @Test func test_codes_ckRecordReference_array() throws {
     let reference1 = CKRecord.Reference(recordID: .init(recordName: "demoRecord1"), action: .none)
     let reference2 = CKRecord.Reference(recordID: .init(recordName: "demoRecord2"), action: .none)
     let sut = ValueStore(values: [
@@ -246,13 +246,13 @@ final class MockValueStoreTests: XCTestCase {
     let data = try JSONEncoder().encode(sut)
     let outcome = try JSONDecoder().decode(ValueStore.self, from: data)
     let references = outcome["recordReferenceArrayKey"] as? [CKRecord.Reference]
-    XCTAssertEqual(references![0].recordID.recordName, "demoRecord1")
-    XCTAssertEqual(references![1].recordID.recordName, "demoRecord2")
+    #expect(references![0].recordID.recordName == "demoRecord1")
+    #expect(references![1].recordID.recordName == "demoRecord2")
   }
   
   // MARK: - Error and invalid data handling
   
-  func test_throws_on_invalid_data_type() {
+  @Test func test_throws_on_invalid_data_type() {
     let brokenTypeJson = "[{\"value\":42,\"key\":\"intKey\",\"type\":\"BrokenType\"}]"
     let data = brokenTypeJson.data(using: .utf8)!
     do {
@@ -261,14 +261,14 @@ final class MockValueStoreTests: XCTestCase {
       let dataCorruptedError = error as! DecodingError
       switch dataCorruptedError {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid data type: BrokenType")
+        #expect(context.debugDescription == "Invalid data type: BrokenType")
       default:
-        XCTFail("Unexpected error: \(dataCorruptedError)")
+        Issue.record("Unexpected error: \(dataCorruptedError)")
       }
     }
   }
   
-  func test_throws_on_invalid_nsnumber_data() {
+  @Test func test_throws_on_invalid_nsnumber_data() {
     let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"intKey\",\"type\":\"nsNumber\"}]"
     let data = brokenTypeJson.data(using: .utf8)!
     do {
@@ -277,14 +277,14 @@ final class MockValueStoreTests: XCTestCase {
       let dataCorruptedError = error as! DecodingError
       switch dataCorruptedError {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid NSNumber value in source data")
+        #expect(context.debugDescription == "Invalid NSNumber value in source data")
       default:
-        XCTFail("Unexpected error: \(dataCorruptedError)")
+        Issue.record("Unexpected error: \(dataCorruptedError)")
       }
     }
   }
   
-  func test_throws_on_invalid_nsstring_data() {
+  @Test func test_throws_on_invalid_nsstring_data() {
     let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"intKey\",\"type\":\"nsString\"}]"
     let data = brokenTypeJson.data(using: .utf8)!
     do {
@@ -293,14 +293,14 @@ final class MockValueStoreTests: XCTestCase {
       let dataCorruptedError = error as! DecodingError
       switch dataCorruptedError {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid NSString value in source data")
+        #expect(context.debugDescription == "Invalid NSString value in source data")
       default:
-        XCTFail("Unexpected error: \(dataCorruptedError)")
+        Issue.record("Unexpected error: \(dataCorruptedError)")
       }
     }
   }
   
-  func test_throws_on_invalid_nsdate_data() {
+  @Test func test_throws_on_invalid_nsdate_data() {
     let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"dateKey\",\"type\":\"nsDate\"}]"
     let data = brokenTypeJson.data(using: .utf8)!
     do {
@@ -309,14 +309,14 @@ final class MockValueStoreTests: XCTestCase {
       let dataCorruptedError = error as! DecodingError
       switch dataCorruptedError {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid NSDate value in source data")
+        #expect(context.debugDescription == "Invalid NSDate value in source data")
       default:
-        XCTFail("Unexpected error: \(dataCorruptedError)")
+        Issue.record("Unexpected error: \(dataCorruptedError)")
       }
     }
   }
   
-  func test_throws_on_invalid_nsdata_data() {
+  @Test func test_throws_on_invalid_nsdata_data() {
     let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"dataKey\",\"type\":\"nsData\"}]"
     let data = brokenTypeJson.data(using: .utf8)!
     do {
@@ -325,14 +325,14 @@ final class MockValueStoreTests: XCTestCase {
       let dataCorruptedError = error as! DecodingError
       switch dataCorruptedError {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid NSData value in source data")
+        #expect(context.debugDescription == "Invalid NSData value in source data")
       default:
-        XCTFail("Unexpected error: \(dataCorruptedError)")
+        Issue.record("Unexpected error: \(dataCorruptedError)")
       }
     }
   }
   
-  func test_throws_on_invalid_location_data() {
+  @Test func test_throws_on_invalid_location_data() {
     let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"dataKey\",\"type\":\"clLocation\"}]"
     let data = brokenTypeJson.data(using: .utf8)!
     do {
@@ -341,14 +341,14 @@ final class MockValueStoreTests: XCTestCase {
       let dataCorruptedError = error as! DecodingError
       switch dataCorruptedError {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid CLLocation value in source data")
+        #expect(context.debugDescription == "Invalid CLLocation value in source data")
       default:
-        XCTFail("Unexpected error: \(dataCorruptedError)")
+        Issue.record("Unexpected error: \(dataCorruptedError)")
       }
     }
   }
   
-  func test_throws_on_invalid_ckRecordReference_data() {
+  @Test func test_throws_on_invalid_ckRecordReference_data() {
     let brokenTypeJson = "[{\"value\":\"deadbeef\",\"key\":\"dataKey\",\"type\":\"ckRecordReference\"}]"
     let data = brokenTypeJson.data(using: .utf8)!
     do {
@@ -357,16 +357,16 @@ final class MockValueStoreTests: XCTestCase {
       let dataCorruptedError = error as! DecodingError
       switch dataCorruptedError {
       case .dataCorrupted(let context):
-        XCTAssertEqual(context.debugDescription, "Invalid CKRecord.Reference value in source data")
+        #expect(context.debugDescription == "Invalid CKRecord.Reference value in source data")
       default:
-        XCTFail("Unexpected error: \(dataCorruptedError)")
+        Issue.record("Unexpected error: \(dataCorruptedError)")
       }
     }
   }
   
-  func test_invalid_ckAsset_url() {
+  @Test func test_invalid_ckAsset_url() {
     // CKAsset API says that “if the system can’t create the asset” (and I’d expect
-    // the URL pointing to nonexistent file to tigger this), the return value
+    // the URL pointing to nonexistent file to trigger this), the return value
     // will be nil.
     //
     // In reality, there seems to be no file validation at asset creation
@@ -377,6 +377,6 @@ final class MockValueStoreTests: XCTestCase {
     let data = brokenAssetJson.data(using: .utf8)!
     let store = try? JSONDecoder().decode(ValueStore.self, from: data)
     let asset = store!["assetKey"] as? CKAsset
-    XCTAssertEqual(asset!.fileURL!.lastPathComponent, "textFile.txt")
+    #expect(asset!.fileURL!.lastPathComponent == "textFile.txt")
   }
 }

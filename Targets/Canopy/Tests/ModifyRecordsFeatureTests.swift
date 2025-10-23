@@ -2,9 +2,9 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
-final class ModifyRecordsFeatureTests: XCTestCase {
+@Suite struct ModifyRecordsFeatureTests {
   private func records(startIndex: Int, endIndex: Int) -> [CKRecord] {
     stride(from: startIndex, to: endIndex + 1, by: 1).map { i in
       CKRecord(recordType: "TestRecord", recordID: .init(recordName: "id\(i)"))
@@ -28,7 +28,7 @@ final class ModifyRecordsFeatureTests: XCTestCase {
     )
   }
   
-  func test_fails_correctly_on_empty_input() async {
+  @Test func test_fails_correctly_on_empty_input() async {
     let db = ReplayingMockCKDatabase(operationResults: [])
     do {
       let _ = try await ModifyRecords.with(
@@ -39,11 +39,11 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         qualityOfService: .default
       ).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.internalError)))
+      #expect(recordError == CKRecordError(from: CKError(CKError.Code.internalError)))
     }
   }
   
-  func test_simple_modify() async {
+  @Test func test_simple_modify() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -70,14 +70,14 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default
     ).get()
     
-    XCTAssertEqual(result.savedRecords.count, 10)
-    XCTAssertEqual(result.deletedRecordIDs.count, 0)
+    #expect(result.savedRecords.count == 10)
+    #expect(result.deletedRecordIDs.count == 0)
     
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_simple_delete() async {
+  @Test func test_simple_delete() async {
     let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map(\.recordID)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -103,14 +103,14 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default
     ).get()
     
-    XCTAssertEqual(result.deletedRecordIDs.count, 10)
-    XCTAssertEqual(result.savedRecords.count, 0)
+    #expect(result.deletedRecordIDs.count == 10)
+    #expect(result.savedRecords.count == 0)
     
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_chunked_modify() async {
+  @Test func test_chunked_modify() async {
     let recordsToSave1 = records(startIndex: 1, endIndex: 3)
     let recordsToSave2 = records(startIndex: 4, endIndex: 6)
     let recordsToSave3 = records(startIndex: 7, endIndex: 9)
@@ -180,14 +180,14 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       customBatchSize: 3
     ).get()
     
-    XCTAssertEqual(result.savedRecords.count, 11)
-    XCTAssertEqual(result.deletedRecordIDs.count, 0)
+    #expect(result.savedRecords.count == 11)
+    #expect(result.deletedRecordIDs.count == 0)
     
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 4)
+    #expect(operationsRun == 4)
   }
   
-  func test_cancellation() async {
+  @Test func test_cancellation() async {
     let recordsToSave1 = records(startIndex: 1, endIndex: 3)
     let recordsToSave2 = records(startIndex: 4, endIndex: 6)
     let recordsToSave3 = records(startIndex: 7, endIndex: 9)
@@ -267,14 +267,14 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       // Second get gets the operation result, and this will throw because the operation resulted with error.
       let _ = try await task.result.get().get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.operationCancelled)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.operationCancelled)))
     }
     
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_modify_recorderror() async {
+  @Test func test_modify_recorderror() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -302,14 +302,14 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         qualityOfService: .default
       ).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.internalError)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.internalError)))
     }
     
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_delete_recorderror() async {
+  @Test func test_delete_recorderror() async {
     let recordIDsToDelete = records(startIndex: 1, endIndex: 10).map(\.recordID)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -336,14 +336,14 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         qualityOfService: .default
       ).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.internalError)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.internalError)))
     }
 
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_modify_resulterror() async {
+  @Test func test_modify_resulterror() async {
     let recordsToSave = records(startIndex: 1, endIndex: 10)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -371,14 +371,14 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         qualityOfService: .default
       ).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
     
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_limit_exceeded() async {
+  @Test func test_limit_exceeded() async {
     let recordsToSave = records(startIndex: 1, endIndex: 9)
     let recordIDToDelete = CKRecord.ID(recordName: "idToDelete")
     let db = ReplayingMockCKDatabase(
@@ -434,17 +434,17 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       customBatchSize: 9
     ).get()
 
-    XCTAssertEqual(result.savedRecords.count, 9)
+    #expect(result.savedRecords.count == 9)
     for index in 0 ..< result.savedRecords.count {
-      XCTAssertTrue(result.savedRecords[index].isEqualToRecord(recordsToSave[index].canopyResultRecord))
+      #expect(result.savedRecords[index].isEqualToRecord(recordsToSave[index].canopyResultRecord) == true)
     }
-    XCTAssertEqual(result.deletedRecordIDs.count, 1)
+    #expect(result.deletedRecordIDs.count == 1)
 
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 4)
+    #expect(operationsRun == 4)
   }
   
-  func test_limit_exceeded_without_autobatch() async {
+  @Test func test_limit_exceeded_without_autobatch() async {
     let recordsToSave = records(startIndex: 1, endIndex: 9)
     let recordIDToDelete = CKRecord.ID(recordName: "idToDelete")
     let db = ReplayingMockCKDatabase(
@@ -470,13 +470,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         autoBatchToSmallerWhenLimitExceeded: false
       ).get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.limitExceeded)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.limitExceeded)))
       let operationsRun = await db.operationsRun
-      XCTAssertEqual(operationsRun, 1)
+      #expect(operationsRun == 1)
     }
   }
   
-  func test_autoretry_one_pass() async {
+  @Test func test_autoretry_one_pass() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -502,13 +502,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default,
       autoRetryForRetriableErrors: true
     ).get()
-    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord))
-    XCTAssertEqual(result.savedRecords.count, 1)
+    #expect(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord) == true)
+    #expect(result.savedRecords.count == 1)
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 1)
+    #expect(operationsRun == 1)
   }
   
-  func test_autoretry_one_retry() async {
+  @Test func test_autoretry_one_retry() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -527,13 +527,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default,
       autoRetryForRetriableErrors: true
     ).get()
-    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord))
-    XCTAssertEqual(result.savedRecords.count, 1)
+    #expect(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord) == true)
+    #expect(result.savedRecords.count == 1)
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 2)
+    #expect(operationsRun == 2)
   }
   
-  func test_autoretry_two_retries() async {
+  @Test func test_autoretry_two_retries() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -553,13 +553,13 @@ final class ModifyRecordsFeatureTests: XCTestCase {
       qualityOfService: .default,
       autoRetryForRetriableErrors: true
     ).get()
-    XCTAssertTrue(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord))
-    XCTAssertEqual(result.savedRecords.count, 1)
+    #expect(result.savedRecords[0].isEqualToRecord(recordsToSave[0].canopyResultRecord) == true)
+    #expect(result.savedRecords.count == 1)
     let operationsRun = await db.operationsRun
-    XCTAssertEqual(operationsRun, 3)
+    #expect(operationsRun == 3)
   }
   
-  func test_autoretry_three_retries_failure() async {
+  @Test func test_autoretry_three_retries_failure() async {
     let recordsToSave = records(startIndex: 0, endIndex: 0)
     let db = ReplayingMockCKDatabase(
       operationResults: [
@@ -578,9 +578,9 @@ final class ModifyRecordsFeatureTests: XCTestCase {
         autoRetryForRetriableErrors: true
       ).get()
     } catch {
-      XCTAssertTrue(error.code == CKError.Code.zoneBusy.rawValue)
+      #expect(error.code == CKError.Code.zoneBusy.rawValue)
       let operationsRun = await db.operationsRun
-      XCTAssertEqual(operationsRun, 3)
+      #expect(operationsRun == 3)
     }
   }
 }

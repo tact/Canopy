@@ -2,10 +2,10 @@
 import CanopyTestTools
 import CloudKit
 import Foundation
-import XCTest
+import Testing
 
-final class FetchZoneChangesTests: XCTestCase {
-  func test_success() async {
+@Suite struct FetchZoneChangesTests {
+  @Test func test_success() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -37,15 +37,15 @@ final class FetchZoneChangesTests: XCTestCase {
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
     ).get()
-    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord))
-    XCTAssertEqual(result.deletedRecords, [])
+    #expect(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord) == true)
+    #expect(result.deletedRecords == [])
     let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
     let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
-    XCTAssertEqual(getTokenForRecordZoneCalls, 1)
-    XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
+    #expect(getTokenForRecordZoneCalls == 1)
+    #expect(storeTokenForRecordZoneCalls == 1)
   }
   
-  func test_fetch_tokens_only() async {
+  @Test func test_fetch_tokens_only() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -77,15 +77,15 @@ final class FetchZoneChangesTests: XCTestCase {
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenOnly
     ).get()
-    XCTAssertEqual(result.changedRecords, [])
-    XCTAssertEqual(result.deletedRecords, [])
+    #expect(result.changedRecords == [])
+    #expect(result.deletedRecords == [])
     let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
     let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
-    XCTAssertEqual(getTokenForRecordZoneCalls, 1)
-    XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
+    #expect(getTokenForRecordZoneCalls == 1)
+    #expect(storeTokenForRecordZoneCalls == 1)
   }
   
-  func test_record_error() async {
+  @Test func test_record_error() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let deletedRecordID = CKRecord.ID(recordName: "DeletedRecordID")
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -122,15 +122,15 @@ final class FetchZoneChangesTests: XCTestCase {
         fetchMethod: .changeTokenAndSpecificKeys(["key1", "key2"])
       ).get()
     } catch CanopyError.ckRecordError(let recordError) {
-      XCTAssertEqual(recordError, .init(from: CKError(CKError.Code.networkUnavailable)))
+      #expect(recordError == .init(from: CKError(CKError.Code.networkUnavailable)))
       let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
-      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
+      #expect(storeTokenForRecordZoneCalls == 0)
     } catch {
-      XCTFail("Unexpected error: \(error)")
+      Issue.record("Unexpected error: \(error)")
     }
   }
   
-  func test_token_expired() async {
+  @Test func test_token_expired() async {
     let zoneID1 = CKRecordZone.ID(zoneName: "testZone1", ownerName: CKCurrentUserDefaultName)
     let zoneID2 = CKRecordZone.ID(zoneName: "testZone2", ownerName: CKCurrentUserDefaultName)
 
@@ -165,14 +165,14 @@ final class FetchZoneChangesTests: XCTestCase {
       let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
       let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
 
-      XCTAssertEqual(getTokenForRecordZoneCalls, 2)
+      #expect(getTokenForRecordZoneCalls == 2)
       // Stored only one nil token
-      XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
-      XCTAssertEqual(error, .ckRecordZoneError(.init(from: CKError(CKError.Code.changeTokenExpired))))
+      #expect(storeTokenForRecordZoneCalls == 1)
+      #expect(error == .ckRecordZoneError(.init(from: CKError(CKError.Code.changeTokenExpired))))
     }
   }
   
-  func test_result_error() async {
+  @Test func test_result_error() async {
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
     
     let db = ReplayingMockCKDatabase(operationResults: [
@@ -206,14 +206,14 @@ final class FetchZoneChangesTests: XCTestCase {
       let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
       let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
 
-      XCTAssertEqual(getTokenForRecordZoneCalls, 1)
-      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
+      #expect(getTokenForRecordZoneCalls == 1)
+      #expect(storeTokenForRecordZoneCalls == 0)
       
-      XCTAssertEqual(error, .ckRequestError(.init(from: CKError(CKError.Code.accountTemporarilyUnavailable))))
+      #expect(error == .ckRequestError(.init(from: CKError(CKError.Code.accountTemporarilyUnavailable))))
     }
   }
   
-  func test_success_with_delay() async {
+  @Test func test_success_with_delay() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -245,16 +245,16 @@ final class FetchZoneChangesTests: XCTestCase {
       recordZoneIDs: [zoneID],
       fetchMethod: .changeTokenAndAllData
     ).get()
-    XCTAssertTrue(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord))
-    XCTAssertEqual(result.deletedRecords, [])
+    #expect(result.changedRecords.first!.isEqualToRecord(changedRecord.canopyResultRecord) == true)
+    #expect(result.deletedRecords == [])
     let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
     let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
 
-    XCTAssertEqual(getTokenForRecordZoneCalls, 1)
-    XCTAssertEqual(storeTokenForRecordZoneCalls, 1)
+    #expect(getTokenForRecordZoneCalls == 1)
+    #expect(storeTokenForRecordZoneCalls == 1)
   }
   
-  func test_simulated_fail() async {
+  @Test func test_simulated_fail() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -292,17 +292,17 @@ final class FetchZoneChangesTests: XCTestCase {
       case .ckRequestError:
         break
       default:
-        XCTFail("Unexpected error type: \(error)")
+        Issue.record("Unexpected error type: \(error)")
       }
       let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
       let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
 
-      XCTAssertEqual(getTokenForRecordZoneCalls, 0)
-      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
+      #expect(getTokenForRecordZoneCalls == 0)
+      #expect(storeTokenForRecordZoneCalls == 0)
     }
   }
   
-  func test_simulated_fail_with_delay() async {
+  @Test func test_simulated_fail_with_delay() async {
     let changedRecordID = CKRecord.ID(recordName: "SomeRecordName")
     let changedRecord = CKRecord(recordType: "TestRecord", recordID: changedRecordID)
     let zoneID = CKRecordZone.ID(zoneName: "testZone", ownerName: CKCurrentUserDefaultName)
@@ -340,13 +340,13 @@ final class FetchZoneChangesTests: XCTestCase {
       case .ckRequestError:
         break
       default:
-        XCTFail("Unexpected error type: \(error)")
+        Issue.record("Unexpected error type: \(error)")
       }
       let getTokenForRecordZoneCalls = await tokenStore.getTokenForRecordZoneCalls
       let storeTokenForRecordZoneCalls = await tokenStore.storeTokenForRecordZoneCalls
 
-      XCTAssertEqual(getTokenForRecordZoneCalls, 0)
-      XCTAssertEqual(storeTokenForRecordZoneCalls, 0)
+      #expect(getTokenForRecordZoneCalls == 0)
+      #expect(storeTokenForRecordZoneCalls == 0)
     }
   }
 }
