@@ -1,10 +1,10 @@
 import Canopy
 import CanopyTestTools
 import CloudKit
-import XCTest
+import Testing
 
-final class ReplayingMockDatabaseTests: XCTestCase {
-  func test_query_records_success() async {
+@Suite struct ReplayingMockDatabaseTests {
+  @Test func test_query_records_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .queryRecords(
         .init(
@@ -15,21 +15,21 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.queryRecords(with: .init(recordType: "MockType", predicate: NSPredicate(value: true)), in: nil).get()
-    XCTAssertEqual(result.first!.recordID.recordName, "mockName")
+    #expect(result.first!.recordID.recordName == "mockName")
   }
   
-  func test_query_records_failure() async {
+  @Test func test_query_records_failure() async {
     let db = ReplayingMockDatabase(operationResults: [
       .queryRecords(.init(result: .failure(.init(from: CKError(CKError.Code.badDatabase)))))
     ])
     do {
       let _ = try await db.queryRecords(with: .init(recordType: "MockType", predicate: NSPredicate(value: true)), in: nil).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.badDatabase)))
+      #expect(recordError == CKRecordError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_modify_records_success() async {
+  @Test func test_modify_records_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .modifyRecords(
         .init(
@@ -51,23 +51,23 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       saving: [],
       deleting: []
     ).get()
-    XCTAssertEqual(result.savedRecords.first!.recordType, "MockType")
-    XCTAssertEqual(result.deletedRecordIDs[0].recordName, "deleted0")
-    XCTAssertEqual(result.deletedRecordIDs[1].recordName, "deleted1")
+    #expect(result.savedRecords.first!.recordType == "MockType")
+    #expect(result.deletedRecordIDs[0].recordName == "deleted0")
+    #expect(result.deletedRecordIDs[1].recordName == "deleted1")
   }
   
-  func test_modify_records_error() async {
+  @Test func test_modify_records_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .modifyRecords(.init(result: .failure(.init(from: CKError(CKError.Code.networkFailure)))))
     ])
     do {
       let _ = try await db.modifyRecords(saving: [], deleting: []).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      #expect(recordError == CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
   
-  func test_delete_records_success() async {
+  @Test func test_delete_records_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .deleteRecords(
         .init(
@@ -84,22 +84,22 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.deleteRecords(with: CKQuery(recordType: "SomeType", predicate: NSPredicate(value: true)), in: nil).get()
-    XCTAssertEqual(result.deletedRecordIDs[0].recordName, "deleted0")
-    XCTAssertEqual(result.deletedRecordIDs[1].recordName, "deleted1")
+    #expect(result.deletedRecordIDs[0].recordName == "deleted0")
+    #expect(result.deletedRecordIDs[1].recordName == "deleted1")
   }
   
-  func test_delete_records_error() async {
+  @Test func test_delete_records_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .deleteRecords(.init(result: .failure(.init(from: CKError(CKError.Code.networkFailure)))))
     ])
     do {
       let _ = try await db.deleteRecords(with: CKQuery(recordType: "SomeType", predicate: NSPredicate(value: true)), in: nil).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      #expect(recordError == CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
   
-  func test_fetch_records_success() async {
+  @Test func test_fetch_records_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchRecords(
         .init(
@@ -120,25 +120,25 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.fetchRecords(with: []).get()
-    XCTAssertEqual(result.foundRecords[0].recordID.recordName, "record1")
-    XCTAssertEqual(result.foundRecords[1].recordID.recordName, "record2")
-    XCTAssertEqual(result.notFoundRecordIDs[0].recordName, "notFound1")
-    XCTAssertEqual(result.notFoundRecordIDs[1].recordName, "notFound2")
-    XCTAssertEqual(result.notFoundRecordIDs[2].recordName, "notFound3")
+    #expect(result.foundRecords[0].recordID.recordName == "record1")
+    #expect(result.foundRecords[1].recordID.recordName == "record2")
+    #expect(result.notFoundRecordIDs[0].recordName == "notFound1")
+    #expect(result.notFoundRecordIDs[1].recordName == "notFound2")
+    #expect(result.notFoundRecordIDs[2].recordName == "notFound3")
   }
   
-  func test_fetch_records_error() async {
+  @Test func test_fetch_records_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchRecords(.init(result: .failure(.init(from: CKError(CKError.Code.networkFailure)))))
     ])
     do {
       let _ = try await db.fetchRecords(with: []).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      #expect(recordError == CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
   
-  func test_modify_zones_success() async {
+  @Test func test_modify_zones_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .modifyZones(
         .init(
@@ -156,22 +156,22 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.modifyZones(saving: [], deleting: []).get()
-    XCTAssertEqual(result.savedZones[0].zoneID.zoneName, "myZone")
-    XCTAssertEqual(result.deletedZoneIDs[0].zoneName, "myDeletedZone")
+    #expect(result.savedZones[0].zoneID.zoneName == "myZone")
+    #expect(result.deletedZoneIDs[0].zoneName == "myDeletedZone")
   }
   
-  func test_modify_zones_error() async {
+  @Test func test_modify_zones_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .modifyZones(.init(result: .failure(.init(from: CKError(CKError.Code.badDatabase)))))
     ])
     do {
       let _ = try await db.modifyZones(saving: [], deleting: []).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
+      #expect(recordError == CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_fetch_zones_success() async {
+  @Test func test_fetch_zones_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchZones(
         .init(
@@ -183,22 +183,22 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.fetchZones(with: []).get()
-    XCTAssertEqual(result[0].zoneID.zoneName, "zone1")
-    XCTAssertEqual(result[1].zoneID.zoneName, "zone2")
+    #expect(result[0].zoneID.zoneName == "zone1")
+    #expect(result[1].zoneID.zoneName == "zone2")
   }
   
-  func test_fetch_zones_error() async {
+  @Test func test_fetch_zones_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchZones(.init(result: .failure(.init(from: CKError(CKError.Code.badDatabase)))))
     ])
     do {
       let _ = try await db.fetchZones(with: []).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
+      #expect(recordError == CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_fetch_all_zones_success() async {
+  @Test func test_fetch_all_zones_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchAllZones(
         .init(
@@ -210,22 +210,22 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.fetchAllZones().get()
-    XCTAssertEqual(result[0].zoneID.zoneName, "zone1")
-    XCTAssertEqual(result[1].zoneID.zoneName, "zone2")
+    #expect(result[0].zoneID.zoneName == "zone1")
+    #expect(result[1].zoneID.zoneName == "zone2")
   }
   
-  func test_fetch_all_zones_error() async {
+  @Test func test_fetch_all_zones_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchAllZones(.init(result: .failure(.init(from: CKError(CKError.Code.badDatabase)))))
     ])
     do {
       let _ = try await db.fetchAllZones().get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
+      #expect(recordError == CKRecordZoneError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_modify_subscriptions_success() async {
+  @Test func test_modify_subscriptions_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .modifySubscriptions(
         .init(
@@ -246,22 +246,22 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.modifySubscriptions(saving: [], deleting: []).get()
-    XCTAssertEqual(result.savedSubscriptions[1].subscriptionID, "query")
-    XCTAssertEqual(result.deletedSubscriptionIDs[1], "deleted2")
+    #expect(result.savedSubscriptions[1].subscriptionID == "query")
+    #expect(result.deletedSubscriptionIDs[1] == "deleted2")
   }
   
-  func test_modify_subscriptions_error() async {
+  @Test func test_modify_subscriptions_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .modifySubscriptions(.init(result: .failure(.init(from: CKError(CKError.Code.badDatabase)))))
     ])
     do {
       let _ = try await db.modifySubscriptions(saving: [], deleting: []).get()
     } catch let recordError {
-      XCTAssertEqual(recordError, CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
+      #expect(recordError == CKSubscriptionError(from: CKError(CKError.Code.badDatabase)))
     }
   }
   
-  func test_fetch_database_changes_success() async {
+  @Test func test_fetch_database_changes_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
@@ -276,12 +276,12 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result = try! await db.fetchDatabaseChanges().get()
-    XCTAssertEqual(result.changedRecordZoneIDs[0].zoneName, "changedZone")
-    XCTAssertEqual(result.deletedRecordZoneIDs[0].zoneName, "deletedZone")
-    XCTAssertEqual(result.purgedRecordZoneIDs[0].zoneName, "purgedZone")
+    #expect(result.changedRecordZoneIDs[0].zoneName == "changedZone")
+    #expect(result.deletedRecordZoneIDs[0].zoneName == "deletedZone")
+    #expect(result.purgedRecordZoneIDs[0].zoneName == "purgedZone")
   }
   
-  func test_fetch_database_changes_error() async {
+  @Test func test_fetch_database_changes_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchDatabaseChanges(
         .init(
@@ -292,13 +292,13 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     do {
       let _ = try await db.fetchDatabaseChanges().get()
     } catch CanopyError.ckRequestError(let requestError) {
-      XCTAssertEqual(requestError, CKRequestError(from: CKError(CKError.Code.notAuthenticated)))
+      #expect(requestError == CKRequestError(from: CKError(CKError.Code.notAuthenticated)))
     } catch {
-      XCTFail("Unexpected error: \(error)")
+      Issue.record("Unexpected error: \(error)")
     }
   }
   
-  func test_fetch_zone_changes_success() async {
+  @Test func test_fetch_zone_changes_success() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
@@ -325,11 +325,11 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let zoneChanges = try! await db.fetchZoneChanges(recordZoneIDs: []).get()
-    XCTAssertEqual(zoneChanges.changedRecords[0].recordID.recordName, "someRecordName")
-    XCTAssertEqual(zoneChanges.deletedRecords[0].recordID.recordName, "deletedRecordName")
+    #expect(zoneChanges.changedRecords[0].recordID.recordName == "someRecordName")
+    #expect(zoneChanges.deletedRecords[0].recordID.recordName == "deletedRecordName")
   }
   
-  func test_fetch_zone_changes_error() async {
+  @Test func test_fetch_zone_changes_error() async {
     let db = ReplayingMockDatabase(operationResults: [
       .fetchZoneChanges(
         .init(
@@ -340,13 +340,13 @@ final class ReplayingMockDatabaseTests: XCTestCase {
     do {
       let _ = try await db.fetchZoneChanges(recordZoneIDs: []).get()
     } catch CanopyError.ckRequestError(let requestError) {
-      XCTAssertEqual(requestError, CKRequestError(from: CKError(CKError.Code.notAuthenticated)))
+      #expect(requestError == CKRequestError(from: CKError(CKError.Code.notAuthenticated)))
     } catch {
-      XCTFail("Unexpected error: \(error)")
+      Issue.record("Unexpected error: \(error)")
     }
   }
   
-  func test_two_operations() async {
+  @Test func test_two_operations() async {
     let db = ReplayingMockDatabase(operationResults: [
       .queryRecords(
         .init(
@@ -374,13 +374,13 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       )
     ])
     let result1 = try! await db.queryRecords(with: .init(recordType: "MockType", predicate: NSPredicate(value: true)), in: nil).get()
-    XCTAssertEqual(result1.first!.recordID.recordName, "mockName")
+    #expect(result1.first!.recordID.recordName == "mockName")
     
     let result2 = try! await db.fetchRecords(with: []).get()
-    XCTAssertEqual(result2.notFoundRecordIDs[0].recordName, "notFound1")
+    #expect(result2.notFoundRecordIDs[0].recordName == "notFound1")
   }
   
-  func test_sleep_if_needed() async {
+  @Test func test_sleep_if_needed() async {
     let db = ReplayingMockDatabase(
       operationResults: [
         .queryRecords(
@@ -394,6 +394,6 @@ final class ReplayingMockDatabaseTests: XCTestCase {
       sleepBeforeEachOperation: 0.01
     )
     let result = try! await db.queryRecords(with: .init(recordType: "MockType", predicate: NSPredicate(value: true)), in: nil).get()
-    XCTAssertEqual(result.first!.recordID.recordName, "mockName")
+    #expect(result.first!.recordID.recordName == "mockName")
   }
 }

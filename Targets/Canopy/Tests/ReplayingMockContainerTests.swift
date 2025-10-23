@@ -1,10 +1,10 @@
 import Canopy
 import CanopyTestTools
 import CloudKit
-import XCTest
+import Testing
 
-final class ReplayingMockContainerTests: XCTestCase {
-  func test_userRecordID_success() async {
+@Suite struct ReplayingMockContainerTests {
+  @Test func test_userRecordID_success() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .userRecordID(
@@ -16,10 +16,10 @@ final class ReplayingMockContainerTests: XCTestCase {
     )
     
     let result = try! await mockContainer.userRecordID.get()!
-    XCTAssertEqual(result.recordName, "myRecordId")
+    #expect(result.recordName == "myRecordId")
   }
   
-  func test_userRecordID_error() async {
+  @Test func test_userRecordID_error() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .userRecordID(
@@ -33,11 +33,11 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.userRecordID.get()
     } catch {
-      XCTAssertEqual(error, CKRecordError(from: CKError(CKError.Code.networkFailure)))
+      #expect(error == CKRecordError(from: CKError(CKError.Code.networkFailure)))
     }
   }
   
-  func test_accountStatus_success() async {
+  @Test func test_accountStatus_success() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .accountStatus(.init(status: .couldNotDetermine, error: nil))
@@ -45,10 +45,10 @@ final class ReplayingMockContainerTests: XCTestCase {
     )
     
     let result = try! await mockContainer.accountStatus.get()
-    XCTAssertEqual(result, .couldNotDetermine)
+    #expect(result == .couldNotDetermine)
   }
   
-  func test_accountStatus_error() async {
+  @Test func test_accountStatus_error() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .accountStatus(
@@ -63,11 +63,11 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.accountStatus.get()
     } catch {
-      XCTAssertEqual(error.code, CKError.Code.badContainer.rawValue)
+      #expect(error.code == CKError.Code.badContainer.rawValue)
     }
   }
   
-  func test_accountStatusStream_success() async {
+  @Test func test_accountStatusStream_success() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .accountStatusStream(.init(statuses: [.available, .noAccount, .couldNotDetermine], error: nil))
@@ -79,10 +79,10 @@ final class ReplayingMockContainerTests: XCTestCase {
     for await status in accountStatusStream.prefix(2) {
       statuses.append(status)
     }
-    XCTAssertEqual(statuses, [.available, .noAccount])
+    #expect(statuses == [.available, .noAccount])
   }
   
-  func test_accountStatusStream_error() async {
+  @Test func test_accountStatusStream_error() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .accountStatusStream(.init(statuses: [], error: .onlyOneAccountStatusStreamSupported))
@@ -91,21 +91,21 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.accountStatusStream.get()
     } catch {
-      XCTAssertEqual(error, .onlyOneAccountStatusStreamSupported)
+      #expect(error == .onlyOneAccountStatusStreamSupported)
     }
   }
   
-  func test_acceptShares_success() async {
+  @Test func test_acceptShares_success() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .acceptShares(.init(result: .success([CKShare.mock, CKShare.mock_owned_by_current_user])))
       ]
     )
     let result = try! await mockContainer.acceptShares(with: []).get()
-    XCTAssertEqual(result.count, 2)
+    #expect(result.count == 2)
   }
   
-  func test_acceptShares_error() async {
+  @Test func test_acceptShares_error() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .acceptShares(.init(result: .failure(.init(from: CKError(CKError.Code.networkFailure)))))
@@ -114,21 +114,21 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.acceptShares(with: []).get()
     } catch {
-      XCTAssertEqual(error.code, CKError.Code.networkFailure.rawValue)
+      #expect(error.code == CKError.Code.networkFailure.rawValue)
     }
   }
   
-  func test_fetchShareParticipants_success() async {
+  @Test func test_fetchShareParticipants_success() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .fetchShareParticipants(.init(result: .success([CKShare.Participant.mock, CKShare.Participant.mock])))
       ]
     )
     let result = try! await mockContainer.fetchShareParticipants(with: []).get()
-    XCTAssertEqual(result.count, 2)
+    #expect(result.count == 2)
   }
   
-  func test_fetchShareParticipants_error() async {
+  @Test func test_fetchShareParticipants_error() async {
     let mockContainer = ReplayingMockContainer(
       operationResults: [
         .fetchShareParticipants(.init(result: .failure(.init(from: CKError(CKError.Code.networkFailure)))))
@@ -137,7 +137,7 @@ final class ReplayingMockContainerTests: XCTestCase {
     do {
       let _ = try await mockContainer.fetchShareParticipants(with: []).get()
     } catch {
-      XCTAssertEqual(error.code, CKError.Code.networkFailure.rawValue)
+      #expect(error.code == CKError.Code.networkFailure.rawValue)
     }
   }
 }
